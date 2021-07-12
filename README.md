@@ -12,7 +12,7 @@ Before juping into the development of the drawing engine, we asked ourselves wha
 | **[Demo socket io](#demo-socket-io)**|  🔴             |     🟢    |    🟢      |                 🟢       |
 | **[Gartic phone](#gartic-phone)**|    🟢             |    🟠     |      🔴    |         🟠               |
 | **[Awwap](#awwap)**|         🟠        |   🟠        |     🔴     |        🟠                 |
-| **[Figma](#figma-figjam")**|       🔴          |     🟢      |    🟠      |                   🔴     |
+| **[Figma](#figma-figjam)**|       🔴          |     🟢      |    🟠      |                   🔴     |
 | **[Skribbl](#skribbl)**|       🟠          |     🟠     |  🟢        |               🟠         |
 
 The network traffic was calculated with the network analyzer of firefox by repeating the same drawing (thanks to https://github.com/eguller/MouseRecorder) on each site.
