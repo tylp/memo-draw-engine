@@ -20,21 +20,21 @@ The network traffic was calculated with the network analyzer of firefox by repea
 ### Demo socket io
 
 - **Drawing** : Classic canvas
-- **Event** : Emited on MouseDown && (MouseUp || MouseMove)
+- **Event** : Emitted on MouseDown && (MouseUp || MouseMove)
 - **Network traffic** (Smile draw - 10s) : 433 messages - 50.77 KB
 - **WS message format** : Line with 4 points (x1; y1; x2; y2) + color - for each line
 
 ### Gartic phone
 
 - **Drawing** : Triple canvas (draw, pointer, logo)
-- **Event** : Emited on MouseUp
+- **Event** : Emitted on MouseUp
 - **Network traffic** (Smile draw - 10s) : 6 messages - 8 KB
 - **WS message format** : List of point (x, y), first point contain color - for each section
 
 ### Awwap
 
 - **Drawing** : Triple canvas (draw, pointer, logo)
-- **Event** : Emited on MouseUp
+- **Event** : Emitted on MouseUp
 - **Network traffic** (Smile draw - 10s) : 120 messages - 20 kb
 - **WS message format** : List of point (x, y), color, size, opacity, uid, type + ack ? - for each section 
 
@@ -42,15 +42,13 @@ The network traffic was calculated with the network analyzer of firefox by repea
 ### Figma (FigJam)
 
 - **Drawing** : Canvas with GPU optimization (WebGL ?)
-- **Event** : Emited on MouseDown && (MouseUp || MouseMove) - use of delay ? 
+- **Event** : Emitted on MouseDown && (MouseUp || MouseMove) - use of delay ? 
 - **Network traffic** (Smile draw - 10s) : 900 messages - 2 MB
 - **WS message format** : encrypted
 
 ### Skribbl
 
 - **Drawing** : Classic canvas 
-- **Event** : Emited on MouseDown && MouseMove - use of delay ? 
+- **Event** : Emitted on MouseDown && MouseMove - use of delay ? 
 - **Network traffic** (Smile draw - 10s) : 185 messages - 30 kb
-- **WS message format** : Type, id, List of point ( 2 coord (x1; y1; x2; y2) + angle ? - (variable number of point - number a point during a certain delay ?) 
-
-
+- **WS message format** : Type, id, ist of point ( 2 coord (x1; y1; x2; y2) + angle ? - (variable number of point - number a point during a certain delay ?) 
