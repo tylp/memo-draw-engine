@@ -1,18 +1,18 @@
 module.exports = {
   mount: {
-      public: "/",
-      src: "/dist"
+    public: '/',
+    src: '/dist',
   },
   devOptions: {
-      port: 8000,
-      open: "none"
+    port: 8000,
+    open: 'none',
   },
   buildOptions: {
-      out: "_build"
+    out: '_build',
   },
   optimize: {
-      bundle: true,
-      minify: true,
-      sourcemap: false
-  }
+    bundle: true,
+    minify: true,
+    sourcemap: false,
+  },
 };
