@@ -1,2 +1,3 @@
-const message : string = 'A random message';
-console.log(message);
+import EventManager from './EventManager';
+
+EventManager.registerEvents();
