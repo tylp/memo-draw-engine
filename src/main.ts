@@ -1,2 +1,4 @@
-const message : string = 'A random message';
-console.log(message);
+import canvas from './Canvas';
+import EventManager from './EventManager';
+
+EventManager.registerEvents(canvas.canvasElement);
