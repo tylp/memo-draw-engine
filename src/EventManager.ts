@@ -1,4 +1,4 @@
-import shapeManager from './ShapeManager';
+import { shapeManager } from './ShapeManager';
 
 class EventManager {
   static registerEvents(canvasElement: HTMLCanvasElement) : void {

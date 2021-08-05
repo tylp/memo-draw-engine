@@ -1,4 +1,4 @@
-import type Shape from './Shape';
+import type Shape from './Shapes/Shape';
 import drawState from './DrawState';
 import Point from './Point';
 import canvas from './Canvas';
@@ -25,7 +25,7 @@ class ShapeManager {
     if (this.currentShape === null) {
       this.currentShape = ShapeFactory.create(drawState.shapeType);
     }
-    this.currentShape?.update(event);
+    this.currentShape?.update(event, this);
   }
 
   endShape() : void {
@@ -44,17 +44,22 @@ class ShapeManager {
     if (shape !== undefined) {
       this.undoShapes.push(shape);
     }
-    this.shapes.forEach((shp) => shp.draw(0));
+    this.redrawShapes();
+  }
+
+  redrawShapes() : void {
+    this.shapes.forEach((shp) => shp.draw(0, this));
   }
 
   redo() : void {
     this.endShape();
     const shape : Shape | undefined = this.undoShapes.pop();
     if (shape !== undefined) {
-      shape.draw(100);
+      shape.draw(100, this);
       this.shapes.push(shape);
     }
   }
 }
 
-export default new ShapeManager();
+const shapeManager = new ShapeManager();
+export { shapeManager, ShapeManager };

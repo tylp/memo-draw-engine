@@ -1,4 +1,5 @@
-import drawState from './DrawState';
+import type { ShapeManager } from '../ShapeManager';
+import drawState from '../DrawState';
 
 abstract class Shape {
   color: string;
@@ -10,12 +11,13 @@ abstract class Shape {
   }
 
   // Use to definitely draw shape (viewer side)
-  abstract draw(durationMs : number) : void;
+  abstract draw(durationMs : number, shapeManager : ShapeManager) : void;
   // Use for live view of shape (drawer side)
-  abstract update(event : MouseEvent) : void;
+  abstract update(event : MouseEvent, shapeManager : ShapeManager) : void;
 
   protected setColorAndThickness(ctx : CanvasRenderingContext2D) : void {
     ctx.strokeStyle = this.color;
+    ctx.fillStyle = this.color;
     ctx.lineWidth = this.thickness;
   }
 

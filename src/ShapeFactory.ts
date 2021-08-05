@@ -1,12 +1,27 @@
 import ShapeType from './ShapeType';
-import type Shape from './Shape';
-import Draw from './Draw';
+import type Shape from './Shapes/Shape';
+import Draw from './Shapes/Draw';
+import RectangleFull from './Shapes/RectangleFull';
+import RectangleStroke from './Shapes/RectangleStroke';
+import EllipseFull from './Shapes/EllipseFull';
+import EllipseStroke from './Shapes/EllipseStroke';
+import Line from './Shapes/Line';
 
 class ShapeFactory {
   static create(shapeType : ShapeType) : Shape {
     switch (shapeType) {
       case ShapeType.Draw:
         return new Draw();
+      case ShapeType.RectangleFull:
+        return new RectangleFull();
+      case ShapeType.RectangleStroke:
+        return new RectangleStroke();
+      case ShapeType.EllipseFull:
+        return new EllipseFull();
+      case ShapeType.EllipseStroke:
+        return new EllipseStroke();
+      case ShapeType.Line:
+        return new Line();
       default:
         throw new Error('Shape is not implemented');
     }

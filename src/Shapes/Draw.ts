@@ -1,14 +1,14 @@
 import Shape from './Shape';
-import Point from './Point';
-import drawState from './DrawState';
-import canvas from './Canvas';
+import Point from '../Point';
+import drawState from '../DrawState';
+import canvas from '../Canvas';
 
 class Draw extends Shape {
   private points : Array<Point>;
 
-  constructor() {
+  constructor(points : Array<Point> = []) {
     super();
-    this.points = [];
+    this.points = points;
   }
 
   async draw(durationMs : number) : Promise<void> {
