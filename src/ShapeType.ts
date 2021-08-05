@@ -1,9 +1,9 @@
 enum ShapeType {
   Draw,
   Line,
-  CircleOutline,
-  CircleFull,
-  RectangleOutline,
+  EllipseStroke,
+  EllipseFull,
+  RectangleStroke,
   RectangleFull,
 }
 
