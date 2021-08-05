@@ -1,8 +1,8 @@
+import type Shape from './Shape';
 import drawState from './DrawState';
-import ShapeFactory from './ShapeFacory';
 import Point from './Point';
 import canvas from './Canvas';
-import Shape from './Shape';
+import ShapeFactory from './ShapeFactory';
 
 class ShapeManager {
   currentShape : Shape | null;
@@ -21,16 +21,16 @@ class ShapeManager {
   }
 
   updateShape(event: MouseEvent) : void {
-    if(!drawState.isDrawing) return;
-    if(this.currentShape === null) {
+    if (!drawState.isDrawing) return;
+    if (this.currentShape === null) {
       this.currentShape = ShapeFactory.create(drawState.shapeType);
     }
     this.currentShape?.update(event);
   }
-  
+
   endShape() : void {
     drawState.isDrawing = false;
-    if(this.currentShape === null) return;
+    if (this.currentShape === null) return;
     this.shapes.push(this.currentShape);
     // emit shape... // event listener ?
     this.currentShape = null;
@@ -44,7 +44,7 @@ class ShapeManager {
     if (shape !== undefined) {
       this.undoShapes.push(shape);
     }
-    this.shapes.forEach((shape) => shape.draw(0))
+    this.shapes.forEach((shp) => shp.draw(0));
   }
 
   redo() : void {

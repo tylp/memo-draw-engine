@@ -1,5 +1,5 @@
 import ShapeType from './ShapeType';
-import Point from './Point'
+import Point from './Point';
 
 // State class use as a singleton to share drawing state
 class DrawState {

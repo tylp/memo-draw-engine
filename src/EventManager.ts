@@ -1,10 +1,16 @@
 import shapeManager from './ShapeManager';
-import canvas from './Canvas';
 
 class EventManager {
-  static registerEvents() : void {
-    canvas.registerEvents();
+  static registerEvents(canvasElement: HTMLCanvasElement) : void {
+    this.registerCanvasEvents(canvasElement);
     this.registerDocumentEvents();
+  }
+
+  private static registerCanvasEvents(canvasElement: HTMLCanvasElement) : void {
+    canvasElement.addEventListener('mousemove', (event : MouseEvent) => shapeManager.updateShape(event));
+    canvasElement.addEventListener('mousedown', (event : MouseEvent) => shapeManager.beginShape(event));
+    canvasElement.addEventListener('mouseup', () => shapeManager.endShape());
+    canvasElement.addEventListener('mouseleave', () => shapeManager.endShape());
   }
 
   private static registerDocumentEvents() : void {

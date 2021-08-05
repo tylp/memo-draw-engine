@@ -1,8 +1,6 @@
-import shapeManager from './ShapeManager';
-
 class Canvas {
-  private canvasElement : HTMLCanvasElement;
   private _ctx : CanvasRenderingContext2D | null;
+  canvasElement : HTMLCanvasElement;
 
   // Use of getter to check if canvas is registered
   get ctx() : CanvasRenderingContext2D {
@@ -12,8 +10,8 @@ class Canvas {
     return this._ctx;
   }
 
-  constructor() { 
-    this.canvasElement  = document.getElementById('draw-canvas') as HTMLCanvasElement;
+  constructor() {
+    this.canvasElement = document.getElementById('draw-canvas') as HTMLCanvasElement;
     this._ctx = this.canvasElement.getContext('2d');
     this.throwIfNotSupported();
   }
@@ -22,13 +20,6 @@ class Canvas {
     if (this.ctx === null) {
       throw new Error('2d context of canvas is null');
     }
-  }
-
-  registerEvents() {
-    this?.canvasElement.addEventListener('mousemove', (event : MouseEvent) => shapeManager.updateShape(event));
-    this?.canvasElement.addEventListener('mousedown', (event : MouseEvent) => shapeManager.beginShape(event));
-    this?.canvasElement.addEventListener('mouseup', () => shapeManager.endShape());
-    this?.canvasElement.addEventListener('mouseleave', () => shapeManager.endShape());
   }
 
   clearCanvas() : void {
