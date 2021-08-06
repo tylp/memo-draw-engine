@@ -11,7 +11,7 @@ abstract class Shape {
   }
 
   // Use to definitely draw shape (viewer side)
-  abstract draw(durationMs : number, shapeManager : ShapeManager) : void;
+  abstract draw(durationMs : number, shapeManager : ShapeManager) : Promise<void>;
   // Use for live view of shape (drawer side)
   abstract update(event : MouseEvent, shapeManager : ShapeManager) : void;
 

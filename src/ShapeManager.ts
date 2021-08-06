@@ -51,11 +51,11 @@ class ShapeManager {
     this.shapes.forEach((shp) => shp.draw(0, this));
   }
 
-  redo() : void {
+  async redo() : Promise<void> {
     this.endShape();
     const shape : Shape | undefined = this.undoShapes.pop();
     if (shape !== undefined) {
-      shape.draw(100, this);
+      await shape.draw(100, this);
       this.shapes.push(shape);
     }
   }

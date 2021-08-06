@@ -22,9 +22,12 @@ class Canvas {
     }
   }
 
-  clearCanvas() : void {
+  clearCanvas(restoreColor : string | null = null) : void {
     this.ctx.fillStyle = 'white';
     this.ctx.fillRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+    if (restoreColor !== null) {
+      this.ctx.fillStyle = restoreColor;
+    }
   }
 }
 
