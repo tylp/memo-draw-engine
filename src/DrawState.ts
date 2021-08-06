@@ -12,9 +12,9 @@ class DrawState {
 
   constructor() {
     // Default state is drawing large black
-    this.color = 'red';
-    this.thickness = 2;
-    this.shapeType = ShapeType.Line;
+    this.color = 'pink';
+    this.thickness = 40;
+    this.shapeType = ShapeType.Draw;
 
     // Default not drawing & no current shape
     this.isDrawing = false;
