@@ -12,17 +12,34 @@ class Draw extends Shape {
   }
 
   async draw(durationMs : number) : Promise<void> {
+    // To respect the durationMs when there is a lot of point to draw
+    // in a short amount of time, thre are two issues :
+    // - It's not possible to wait float ms
+    // - The function take more than a ms to execute
+    // That's why,to create the animation effect :
+    // multiple point are drawed, and then a wait is done
+    const speedMultiplicator = 4;
+    const latencyInterval = 1 * speedMultiplicator;
     const waitingIntervalMs : number = this.getWaitingInterval(durationMs);
+
+    // Represent the number of line drawned before a wait
+    // If waitingIntervalMs is inferior to latencyInterval, wait for each line
+    const numberOfDrawPerWait = (waitingIntervalMs !== 0 && waitingIntervalMs <= latencyInterval)
+      ? Math.round(latencyInterval / waitingIntervalMs)
+      : 1;
 
     for (let i = 1; i < this.points.length; i += 1) {
       this.drawLine(this.points[i - 1], this.points[i]);
-      // eslint-disable-next-line no-await-in-loop
-      await this.waitInterval(waitingIntervalMs);
+      // If it is not the last line and indes reached numberOfDrawPerWait
+      if (i % numberOfDrawPerWait === 0 && i !== this.points.length) {
+        // eslint-disable-next-line no-await-in-loop
+        await this.waitInterval(waitingIntervalMs);
+      }
     }
   }
 
   private getWaitingInterval(durationMs : number) : number {
-    return durationMs !== 0 ? this.points.length / durationMs : 0;
+    return durationMs !== 0 ? durationMs / this.points.length : 0;
   }
 
   update(event: MouseEvent) : void {
