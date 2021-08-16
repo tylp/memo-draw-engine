@@ -1,30 +1,37 @@
 import { shapeManager } from './ShapeManager';
 
 class EventManager {
+  static canvasElement: HTMLCanvasElement;
+
   static registerEvents(canvasElement: HTMLCanvasElement) : void {
-    this.registerCanvasEvents(canvasElement);
+    this.canvasElement = canvasElement;
+    this.registerCanvasEvents();
     this.registerDocumentEvents();
   }
 
-  private static registerCanvasEvents(canvasElement: HTMLCanvasElement) : void {
-    canvasElement.addEventListener(
-      'mousemove',
-      (event : MouseEvent) => {
-        const relEvent = this.getRelativeEvent(canvasElement, event);
-        shapeManager.updateShape(relEvent);
-      },
-    );
+  private static registerCanvasEvents() : void {
+    this.canvasElement.addEventListener('mousemove', (event) => this.onMouseMove(event));
+    this.canvasElement.addEventListener('mousedown', (event) => this.onMouseDown(event));
+    this.canvasElement.addEventListener('mouseup', () => shapeManager.endShape());
+    this.canvasElement.addEventListener('mouseleave', () => shapeManager.endShape());
+  }
 
-    canvasElement.addEventListener(
-      'mousedown',
-      (event : MouseEvent) => {
-        const relEvent = this.getRelativeEvent(canvasElement, event);
-        shapeManager.beginShape(relEvent);
-      },
-    );
+  private static onMouseMove(event : MouseEvent) : void {
+    const relEvent = this.getRelativeEvent(event);
+    shapeManager.updateShape(relEvent);
+  }
 
-    canvasElement.addEventListener('mouseup', () => shapeManager.endShape());
-    canvasElement.addEventListener('mouseleave', () => shapeManager.endShape());
+  private static onMouseDown(event : MouseEvent): void {
+    const relEvent = this.getRelativeEvent(event);
+    shapeManager.beginShape(relEvent);
+  }
+
+  private static getRelativeEvent(event: MouseEvent) : MouseEvent {
+    return {
+      clientX: event.clientX - this.canvasElement.offsetLeft,
+      clientY: event.clientY - this.canvasElement.offsetTop,
+      ...event,
+    };
   }
 
   private static registerDocumentEvents() : void {
@@ -46,14 +53,6 @@ class EventManager {
         shapeManager.redo();
       }
     });
-  }
-
-  private static getRelativeEvent(canvasEl: HTMLCanvasElement, event: MouseEvent) : MouseEvent {
-    return {
-      clientX: event.clientX - canvasEl.offsetLeft,
-      clientY: event.clientY - canvasEl.offsetTop,
-      ...event,
-    };
   }
 }
 

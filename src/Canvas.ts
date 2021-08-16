@@ -14,6 +14,7 @@ class Canvas {
     this.canvasElement = document.getElementById('draw-canvas') as HTMLCanvasElement;
     this._ctx = this.canvasElement.getContext('2d');
     this.throwIfNotSupported();
+    this.ctx.lineCap = 'round';
   }
 
   private throwIfNotSupported() {
