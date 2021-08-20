@@ -7,7 +7,6 @@ class Line extends DraggableShape {
     canvas.ctx.beginPath();
     canvas.ctx.moveTo(originPoint.x, originPoint.y);
     canvas.ctx.lineTo(originPoint.x + width, originPoint.y + height);
-    this.setColorAndThickness(canvas.ctx);
     canvas.ctx.stroke();
     canvas.ctx.closePath();
   }

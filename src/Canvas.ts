@@ -1,3 +1,5 @@
+import drawState from './DrawState';
+
 class Canvas {
   private _ctx : CanvasRenderingContext2D | null;
   canvasElement : HTMLCanvasElement;
@@ -15,6 +17,7 @@ class Canvas {
     this._ctx = this.canvasElement.getContext('2d');
     this.throwIfNotSupported();
     this.ctx.lineCap = 'round';
+    this.setStyle();
   }
 
   private throwIfNotSupported() {
@@ -23,12 +26,18 @@ class Canvas {
     }
   }
 
-  clearCanvas(restoreColor : string | null = null) : void {
+  setStyle() {
+    const alphaColor = drawState.getAlphaColor();
+    drawState.rgba = alphaColor.toRgba();
+    this.ctx.fillStyle = drawState.rgba;
+    this.ctx.strokeStyle = drawState.rgba;
+    this.ctx.lineWidth = drawState.thickness;
+  }
+
+  clearCanvas() : void {
     this.ctx.fillStyle = 'white';
     this.ctx.fillRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-    if (restoreColor !== null) {
-      this.ctx.fillStyle = restoreColor;
-    }
+    this.ctx.fillStyle = drawState.rgba;
   }
 }
 

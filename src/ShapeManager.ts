@@ -4,6 +4,7 @@ import Point from './Point';
 import canvas from './Canvas';
 import ShapeFactory from './ShapeFactory';
 import DraggableShape from './Shapes/DraggableShape';
+import UpdatableShape from './Shapes/UpdatableShape';
 
 class ShapeManager {
   currentShape : Shape | null;
@@ -19,18 +20,27 @@ class ShapeManager {
   beginShape(event: MouseEvent) : void {
     drawState.isDrawing = true;
     drawState.basePoint = new Point(event.clientX, event.clientY);
+
     if (!(this.currentShape instanceof DraggableShape)) {
       this.createShape();
-      this.currentShape?.update(event, this);
+      if (this.currentShape instanceof UpdatableShape) {
+        this.currentShape.update(event, this);
+      } else {
+        this.currentShape?.draw(0, this);
+      }
     }
   }
 
   updateShape(event: MouseEvent) : void {
     if (!drawState.isDrawing) return;
+
     if (this.currentShape === null) {
       this.createShape();
     }
-    this.currentShape?.update(event, this);
+
+    if (this.currentShape instanceof UpdatableShape) {
+      this.currentShape.update(event, this);
+    }
   }
 
   private createShape() {

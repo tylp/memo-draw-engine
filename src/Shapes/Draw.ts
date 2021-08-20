@@ -1,9 +1,10 @@
-import Shape from './Shape';
 import Point from '../Point';
 import drawState from '../DrawState';
 import canvas from '../Canvas';
+import Utils from '../Utils';
+import UpdatableShape from './UpdatableShape';
 
-class Draw extends Shape {
+class Draw extends UpdatableShape {
   private points : Array<Point>;
 
   constructor(points : Array<Point> = []) {
@@ -33,7 +34,7 @@ class Draw extends Shape {
       // If it is not the last line and indes reached numberOfDrawPerWait
       if (i % numberOfDrawPerWait === 0 && i !== this.points.length) {
         // eslint-disable-next-line no-await-in-loop
-        await this.waitInterval(waitingIntervalMs);
+        await Utils.waitInterval(waitingIntervalMs);
       }
     }
   }
@@ -58,7 +59,6 @@ class Draw extends Shape {
     canvas.ctx.beginPath();
     canvas.ctx.moveTo(p1.x, p1.y);
     canvas.ctx.lineTo(p2.x, p2.y);
-    this.setColorAndThickness(canvas.ctx);
     canvas.ctx.stroke();
     canvas.ctx.closePath();
   }

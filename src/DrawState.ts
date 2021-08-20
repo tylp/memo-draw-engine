@@ -1,24 +1,25 @@
 import ShapeType from './ShapeType';
-import Point from './Point';
+import Color from './Color';
+import Colors from './Colors';
+import AlphaColor from './AlphaColor';
 
 // State class use as a singleton to share drawing state
 class DrawState {
-  color : string;
+  color : Color;
+  opacity : number;
+  rgba! : string;
   thickness : number;
   shapeType : ShapeType;
 
-  isDrawing: boolean;
-  basePoint : Point | null;
-
   constructor() {
-    // Default state is drawing large black
-    this.color = 'pink';
-    this.thickness = 40;
-    this.shapeType = ShapeType.Draw;
+    this.shapeType = ShapeType.Fill;
+    this.color = Colors.blue;
+    this.opacity = 1;
+    this.thickness = 3;
+  }
 
-    // Default not drawing & no current shape
-    this.isDrawing = false;
-    this.basePoint = null;
+  getAlphaColor() : AlphaColor {
+    return AlphaColor.getAlphaColorFromColor(this.color, this.opacity);
   }
 }
 

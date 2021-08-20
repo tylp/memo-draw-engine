@@ -1,9 +1,10 @@
 import type { ShapeManager } from '../ShapeManager';
-import Shape from './Shape';
 import Point from '../Point';
 import canvas from '../Canvas';
+import Utils from '../Utils';
+import UpdatableShape from './UpdatableShape';
 
-abstract class DraggableShape extends Shape {
+abstract class DraggableShape extends UpdatableShape {
   originPoint : Point | null;
   width : number;
   height : number;
@@ -18,7 +19,6 @@ abstract class DraggableShape extends Shape {
   async draw(durationMs : number, shapeManager : ShapeManager) : Promise<void> {
     if (this.originPoint === null) return;
     if (durationMs === 0) {
-      this.setColorAndThickness(canvas.ctx);
       this.drawShape(this.originPoint, this.width, this.height);
     } else {
       await this.drawWithAnimation(durationMs, shapeManager);
@@ -36,7 +36,7 @@ abstract class DraggableShape extends Shape {
       // Doesnt await if shape is completely drawn
       if (i !== numberOfFrame) {
         // eslint-disable-next-line no-await-in-loop
-        await this.waitInterval(waitingIntervalMs);
+        await Utils.waitInterval(waitingIntervalMs);
       }
     }
   }
@@ -45,7 +45,6 @@ abstract class DraggableShape extends Shape {
     // Origin point is null if it is the first update
     if (this.originPoint === null) {
       this.originPoint = new Point(event.clientX, event.clientY);
-      this.setColorAndThickness(canvas.ctx);
     } else {
       // Clear the last update
       this.clearAndRedrawShapes(shapeManager);
@@ -58,7 +57,7 @@ abstract class DraggableShape extends Shape {
   }
 
   protected clearAndRedrawShapes(shapeManager : ShapeManager): void {
-    canvas.clearCanvas(this.color);
+    canvas.clearCanvas();
     shapeManager.redrawShapes();
   }
 

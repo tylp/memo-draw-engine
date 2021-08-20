@@ -6,6 +6,7 @@ import RectangleStroke from './Shapes/RectangleStroke';
 import EllipseFull from './Shapes/EllipseFull';
 import EllipseStroke from './Shapes/EllipseStroke';
 import Line from './Shapes/Line';
+import Fill from './Shapes/Fill';
 
 class ShapeFactory {
   static create(shapeType : ShapeType) : Shape {
@@ -22,6 +23,8 @@ class ShapeFactory {
         return new EllipseStroke();
       case ShapeType.Line:
         return new Line();
+      case ShapeType.Fill:
+        return new Fill();
       default:
         throw new Error('Shape is not implemented');
     }
