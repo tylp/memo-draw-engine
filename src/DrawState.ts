@@ -1,7 +1,7 @@
-import ShapeType from './ShapeType';
-import Color from './Color';
-import Colors from './Colors';
-import AlphaColor from './AlphaColor';
+import ShapeType from './Shapes/ShapeType';
+import Color from './Color/Color';
+import Colors from './Constants/Colors';
+import AlphaColor from './Color/AlphaColor';
 
 // State class use as a singleton to share drawing state
 class DrawState {
@@ -12,7 +12,7 @@ class DrawState {
   shapeType : ShapeType;
 
   constructor() {
-    this.shapeType = ShapeType.Fill;
+    this.shapeType = ShapeType.RectangleStroke;
     this.color = Colors.blue;
     this.opacity = 1;
     this.thickness = 3;
@@ -23,4 +23,5 @@ class DrawState {
   }
 }
 
-export default new DrawState();
+const drawState = new DrawState();
+export default drawState;

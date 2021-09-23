@@ -1,8 +1,8 @@
-import type { ShapeManager } from '../ShapeManager';
 import Point from '../Point';
 import canvas from '../Canvas';
 import Utils from '../Utils';
 import UpdatableShape from './UpdatableShape';
+import type { ShapeManager } from '../Manager/ShapeManager';
 
 abstract class DraggableShape extends UpdatableShape {
   originPoint : Point | null;
@@ -16,11 +16,12 @@ abstract class DraggableShape extends UpdatableShape {
     this.height = height;
   }
 
-  async draw(durationMs : number, shapeManager : ShapeManager) : Promise<void> {
+  async draw(shapeManager : ShapeManager) : Promise<void> {
     if (this.originPoint === null) return;
-    if (durationMs === 0) {
+    if (!this.endDate || !this.startDate) {
       this.drawShape(this.originPoint, this.width, this.height);
     } else {
+      const durationMs = this.endDate - this.startDate;
       await this.drawWithAnimation(durationMs, shapeManager);
     }
   }

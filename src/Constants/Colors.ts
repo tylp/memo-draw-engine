@@ -1,4 +1,4 @@
-import Color from './Color';
+import Color from '../Color/Color';
 
 export default {
   black: new Color(0, 0, 0),

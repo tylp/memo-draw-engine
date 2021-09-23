@@ -2,7 +2,7 @@
 import drawState from '../DrawState';
 import Shape from './Shape';
 import canvas from '../Canvas';
-import AlphaColor from '../AlphaColor';
+import AlphaColor from '../Color/AlphaColor';
 import Point from '../Point';
 
 class Fill extends Shape {
@@ -13,12 +13,7 @@ class Fill extends Shape {
   originData! : Uint8ClampedArray;
   canvasWidth! : number;
   canvasHeight! : number;
-  originPoint : Point | null;
-
-  constructor(originPoint : Point | null = null) {
-    super();
-    this.originPoint = originPoint;
-  }
+  originPoint : Point | null = null;
 
   async draw(): Promise<void> {
     return new Promise((resolve) => {
@@ -29,9 +24,10 @@ class Fill extends Shape {
 
   // Algorithm from http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
   private fill() : void {
+    if (this.originPoint == null) return;
+
     this.initialize();
 
-    
     const basePixelPos = this.getPixelPos(this.originPoint.x, this.originPoint.y);
     this.baseColor = this.getPixelColor(basePixelPos);
 

@@ -1,5 +1,5 @@
 import Color from './Color';
-import Utils from './Utils';
+import Utils from '../Utils';
 
 class AlphaColor extends Color {
   alpha : number;
