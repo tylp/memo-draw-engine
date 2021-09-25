@@ -1,6 +1,6 @@
-interface Do {
+interface IDo {
   undo() : void;
   redo() : void
 }
 
-export default Do;
+export default IDo;

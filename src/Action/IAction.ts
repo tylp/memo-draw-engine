@@ -1,8 +1,8 @@
 import ActionType from './ActionType';
 
-interface Action {
+interface IAction {
   type : ActionType;
   parameters : unknown;
 }
 
-export default Action;
+export default IAction;

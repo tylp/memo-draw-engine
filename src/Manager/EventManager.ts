@@ -1,56 +1,71 @@
-import { shapeManager } from './ShapeManager';
+import Point from '../Point';
+import ICanvasEventHandlder from './ICanvasEventHandlder';
+import IDocumentEventHandler from './IDocumentEventHandler';
 
 class EventManager {
-  static canvasElement: HTMLCanvasElement;
+  private canvasEventHandlers : Array<ICanvasEventHandlder> = [];
+  private documentEventHandlers : Array<IDocumentEventHandler> = [];
+  private canvasElement: HTMLCanvasElement;
 
-  static registerEvents(canvasElement: HTMLCanvasElement) : void {
+  constructor(canvasElement: HTMLCanvasElement) {
     this.canvasElement = canvasElement;
     this.registerCanvasEvents();
     this.registerDocumentEvents();
   }
 
-  private static registerCanvasEvents() : void {
+  subscribeCanvasEventHandler(handler: ICanvasEventHandlder) : void {
+    this.canvasEventHandlers.push(handler);
+  }
+
+  subscribeDocumentEventHandler(handler: IDocumentEventHandler) : void {
+    this.documentEventHandlers.push(handler);
+  }
+
+  private registerCanvasEvents() : void {
     this.canvasElement.addEventListener('mousemove', (event) => this.onMouseMove(event));
     this.canvasElement.addEventListener('mousedown', (event) => this.onMouseDown(event));
-    this.canvasElement.addEventListener('mouseup', () => shapeManager.endShape());
-    this.canvasElement.addEventListener('mouseleave', () => shapeManager.endShape());
+    this.canvasElement.addEventListener('mouseup', () => this.onMouseUp());
+    this.canvasElement.addEventListener('mouseleave', () => this.onMouseUp());
   }
 
-  private static onMouseMove(event : MouseEvent) : void {
-    const relEvent = this.getRelativeEvent(event);
-    shapeManager.updateShape(relEvent);
+  private onMouseMove(event : MouseEvent) : void {
+    const point = this.getNewPoint(event);
+    this.canvasEventHandlers.forEach((handler) => handler.move(point));
   }
 
-  private static onMouseDown(event : MouseEvent): void {
-    const relEvent = this.getRelativeEvent(event);
-    shapeManager.beginShape(relEvent);
+  private onMouseDown(event : MouseEvent): void {
+    const point = this.getNewPoint(event);
+    this.canvasEventHandlers.forEach((handler) => handler.down(point));
   }
 
-  private static getRelativeEvent(event: MouseEvent) : MouseEvent {
-    return {
-      clientX: event.clientX - this.canvasElement.offsetLeft,
-      clientY: event.clientY - this.canvasElement.offsetTop,
-      ...event,
-    };
+  private onMouseUp() : void {
+    this.canvasEventHandlers.forEach((handler) => handler.up());
   }
 
-  private static registerDocumentEvents() : void {
+  private getNewPoint(event: MouseEvent) : Point {
+    return new Point(
+      event.clientX - this.canvasElement.offsetLeft,
+      event.clientY - this.canvasElement.offsetTop,
+    );
+  }
+
+  private registerDocumentEvents() : void {
     this.registerUndoEvent();
     this.registerRedoEvent();
   }
 
-  private static registerUndoEvent() : void {
+  private registerUndoEvent() : void {
     document.addEventListener('keydown', (event : KeyboardEvent) => {
       if (event.ctrlKey && event.key.toLowerCase() === 'z') {
-        shapeManager.undo();
+        this.documentEventHandlers.forEach((handler) => handler.undo());
       }
     });
   }
 
-  private static registerRedoEvent() : void {
+  private registerRedoEvent() : void {
     document.addEventListener('keydown', (event : KeyboardEvent) => {
       if (event.ctrlKey && event.key.toLowerCase() === 'y') {
-        shapeManager.redo();
+        this.documentEventHandlers.forEach((handler) => handler.redo());
       }
     });
   }

@@ -1,6 +1,5 @@
 import AbstractDo from './AbstractDo';
-import ShapeInfo from '../Shapes/ShapeInfo';
-import Line from '../Shapes/Line';
+import IShapeInfo from '../Shapes/IShapeInfo';
 import Fill from '../Shapes/Fill';
 import ActionType from '../Action/ActionType';
 import type Shape from '../Shapes/Shape';
@@ -9,27 +8,30 @@ import canvas from '../Canvas';
 import ShapeFactory from '../Shapes/ShapeFactory';
 import DraggableShape from '../Shapes/DraggableShape';
 import UpdatableShape from '../Shapes/UpdatableShape';
-import Handler from './Handler';
-import actionManager from './ActionManager';
+import Observer from '../Observer/IObserver';
 import drawState from '../DrawState';
+import Draw from '../Shapes/Draw';
+import IAction from '../Action/IAction';
+import ICanvasEventHandlder from './ICanvasEventHandlder';
 
-class ShapeManager extends AbstractDo<Shape> implements Handler<ShapeInfo> {
+class ShapeManager extends AbstractDo<Shape> implements Observer<IAction>, ICanvasEventHandlder {
   factory : ShapeFactory = new ShapeFactory();
   currentShape : Shape | null = null;
   basePoint : Point | null = null;
   isDrawing = false;
 
-  beginShape(event: MouseEvent) : void {
+  down(point : Point) : void {
     this.isDrawing = true;
-    this.basePoint = new Point(event.clientX, event.clientY);
+    this.basePoint = point;
 
     // We dont want to draw anything if DraggableShape
     if (this.currentShape instanceof DraggableShape) return;
 
     this.createShape();
 
-    if (this.currentShape instanceof Line) {
-      this.currentShape.update(event);
+    // Update on create to draw single point
+    if (this.currentShape instanceof Draw) {
+      this.currentShape.update(point);
     }
 
     if (this.currentShape instanceof Fill) {
@@ -37,7 +39,7 @@ class ShapeManager extends AbstractDo<Shape> implements Handler<ShapeInfo> {
     }
   }
 
-  updateShape(event: MouseEvent) : void {
+  move(event: MouseEvent) : void {
     if (!this.isDrawing) return;
 
     if (this.currentShape === null) {
@@ -56,7 +58,7 @@ class ShapeManager extends AbstractDo<Shape> implements Handler<ShapeInfo> {
     });
   }
 
-  endShape() : void {
+  up() : void {
     if (this.currentShape === null) return;
     this.dones.push(this.currentShape);
 
@@ -68,15 +70,16 @@ class ShapeManager extends AbstractDo<Shape> implements Handler<ShapeInfo> {
     this.undones = [];
   }
 
-  emit(elem: ShapeInfo): void {
-    actionManager.emit({
+  emit(elem: IShapeInfo): void {
+    this.notify({
       type: ActionType.style,
       parameters: elem,
     });
   }
 
-  handle(elem: ShapeInfo): void {
-    const shape = this.factory.build(elem);
+  update(elem: IAction): void {
+    const shapeInfo = elem.parameters as IShapeInfo;
+    const shape = this.factory.build(shapeInfo);
     this.dones.push(shape);
     shape.draw(this);
   }
@@ -96,5 +99,4 @@ class ShapeManager extends AbstractDo<Shape> implements Handler<ShapeInfo> {
   }
 }
 
-const shapeManager = new ShapeManager();
-export { shapeManager, ShapeManager };
+export default ShapeManager;

@@ -2,13 +2,20 @@ import ActionType from '../Action/ActionType';
 import DrawState from '../DrawState';
 import Color from '../Color/Color';
 import AbstractDo from './AbstractDo';
-import Style from '../Style/Style';
+import IStyle from '../Style/IStyle';
 import StyleType from '../Style/StyleType';
 import canvas from '../Canvas';
-import Handler from './Handler';
-import actionManager from './ActionManager';
+import IObserver from '../Observer/IObserver';
+import IAction from '../Action/IAction';
 
-class StyleManager extends AbstractDo<Style> implements Handler<Style> {
+class StyleManager extends AbstractDo<IStyle> implements IObserver<IAction> {
+  update(elem: IAction): void {
+    const style = elem.parameters as IStyle;
+    this.dones.push(style);
+    this.undones = [];
+    this.apply(style);
+  }
+
   handleUndo(): void {
     this.dones.forEach((style) => this.apply(style));
   }
@@ -18,20 +25,14 @@ class StyleManager extends AbstractDo<Style> implements Handler<Style> {
     this.apply(styleToRedo);
   }
 
-  handle(elem : Style) : void {
-    this.dones.push(elem);
-    this.undones = [];
-    this.apply(elem);
-  }
-
-  emit(elem : Style) {
-    actionManager.emit({
+  emit(elem : IStyle) : void {
+    this.notify({
       type: ActionType.style,
       parameters: elem,
     });
   }
 
-  apply(style : Style) {
+  apply(style : IStyle) : void {
     switch (style.type) {
       case StyleType.color:
         DrawState.color = style.parameters as Color;
@@ -49,5 +50,4 @@ class StyleManager extends AbstractDo<Style> implements Handler<Style> {
   }
 }
 
-const styleManager = new StyleManager();
-export default styleManager;
+export default StyleManager;

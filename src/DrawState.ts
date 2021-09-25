@@ -12,7 +12,7 @@ class DrawState {
   shapeType : ShapeType;
 
   constructor() {
-    this.shapeType = ShapeType.RectangleStroke;
+    this.shapeType = ShapeType.Draw;
     this.color = Colors.blue;
     this.opacity = 1;
     this.thickness = 3;

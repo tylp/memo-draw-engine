@@ -15,6 +15,10 @@ class Fill extends Shape {
   canvasHeight! : number;
   originPoint : Point | null = null;
 
+  exportInfo(): unknown {
+    return { originPoint: this.originPoint };
+  }
+
   async draw(): Promise<void> {
     return new Promise((resolve) => {
       this.fill();

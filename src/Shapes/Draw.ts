@@ -3,8 +3,15 @@ import canvas from '../Canvas';
 import Utils from '../Utils';
 import UpdatableShape from './UpdatableShape';
 
+const INTERVAL_BETWEEN_LINE = 10;
+
 class Draw extends UpdatableShape {
   points : Array<Point> = [];
+  private timeLastPoint : Date | null = null;
+
+  exportInfo(): unknown {
+    return { points: this.points };
+  }
 
   async draw() : Promise<void> {
     // To respect the durationMs when there is a lot of point to draw
@@ -40,12 +47,25 @@ class Draw extends UpdatableShape {
     return durationMs !== 0 ? durationMs / this.points.length : 0;
   }
 
-  update(event: MouseEvent) : void {
+  update(point: Point) : void {
     const [lastPoint] = this.points.slice(-1);
-    const newPoint = new Point(event.clientX, event.clientY);
-    this.points.push(newPoint);
+    if (lastPoint === undefined) return;
 
-    this.drawLine(lastPoint, newPoint);
+    const now = new Date();
+
+    if (this.timeLastPoint === null) {
+      this.addLine(lastPoint, point, now);
+      return;
+    }
+
+    const interval = now.getTime() - this.timeLastPoint.getTime();
+    if (interval > INTERVAL_BETWEEN_LINE) this.addLine(lastPoint, point, now);
+  }
+
+  private addLine(lastPt: Point, newPt: Point, time : Date) : void {
+    this.points.push(newPt);
+    this.timeLastPoint = time;
+    this.drawLine(lastPt, newPt);
   }
 
   private drawLine(p1: Point, p2: Point) {

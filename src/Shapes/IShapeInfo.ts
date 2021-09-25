@@ -1,8 +1,8 @@
 import ShapeType from './ShapeType';
 
-interface ShapeInfo {
+interface IShapeInfo {
   type: ShapeType,
   parameters: unknown,
 }
 
-export default ShapeInfo;
+export default IShapeInfo;

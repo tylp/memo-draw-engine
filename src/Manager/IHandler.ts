@@ -1,6 +1,6 @@
-interface Handler<T> {
+interface IHandler<T> {
   handle(elem : T) : void;
   emit(elem : T) : void;
 }
 
-export default Handler;
+export default IHandler;

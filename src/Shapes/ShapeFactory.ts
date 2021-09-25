@@ -5,7 +5,7 @@ import Point from '../Point';
 import IFactory from '../Manager/IFactory';
 import ShapeType from './ShapeType';
 import type Shape from './Shape';
-import type ShapeInfo from './ShapeInfo';
+import type IShapeInfo from './IShapeInfo';
 import Draw from './Draw';
 import RectangleFull from './RectangleFull';
 import RectangleStroke from './RectangleStroke';
@@ -16,8 +16,8 @@ import Fill from './Fill';
 import DraggableShape from './DraggableShape';
 import UpdatableShape from './UpdatableShape';
 
-class ShapeFactory implements IFactory<ShapeInfo, Shape> {
-  build(info: ShapeInfo): Shape {
+class ShapeFactory implements IFactory<IShapeInfo, Shape> {
+  build(info: IShapeInfo): Shape {
     const shape = this.create(info.type);
     // info.parameters is the basePoint when a shape is created by the drawer
     if (info.parameters instanceof Point) {
@@ -77,8 +77,8 @@ class ShapeFactory implements IFactory<ShapeInfo, Shape> {
     }
   }
 
-  serialize(elem: Shape): ShapeInfo {
-    return { type: this.getType(elem), parameters: elem };
+  serialize(elem: Shape): IShapeInfo {
+    return { type: this.getType(elem), parameters: elem.exportInfo() };
   }
 
   getType(shape: Shape) : ShapeType {

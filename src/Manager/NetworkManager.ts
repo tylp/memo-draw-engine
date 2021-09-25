@@ -1,15 +1,15 @@
-import Action from '../Action/Action';
-import actionManager from './ActionManager';
+import IAction from '../Action/IAction';
+import AbstractObservable from '../Observer/AbstractObservable';
+import IObserver from '../Observer/IObserver';
 
-class NetworkManager {
-  emit(action : Action) {
-    console.log(action);
+class NetworkManager extends AbstractObservable<IAction> implements IObserver<IAction> {
+  update(elem: IAction): void {
+    console.log('emit', elem);
   }
 
-  on(action : Action) {
-    actionManager.receive(action);
+  on(action : IAction) : void {
+    this.notify(action);
   }
 }
 
-const networkManager = new NetworkManager();
-export default networkManager;
+export default NetworkManager;

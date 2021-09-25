@@ -1,8 +1,8 @@
 import StyleType from './StyleType';
 
-interface Style {
+interface IStyle {
   type : StyleType;
   parameters : unknown;
 }
 
-export default Style;
+export default IStyle;

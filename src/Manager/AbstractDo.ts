@@ -1,6 +1,9 @@
-import Do from './Do';
+import IAction from '../Action/IAction';
+import AbstractObservable from '../Observer/AbstractObservable';
+import IDo from './IDo';
 
-abstract class AbstractDo<T> implements Do {
+// eslint-disable-next-line max-len
+abstract class AbstractDo<T> extends AbstractObservable<IAction> implements IDo {
   dones : Array<T> = [];
   undones : Array<T> = [];
 

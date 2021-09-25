@@ -2,7 +2,7 @@ import Point from '../Point';
 import canvas from '../Canvas';
 import Utils from '../Utils';
 import UpdatableShape from './UpdatableShape';
-import type { ShapeManager } from '../Manager/ShapeManager';
+import type ShapeManager from '../Manager/ShapeManager';
 
 abstract class DraggableShape extends UpdatableShape {
   originPoint : Point | null;
@@ -14,6 +14,14 @@ abstract class DraggableShape extends UpdatableShape {
     this.originPoint = originPoint;
     this.width = width;
     this.height = height;
+  }
+
+  exportInfo() : unknown {
+    return {
+      originPoint: this.originPoint,
+      width: this.width,
+      height: this.height,
+    };
   }
 
   async draw(shapeManager : ShapeManager) : Promise<void> {
@@ -42,17 +50,17 @@ abstract class DraggableShape extends UpdatableShape {
     }
   }
 
-  update(event: MouseEvent, shapeManager : ShapeManager): void {
+  update(point: Point, shapeManager : ShapeManager): void {
     // Origin point is null if it is the first update
     if (this.originPoint === null) {
-      this.originPoint = new Point(event.clientX, event.clientY);
+      this.originPoint = point;
     } else {
       // Clear the last update
       this.clearAndRedrawShapes(shapeManager);
     }
 
-    this.width = event.clientX - this.originPoint.x;
-    this.height = event.clientY - this.originPoint.y;
+    this.width = point.x - this.originPoint.x;
+    this.height = point.y - this.originPoint.y;
 
     this.drawShape(this.originPoint, this.width, this.height);
   }

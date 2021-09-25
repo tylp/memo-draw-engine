@@ -41,4 +41,5 @@ class Canvas {
   }
 }
 
-export default new Canvas();
+const canvas = new Canvas();
+export default canvas;
