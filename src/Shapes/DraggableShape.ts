@@ -5,19 +5,13 @@ import UpdatableShape from './UpdatableShape';
 import type ShapeManager from '../Manager/ShapeManager';
 
 abstract class DraggableShape extends UpdatableShape {
-  originPoint : Point | null;
-  width : number;
-  height : number;
-
-  constructor(originPoint : Point | null = null, width = 0, height = 0) {
-    super();
-    this.originPoint = originPoint;
-    this.width = width;
-    this.height = height;
-  }
+  originPoint : Point | null = null;
+  width = 0;
+  height = 0;
 
   exportInfo() : unknown {
     return {
+      ...super.exportInfo(),
       originPoint: this.originPoint,
       width: this.width,
       height: this.height,
@@ -25,6 +19,7 @@ abstract class DraggableShape extends UpdatableShape {
   }
 
   async draw(shapeManager : ShapeManager) : Promise<void> {
+    super.draw(shapeManager);
     if (this.originPoint === null) return;
     if (!this.endDate || !this.startDate) {
       this.drawShape(this.originPoint, this.width, this.height);

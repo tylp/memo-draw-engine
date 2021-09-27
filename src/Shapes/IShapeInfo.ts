@@ -2,7 +2,8 @@ import ShapeType from './ShapeType';
 
 interface IShapeInfo {
   type: ShapeType,
-  parameters: unknown,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  parameters: any,
 }
 
 export default IShapeInfo;

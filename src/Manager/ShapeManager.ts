@@ -1,26 +1,29 @@
-import AbstractDo from './AbstractDo';
 import IShapeInfo from '../Shapes/IShapeInfo';
-import Fill from '../Shapes/Fill';
-import ActionType from '../Action/ActionType';
 import type Shape from '../Shapes/Shape';
 import Point from '../Point';
 import canvas from '../Canvas';
 import ShapeFactory from '../Shapes/ShapeFactory';
 import DraggableShape from '../Shapes/DraggableShape';
 import UpdatableShape from '../Shapes/UpdatableShape';
-import Observer from '../Observer/IObserver';
+import IObserver from '../Observer/IObserver';
 import drawState from '../DrawState';
 import Draw from '../Shapes/Draw';
-import IAction from '../Action/IAction';
 import ICanvasEventHandlder from './ICanvasEventHandlder';
+import AbstractObservable from '../Observer/AbstractObservable';
+import IAction from '../Action/IAction';
+import ActionType from '../Action/ActionType';
+import IDocumentEventHandler from './IDocumentEventHandler';
 
-class ShapeManager extends AbstractDo<Shape> implements Observer<IAction>, ICanvasEventHandlder {
+// eslint-disable-next-line max-len
+class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction>, ICanvasEventHandlder, IDocumentEventHandler {
   factory : ShapeFactory = new ShapeFactory();
+  shapes : Array<Shape> = [];
+  undoShapes : Array<Shape> = [];
   currentShape : Shape | null = null;
   basePoint : Point | null = null;
   isDrawing = false;
 
-  down(point : Point) : void {
+  drawBegin(point : Point) : void {
     this.isDrawing = true;
     this.basePoint = point;
 
@@ -29,17 +32,20 @@ class ShapeManager extends AbstractDo<Shape> implements Observer<IAction>, ICanv
 
     this.createShape();
 
+    if (!(this.currentShape instanceof UpdatableShape)) {
+      this.currentShape?.draw(this);
+    } else if (this.currentShape !== null) {
+      // Set style for new shape if the shape is not directly draw
+      canvas.setStyle(this.currentShape.color, this.currentShape.thickness);
+    }
+
     // Update on create to draw single point
     if (this.currentShape instanceof Draw) {
       this.currentShape.update(point);
     }
-
-    if (this.currentShape instanceof Fill) {
-      this.currentShape?.draw();
-    }
   }
 
-  move(event: MouseEvent) : void {
+  drawMove(event: MouseEvent) : void {
     if (!this.isDrawing) return;
 
     if (this.currentShape === null) {
@@ -58,44 +64,66 @@ class ShapeManager extends AbstractDo<Shape> implements Observer<IAction>, ICanv
     });
   }
 
-  up() : void {
+  drawFinish() : void {
     if (this.currentShape === null) return;
-    this.dones.push(this.currentShape);
+    this.shapes.push(this.currentShape);
 
-    this.emit(this.factory.serialize(this.currentShape));
+    this.emit();
 
     this.currentShape = null;
     this.basePoint = null;
     this.isDrawing = false;
-    this.undones = [];
+    this.undoShapes = [];
   }
 
-  emit(elem: IShapeInfo): void {
+  emit() : void {
+    if (this.currentShape === null) return;
     this.notify({
-      type: ActionType.style,
-      parameters: elem,
+      type: ActionType.shape,
+      parameters: this.factory.serialize(this.currentShape),
     });
   }
 
-  update(elem: IAction): void {
-    const shapeInfo = elem.parameters as IShapeInfo;
+  update(action: IAction): void {
+    switch (action.type) {
+      case ActionType.undo:
+        this.undo(); break;
+      case ActionType.redo:
+        this.redo(); break;
+      case ActionType.shape:
+        this.addShapeFromShapeInfo(action.parameters as IShapeInfo);
+        break;
+      default: break;
+    }
+  }
+
+  addShapeFromShapeInfo(shapeInfo : IShapeInfo) : void {
     const shape = this.factory.build(shapeInfo);
-    this.dones.push(shape);
+    this.shapes.push(shape);
     shape.draw(this);
   }
 
-  handleUndo(): void {
+  undo() : void {
+    this.drawFinish();
     canvas.clearCanvas();
+    const shape : Shape | undefined = this.shapes.pop();
+    if (shape !== undefined) {
+      this.undoShapes.push(shape);
+    }
     this.redrawShapes();
   }
 
-  redrawShapes() : void {
-    this.dones.forEach((shape) => shape.draw(this));
+  async redo() : Promise<void> {
+    this.drawFinish();
+    const shape : Shape | undefined = this.undoShapes.pop();
+    if (shape !== undefined) {
+      await shape.draw(this);
+      this.shapes.push(shape);
+    }
   }
 
-  handleRedo(): void {
-    const shapeToRedo = this.dones[this.dones.length - 1];
-    shapeToRedo.draw(this);
+  redrawShapes() : void {
+    this.shapes.forEach((shp) => shp.draw(this));
   }
 }
 

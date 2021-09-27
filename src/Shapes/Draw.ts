@@ -2,6 +2,7 @@ import Point from '../Point';
 import canvas from '../Canvas';
 import Utils from '../Utils';
 import UpdatableShape from './UpdatableShape';
+import type ShapeManager from '../Manager/ShapeManager';
 
 const INTERVAL_BETWEEN_LINE = 10;
 
@@ -10,16 +11,18 @@ class Draw extends UpdatableShape {
   private timeLastPoint : Date | null = null;
 
   exportInfo(): unknown {
-    return { points: this.points };
+    return { ...super.exportInfo(), points: this.points };
   }
 
-  async draw() : Promise<void> {
+  async draw(shapeManager : ShapeManager) : Promise<void> {
     // To respect the durationMs when there is a lot of point to draw
     // in a short amount of time, thre are two issues :
     // - It's not possible to wait float ms
     // - The function take more than a ms to execute
     // That's why,to create the animation effect :
     // multiple point are drawed, and then a wait is done
+    super.draw(shapeManager);
+
     const durationMs = (this.startDate && this.endDate)
       ? this.endDate - this.startDate
       : 0;

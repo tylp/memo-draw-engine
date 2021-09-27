@@ -30,16 +30,16 @@ class EventManager {
 
   private onMouseMove(event : MouseEvent) : void {
     const point = this.getNewPoint(event);
-    this.canvasEventHandlers.forEach((handler) => handler.move(point));
+    this.canvasEventHandlers.forEach((handler) => handler.drawMove(point));
   }
 
   private onMouseDown(event : MouseEvent): void {
     const point = this.getNewPoint(event);
-    this.canvasEventHandlers.forEach((handler) => handler.down(point));
+    this.canvasEventHandlers.forEach((handler) => handler.drawBegin(point));
   }
 
   private onMouseUp() : void {
-    this.canvasEventHandlers.forEach((handler) => handler.up());
+    this.canvasEventHandlers.forEach((handler) => handler.drawFinish());
   }
 
   private getNewPoint(event: MouseEvent) : Point {

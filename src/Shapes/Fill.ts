@@ -4,6 +4,7 @@ import Shape from './Shape';
 import canvas from '../Canvas';
 import AlphaColor from '../Color/AlphaColor';
 import Point from '../Point';
+import type ShapeManager from '../Manager/ShapeManager';
 
 class Fill extends Shape {
   edges! : Set<number>;
@@ -16,11 +17,12 @@ class Fill extends Shape {
   originPoint : Point | null = null;
 
   exportInfo(): unknown {
-    return { originPoint: this.originPoint };
+    return { ...super.exportInfo(), originPoint: this.originPoint };
   }
 
-  async draw(): Promise<void> {
+  async draw(shapeManager : ShapeManager): Promise<void> {
     return new Promise((resolve) => {
+      super.draw(shapeManager);
       this.fill();
       resolve();
     });
@@ -36,6 +38,8 @@ class Fill extends Shape {
     this.baseColor = this.getPixelColor(basePixelPos);
 
     // Check if the clicked color is not the current fill color
+    // Do not check using pure color equality because canvas element
+    // display color using opacity variation
     if (this.baseColor.hueLightEqual(this.drawColor)) return;
 
     const pixelStack : Array<Array<number>> = [[this.originPoint.x, this.originPoint.y]];

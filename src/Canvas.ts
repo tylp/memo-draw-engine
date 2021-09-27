@@ -1,10 +1,10 @@
+import AlphaColor from './Color/AlphaColor';
 import drawState from './DrawState';
 
 class Canvas {
-  private _ctx : CanvasRenderingContext2D | null;
-  canvasElement : HTMLCanvasElement;
+  private _ctx : CanvasRenderingContext2D | null = null;
+  private _canvasElement : HTMLCanvasElement | null = null;
 
-  // Use of getter to check if canvas is registered
   get ctx() : CanvasRenderingContext2D {
     if (this._ctx === null) {
       throw new Error('Canvas rendering context is not registered');
@@ -12,26 +12,31 @@ class Canvas {
     return this._ctx;
   }
 
-  constructor() {
-    this.canvasElement = document.getElementById('draw-canvas') as HTMLCanvasElement;
+  get canvasElement() : HTMLCanvasElement {
+    if (this._canvasElement === null) {
+      throw new Error('Canvas is not intialized');
+    }
+    return this._canvasElement;
+  }
+
+  initialize(canvasId : string) {
+    this._canvasElement = document.getElementById(canvasId) as HTMLCanvasElement;
     this._ctx = this.canvasElement.getContext('2d');
     this.throwIfNotSupported();
     this.ctx.lineCap = 'round';
-    this.setStyle();
   }
 
   private throwIfNotSupported() {
-    if (this.ctx === null) {
-      throw new Error('2d context of canvas is null');
+    if (this._ctx === null) {
+      throw new Error('2d context of canvas is null, canvas may be not supported on your browser');
     }
   }
 
-  setStyle() {
-    const alphaColor = drawState.getAlphaColor();
-    drawState.rgba = alphaColor.toRgba();
-    this.ctx.fillStyle = drawState.rgba;
-    this.ctx.strokeStyle = drawState.rgba;
-    this.ctx.lineWidth = drawState.thickness;
+  setStyle(color: AlphaColor, thickness: number) {
+    const rgba = color.toRgba();
+    this.ctx.fillStyle = rgba;
+    this.ctx.strokeStyle = rgba;
+    this.ctx.lineWidth = thickness;
   }
 
   clearCanvas() : void {
