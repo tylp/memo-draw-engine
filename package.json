@@ -25,7 +25,13 @@
     "type": "git",
     "url": "git+https://github.com/tylp/memo-draw-engine.git"
   },
-  "author": "Nathan Gobinet",
+  "contributors": [
+    "Nathan Gobinet (https://github.com/nathangobinet)",
+    "Adrien N.F (https://github.com/adrien-nf)",
+    "Valentin Bouillennec (https://github.com/vbouillennec)",
+    "Cyril Gourgouillon (https://github.com/cyrilgourgouillon)",
+    "Antoine Plard (https://github.com/tylp)"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/tylp/memo-draw-engine/issues"
