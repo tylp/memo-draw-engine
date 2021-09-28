@@ -2,7 +2,8 @@ import IAction from '../Action/IAction';
 import AbstractObservable from '../Observer/AbstractObservable';
 import IObserver from '../Observer/IObserver';
 
-abstract class NetworkManager extends AbstractObservable<IAction> implements IObserver<IAction> {
+// eslint-disable-next-line max-len
+abstract class AbstractNetworkManager extends AbstractObservable<IAction> implements IObserver<IAction> {
   // Override this to emit the IAction over the network
   abstract update(elem: IAction): void;
 
@@ -14,4 +15,4 @@ abstract class NetworkManager extends AbstractObservable<IAction> implements IOb
   }
 }
 
-export default NetworkManager;
+export default AbstractNetworkManager;

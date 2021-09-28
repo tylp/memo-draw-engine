@@ -1,14 +1,14 @@
 import canvas from './Canvas';
 import EventManager from './Manager/EventManager';
-import NetworkManager from './Manager/NetworkManager';
+import AbstractNetworkManager from './Manager/AbstractNetworkManager';
 import ShapeManager from './Manager/ShapeManager';
 
 class Engine {
   eventManager: EventManager;
-  networkManager: NetworkManager | null;
+  networkManager: AbstractNetworkManager | null;
   shapeManager: ShapeManager;
 
-  constructor(canvasId: string, networkManager: NetworkManager | null = null) {
+  constructor(canvasId: string, networkManager: AbstractNetworkManager | null = null) {
     canvas.initialize(canvasId);
 
     this.eventManager = new EventManager(canvas.canvasElement);
@@ -22,7 +22,7 @@ class Engine {
     this.eventManager.subscribeDocumentEventHandler(this.shapeManager);
   }
 
-  registerNetworkManager(networkManager: NetworkManager) : void {
+  registerNetworkManager(networkManager: AbstractNetworkManager) : void {
     this.networkManager = networkManager;
     this.networkManager.subscribe(this.shapeManager);
     this.shapeManager.subscribe(this.networkManager);
