@@ -8,8 +8,8 @@ class Engine {
   networkManager: NetworkManager | null;
   shapeManager: ShapeManager;
 
-  constructor(canvasID : string, networkManager : NetworkManager | null = null) {
-    canvas.initialize(canvasID);
+  constructor(canvasId: string, networkManager: NetworkManager | null = null) {
+    canvas.initialize(canvasId);
 
     this.eventManager = new EventManager(canvas.canvasElement);
     this.shapeManager = new ShapeManager();
@@ -22,7 +22,7 @@ class Engine {
     this.eventManager.subscribeDocumentEventHandler(this.shapeManager);
   }
 
-  registerNetworkManager(networkManager : NetworkManager) : void {
+  registerNetworkManager(networkManager: NetworkManager) : void {
     this.networkManager = networkManager;
     this.networkManager.subscribe(this.shapeManager);
     this.shapeManager.subscribe(this.networkManager);
