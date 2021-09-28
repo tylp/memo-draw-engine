@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-param-reassign */
 import Point from '../Point';
-import IFactory from '../Manager/IFactory';
+import IFactory from './IFactory';
 import ShapeType from './ShapeType';
 import type Shape from './Shape';
 import type IShapeInfo from './IShapeInfo';
