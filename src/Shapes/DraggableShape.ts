@@ -9,9 +9,10 @@ abstract class DraggableShape extends UpdatableShape {
   width = 0;
   height = 0;
 
-  exportInfo() : unknown {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected getExportInfo() : any {
     return {
-      ...super.exportInfo(),
+      ...super.getExportInfo(),
       originPoint: this.originPoint,
       width: this.width,
       height: this.height,

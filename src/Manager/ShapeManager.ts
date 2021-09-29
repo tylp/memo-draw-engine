@@ -80,7 +80,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     if (this.currentShape === null) return;
     this.notify({
       type: ActionType.draw,
-      parameters: this.factory.serialize(this.currentShape),
+      parameters: this.currentShape.serialize(),
     });
   }
 

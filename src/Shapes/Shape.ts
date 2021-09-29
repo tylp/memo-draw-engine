@@ -1,8 +1,11 @@
+import ShapeType from './ShapeType';
 import canvas from '../Canvas';
 import AlphaColor from '../Color/AlphaColor';
 import type ShapeManager from '../Manager/ShapeManager';
+import IShapeInfo from './IShapeInfo';
 
-class Shape {
+abstract class Shape {
+  protected abstract shapeType : ShapeType;
   color : AlphaColor;
   thickness : number;
 
@@ -11,11 +14,19 @@ class Shape {
     this.thickness = thickness;
   }
 
-  // Export information that will be emit
+  getType() : ShapeType {
+    return this.shapeType;
+  }
+
+  serialize() : IShapeInfo {
+    return { type: this.getType(), parameters: this.getExportInfo() };
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  exportInfo() : any {
+  protected getExportInfo() : any {
     return { color: this.color, thickness: this.thickness };
   }
+
   // Use to definitely draw shape (viewer side)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   draw(shapeManager : ShapeManager) : Promise<void> {

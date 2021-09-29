@@ -3,15 +3,18 @@ import canvas from '../Canvas';
 import Utils from '../Utils';
 import UpdatableShape from './UpdatableShape';
 import type ShapeManager from '../Manager/ShapeManager';
+import ShapeType from './ShapeType';
 
 const INTERVAL_BETWEEN_LINE = 10;
 
 class Pencil extends UpdatableShape {
   points : Array<Point> = [];
   private timeLastPoint : Date | null = null;
+  protected shapeType: ShapeType = ShapeType.Pencil;
 
-  exportInfo(): unknown {
-    return { ...super.exportInfo(), points: this.points };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected getExportInfo(): any {
+    return { ...super.getExportInfo(), points: this.points };
   }
 
   async draw(shapeManager : ShapeManager) : Promise<void> {

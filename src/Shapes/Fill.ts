@@ -6,6 +6,7 @@ import AlphaColor from '../Color/AlphaColor';
 import Point from '../Point';
 import type ShapeManager from '../Manager/ShapeManager';
 import HueLight from '../Color/HueLight';
+import ShapeType from './ShapeType';
 
 class Fill extends Shape {
   edges! : Set<number>;
@@ -16,9 +17,11 @@ class Fill extends Shape {
   canvasWidth! : number;
   canvasHeight! : number;
   originPoint : Point | null = null;
+  protected shapeType: ShapeType = ShapeType.Fill;
 
-  exportInfo(): unknown {
-    return { ...super.exportInfo(), originPoint: this.originPoint };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected exportInfo(): any {
+    return { ...super.getExportInfo(), originPoint: this.originPoint };
   }
 
   async draw(shapeManager : ShapeManager): Promise<void> {

@@ -6,7 +6,7 @@ import IFactory from './IFactory';
 import ShapeType from './ShapeType';
 import type Shape from './Shape';
 import type IShapeInfo from './IShapeInfo';
-import Draw from './Draw';
+import Pencil from './Pencil';
 import RectangleFull from './RectangleFull';
 import RectangleStroke from './RectangleStroke';
 import EllipseFull from './EllipseFull';
@@ -24,20 +24,23 @@ class ShapeFactory implements IFactory<IShapeInfo, Shape> {
       color: info.parameters.color || drawState.getAlphaColor(),
       thickness: info.parameters.thickness || drawState.thickness,
     };
+
     const shape = this.create(info.type, styleInfo);
+
     // info.parameters is the basePoint when a shape is created by the drawer
     if (info.parameters instanceof Point) {
       this.setOriginPointshape(shape, info.parameters);
     } else {
       this.setInfo(shape, info.parameters);
     }
+
     return shape;
   }
 
   create(shapeType : ShapeType, styleInfo : { color: AlphaColor, thickness : number }) : Shape {
     switch (shapeType) {
-      case ShapeType.Draw:
-        return new Draw(styleInfo.color, styleInfo.thickness);
+      case ShapeType.Pencil:
+        return new Pencil(styleInfo.color, styleInfo.thickness);
       case ShapeType.RectangleFull:
         return new RectangleFull(styleInfo.color, styleInfo.thickness);
       case ShapeType.RectangleStroke:
@@ -70,7 +73,7 @@ class ShapeFactory implements IFactory<IShapeInfo, Shape> {
       shape.width = parameter.width as number;
     }
 
-    if (shape instanceof Draw) {
+    if (shape instanceof Pencil) {
       shape.points = parameter.points as Array<Point>;
     }
   }
@@ -78,33 +81,8 @@ class ShapeFactory implements IFactory<IShapeInfo, Shape> {
   setOriginPointshape(shape : Shape, basePoint : Point) : void {
     if (shape instanceof Fill || shape instanceof DraggableShape) {
       shape.originPoint = basePoint;
-    } else if (shape instanceof Draw) {
+    } else if (shape instanceof Pencil) {
       shape.points.push(basePoint);
-    }
-  }
-
-  serialize(elem: Shape): IShapeInfo {
-    return { type: this.getType(elem), parameters: elem.exportInfo() };
-  }
-
-  getType(shape: Shape) : ShapeType {
-    switch (shape.constructor) {
-      case Draw:
-        return ShapeType.Draw;
-      case RectangleFull:
-        return ShapeType.RectangleFull;
-      case RectangleStroke:
-        return ShapeType.RectangleStroke;
-      case EllipseFull:
-        return ShapeType.EllipseFull;
-      case EllipseStroke:
-        return ShapeType.EllipseStroke;
-      case Line:
-        return ShapeType.Line;
-      case Fill:
-        return ShapeType.Fill;
-      default:
-        throw new Error('Shape is not implemented');
     }
   }
 }
