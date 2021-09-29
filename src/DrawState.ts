@@ -11,7 +11,7 @@ class DrawState {
   shapeType : ShapeType;
 
   constructor() {
-    this.shapeType = ShapeType.Fill;
+    this.shapeType = ShapeType.Pencil;
     this.color = new Color(0, 0, 0);
     this.opacity = 1;
     this.thickness = 5;

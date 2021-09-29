@@ -6,7 +6,7 @@ import type ShapeManager from '../Manager/ShapeManager';
 
 const INTERVAL_BETWEEN_LINE = 10;
 
-class Draw extends UpdatableShape {
+class Pencil extends UpdatableShape {
   points : Array<Point> = [];
   private timeLastPoint : Date | null = null;
 
@@ -80,4 +80,4 @@ class Draw extends UpdatableShape {
   }
 }
 
-export default Draw;
+export default Pencil;

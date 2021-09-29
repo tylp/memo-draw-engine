@@ -1,5 +1,5 @@
 enum ShapeType {
-  Draw,
+  Pencil,
   Line,
   EllipseStroke,
   EllipseFull,

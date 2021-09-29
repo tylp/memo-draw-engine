@@ -7,7 +7,7 @@ import DraggableShape from '../Shapes/DraggableShape';
 import UpdatableShape from '../Shapes/UpdatableShape';
 import IObserver from '../Observer/IObserver';
 import drawState from '../DrawState';
-import Draw from '../Shapes/Draw';
+import Pencil from '../Shapes/Pencil';
 import ICanvasEventHandlder from './ICanvasEventHandlder';
 import AbstractObservable from '../Observer/AbstractObservable';
 import IAction from '../Action/IAction';
@@ -40,7 +40,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     }
 
     // Update on create to draw single point
-    if (this.currentShape instanceof Draw) {
+    if (this.currentShape instanceof Pencil) {
       this.currentShape.update(point);
     }
   }
@@ -79,7 +79,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   emit() : void {
     if (this.currentShape === null) return;
     this.notify({
-      type: ActionType.shape,
+      type: ActionType.draw,
       parameters: this.factory.serialize(this.currentShape),
     });
   }
@@ -90,7 +90,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
         this.undo(); break;
       case ActionType.redo:
         this.redo(); break;
-      case ActionType.shape:
+      case ActionType.draw:
         this.addShapeFromShapeInfo(action.parameters as IShapeInfo);
         break;
       default: break;
