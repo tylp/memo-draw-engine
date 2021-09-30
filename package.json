@@ -1,8 +1,8 @@
 {
   "name": "memo-draw-engine",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Drawing engine for [MemoDraw](https://github.com/tylp/memo-draw)",
-  "main": "src/main.ts",
+  "main": "src/index.ts",
   "dependencies": {},
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.29.0",
@@ -25,8 +25,14 @@
     "type": "git",
     "url": "git+https://github.com/tylp/memo-draw-engine.git"
   },
-  "author": "",
-  "license": "ISC",
+  "contributors": [
+    "Nathan Gobinet (https://github.com/nathangobinet)",
+    "Adrien N.F (https://github.com/adrien-nf)",
+    "Valentin Bouillennec (https://github.com/vbouillennec)",
+    "Cyril Gourgouillon (https://github.com/cyrilgourgouillon)",
+    "Antoine Plard (https://github.com/tylp)"
+  ],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/tylp/memo-draw-engine/issues"
   },

@@ -1,10 +1,11 @@
 enum ShapeType {
-  Draw,
+  Pencil,
   Line,
   EllipseStroke,
   EllipseFull,
   RectangleStroke,
   RectangleFull,
+  Fill,
 }
 
 export default ShapeType;

@@ -1,26 +1,31 @@
-import type { ShapeManager } from '../ShapeManager';
-import Shape from './Shape';
 import Point from '../Point';
 import canvas from '../Canvas';
+import Utils from '../Utils';
+import UpdatableShape from './UpdatableShape';
+import type ShapeManager from '../Manager/ShapeManager';
 
-abstract class DraggableShape extends Shape {
-  originPoint : Point | null;
-  width : number;
-  height : number;
+abstract class DraggableShape extends UpdatableShape {
+  originPoint : Point | null = null;
+  width = 0;
+  height = 0;
 
-  constructor(originPoint : Point | null = null, width = 0, height = 0) {
-    super();
-    this.originPoint = originPoint;
-    this.width = width;
-    this.height = height;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected getExportInfo() : any {
+    return {
+      ...super.getExportInfo(),
+      originPoint: this.originPoint,
+      width: this.width,
+      height: this.height,
+    };
   }
 
-  async draw(durationMs : number, shapeManager : ShapeManager) : Promise<void> {
+  async draw(shapeManager : ShapeManager) : Promise<void> {
+    super.draw(shapeManager);
     if (this.originPoint === null) return;
-    if (durationMs === 0) {
-      this.setColorAndThickness(canvas.ctx);
+    if (!this.endDate || !this.startDate) {
       this.drawShape(this.originPoint, this.width, this.height);
     } else {
+      const durationMs = this.endDate - this.startDate;
       await this.drawWithAnimation(durationMs, shapeManager);
     }
   }
@@ -36,29 +41,28 @@ abstract class DraggableShape extends Shape {
       // Doesnt await if shape is completely drawn
       if (i !== numberOfFrame) {
         // eslint-disable-next-line no-await-in-loop
-        await this.waitInterval(waitingIntervalMs);
+        await Utils.waitInterval(waitingIntervalMs);
       }
     }
   }
 
-  update(event: MouseEvent, shapeManager : ShapeManager): void {
+  update(point: Point, shapeManager : ShapeManager): void {
     // Origin point is null if it is the first update
     if (this.originPoint === null) {
-      this.originPoint = new Point(event.clientX, event.clientY);
-      this.setColorAndThickness(canvas.ctx);
+      this.originPoint = point;
     } else {
       // Clear the last update
       this.clearAndRedrawShapes(shapeManager);
     }
 
-    this.width = event.clientX - this.originPoint.x;
-    this.height = event.clientY - this.originPoint.y;
+    this.width = point.x - this.originPoint.x;
+    this.height = point.y - this.originPoint.y;
 
     this.drawShape(this.originPoint, this.width, this.height);
   }
 
   protected clearAndRedrawShapes(shapeManager : ShapeManager): void {
-    canvas.clearCanvas(this.color);
+    canvas.clearCanvas();
     shapeManager.redrawShapes();
   }
 

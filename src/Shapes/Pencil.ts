@@ -1,23 +1,34 @@
-import Shape from './Shape';
 import Point from '../Point';
-import drawState from '../DrawState';
 import canvas from '../Canvas';
+import Utils from '../Utils';
+import UpdatableShape from './UpdatableShape';
+import type ShapeManager from '../Manager/ShapeManager';
+import ShapeType from './ShapeType';
 
-class Draw extends Shape {
-  private points : Array<Point>;
+const INTERVAL_BETWEEN_LINE = 10;
 
-  constructor(points : Array<Point> = []) {
-    super();
-    this.points = points;
+class Pencil extends UpdatableShape {
+  points : Array<Point> = [];
+  private timeLastPoint : Date | null = null;
+  protected shapeType: ShapeType = ShapeType.Pencil;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected getExportInfo(): any {
+    return { ...super.getExportInfo(), points: this.points };
   }
 
-  async draw(durationMs : number) : Promise<void> {
+  async draw(shapeManager : ShapeManager) : Promise<void> {
     // To respect the durationMs when there is a lot of point to draw
     // in a short amount of time, thre are two issues :
     // - It's not possible to wait float ms
     // - The function take more than a ms to execute
     // That's why,to create the animation effect :
     // multiple point are drawed, and then a wait is done
+    super.draw(shapeManager);
+
+    const durationMs = (this.startDate && this.endDate)
+      ? this.endDate - this.startDate
+      : 0;
     const speedMultiplicator = 4;
     const latencyInterval = 1 * speedMultiplicator;
     const waitingIntervalMs : number = this.getWaitingInterval(durationMs);
@@ -33,7 +44,7 @@ class Draw extends Shape {
       // If it is not the last line and indes reached numberOfDrawPerWait
       if (i % numberOfDrawPerWait === 0 && i !== this.points.length) {
         // eslint-disable-next-line no-await-in-loop
-        await this.waitInterval(waitingIntervalMs);
+        await Utils.waitInterval(waitingIntervalMs);
       }
     }
   }
@@ -42,26 +53,34 @@ class Draw extends Shape {
     return durationMs !== 0 ? durationMs / this.points.length : 0;
   }
 
-  update(event: MouseEvent) : void {
-    if (this.points.length === 0) {
-      this.points.push(drawState.basePoint as Point);
+  update(point: Point) : void {
+    const [lastPoint] = this.points.slice(-1);
+    if (lastPoint === undefined) return;
+
+    const now = new Date();
+
+    if (this.timeLastPoint === null) {
+      this.addLine(lastPoint, point, now);
+      return;
     }
 
-    const [lastPoint] = this.points.slice(-1);
-    const newPoint = new Point(event.clientX, event.clientY);
-    this.points.push(newPoint);
+    const interval = now.getTime() - this.timeLastPoint.getTime();
+    if (interval > INTERVAL_BETWEEN_LINE) this.addLine(lastPoint, point, now);
+  }
 
-    this.drawLine(lastPoint, newPoint);
+  private addLine(lastPt: Point, newPt: Point, time : Date) : void {
+    this.points.push(newPt);
+    this.timeLastPoint = time;
+    this.drawLine(lastPt, newPt);
   }
 
   private drawLine(p1: Point, p2: Point) {
     canvas.ctx.beginPath();
     canvas.ctx.moveTo(p1.x, p1.y);
     canvas.ctx.lineTo(p2.x, p2.y);
-    this.setColorAndThickness(canvas.ctx);
     canvas.ctx.stroke();
     canvas.ctx.closePath();
   }
 }
 
-export default Draw;
+export default Pencil;

@@ -1,30 +1,37 @@
-import type { ShapeManager } from '../ShapeManager';
-import drawState from '../DrawState';
+import ShapeType from './ShapeType';
+import canvas from '../Canvas';
+import AlphaColor from '../Color/AlphaColor';
+import type ShapeManager from '../Manager/ShapeManager';
+import IShapeInfo from './IShapeInfo';
 
 abstract class Shape {
-  color: string;
-  thickness: number;
+  protected abstract shapeType : ShapeType;
+  color : AlphaColor;
+  thickness : number;
 
-  constructor() {
-    this.color = drawState.color;
-    this.thickness = drawState.thickness;
+  constructor(color : AlphaColor, thickness : number) {
+    this.color = color;
+    this.thickness = thickness;
+  }
+
+  getType() : ShapeType {
+    return this.shapeType;
+  }
+
+  serialize() : IShapeInfo {
+    return { type: this.getType(), parameters: this.getExportInfo() };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected getExportInfo() : any {
+    return { color: this.color, thickness: this.thickness };
   }
 
   // Use to definitely draw shape (viewer side)
-  abstract draw(durationMs : number, shapeManager : ShapeManager) : Promise<void>;
-  // Use for live view of shape (drawer side)
-  abstract update(event : MouseEvent, shapeManager : ShapeManager) : void;
-
-  protected setColorAndThickness(ctx : CanvasRenderingContext2D) : void {
-    ctx.strokeStyle = this.color;
-    ctx.fillStyle = this.color;
-    ctx.lineWidth = this.thickness;
-  }
-
-  protected async waitInterval(waitingIntervalMs : number) : Promise<void> {
-    if (waitingIntervalMs !== 0) {
-      await new Promise((resolve) => setTimeout(resolve, waitingIntervalMs));
-    }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  draw(shapeManager : ShapeManager) : Promise<void> {
+    canvas.setStyle(this.color, this.thickness);
+    return Promise.resolve();
   }
 }
 
