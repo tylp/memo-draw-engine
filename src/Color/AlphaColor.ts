@@ -18,15 +18,6 @@ class AlphaColor extends Color {
       && color.blue === this.blue
       && color.alpha === this.alpha;
   }
-
-  static getAlphaColorFromColor(color : Color, opacity : number) : AlphaColor {
-    return new AlphaColor(
-      color.red,
-      color.green,
-      color.blue,
-      opacity * 255,
-    );
-  }
 }
 
 export default AlphaColor;

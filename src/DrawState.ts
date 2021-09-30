@@ -11,14 +11,14 @@ class DrawState {
   shapeType : ShapeType;
 
   constructor() {
-    this.shapeType = ShapeType.Pencil;
+    this.shapeType = ShapeType.Line;
     this.color = new Color(0, 0, 0);
     this.opacity = 1;
     this.thickness = 5;
   }
 
   getAlphaColor() : AlphaColor {
-    return AlphaColor.getAlphaColorFromColor(this.color, this.opacity);
+    return new AlphaColor(this.color.red, this.color.blue, this.color.red, this.opacity);
   }
 }
 
