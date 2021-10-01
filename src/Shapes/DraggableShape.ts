@@ -58,6 +58,7 @@ abstract class DraggableShape extends UpdatableShape {
     this.width = point.x - this.originPoint.x;
     this.height = point.y - this.originPoint.y;
 
+    canvas.setStyle(this.color, this.thickness);
     this.drawShape(this.originPoint, this.width, this.height);
   }
 

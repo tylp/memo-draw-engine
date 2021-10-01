@@ -8,6 +8,10 @@ class Color {
     this.green = green;
     this.blue = blue;
   }
+
+  toRgb(): string {
+    return `rgb(${this.red}, ${this.green}, ${this.blue})`;
+  }
 }
 
 export default Color;

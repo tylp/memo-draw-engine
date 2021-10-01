@@ -6,7 +6,6 @@ import AlphaColor from './Color/AlphaColor';
 class DrawState {
   color : Color;
   opacity : number;
-  rgba! : string;
   thickness : number;
   shapeType : ShapeType;
 
@@ -18,7 +17,7 @@ class DrawState {
   }
 
   getAlphaColor() : AlphaColor {
-    return new AlphaColor(this.color.red, this.color.blue, this.color.red, this.opacity * 255);
+    return new AlphaColor(this.color.red, this.color.green, this.color.blue, this.opacity * 255);
   }
 }
 

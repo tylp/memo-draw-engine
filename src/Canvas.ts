@@ -1,5 +1,4 @@
 import AlphaColor from './Color/AlphaColor';
-import drawState from './DrawState';
 
 class Canvas {
   private _ctx : CanvasRenderingContext2D | null = null;
@@ -33,6 +32,7 @@ class Canvas {
   }
 
   setStyle(color: AlphaColor, thickness: number) {
+    console.log('style', color);
     const rgba = color.toRgba();
     this.ctx.fillStyle = rgba;
     this.ctx.strokeStyle = rgba;
@@ -42,7 +42,6 @@ class Canvas {
   clearCanvas() : void {
     this.ctx.fillStyle = 'white';
     this.ctx.fillRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-    this.ctx.fillStyle = drawState.rgba;
   }
 }
 
