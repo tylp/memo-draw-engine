@@ -18,7 +18,7 @@ class DrawState {
   }
 
   getAlphaColor() : AlphaColor {
-    return new AlphaColor(this.color.red, this.color.blue, this.color.red, this.opacity);
+    return new AlphaColor(this.color.red, this.color.blue, this.color.red, this.opacity * 255);
   }
 }
 

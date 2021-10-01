@@ -9,9 +9,15 @@ import IObserver from './Observer/IObserver';
 import IObservable from './Observer/IObservable';
 import IShapeInfo from './Shapes/IShapeInfo';
 import Point from './Point';
+import AbstractNetworkManager from './Manager/AbstractNetworkManager';
+import drawState from './DrawState';
+import IAction from './Action/IAction';
 
 export {
   Engine,
+  IAction,
+  AbstractNetworkManager,
+  drawState,
   ShapeType,
   ActionType,
   AlphaColor,

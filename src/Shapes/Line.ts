@@ -1,4 +1,4 @@
-import type Point from 'Point';
+import type Point from '../Point';
 import DraggableShape from './DraggableShape';
 import canvas from '../Canvas';
 import ShapeType from './ShapeType';
