@@ -12,6 +12,7 @@ class Engine {
     canvas.initialize(canvasId);
 
     this.eventManager = new EventManager(canvas.canvasElement);
+    this.eventManager.registerDefaultCanvasAndDocumentEvents();
     this.shapeManager = new ShapeManager();
     this.networkManager = networkManager;
 

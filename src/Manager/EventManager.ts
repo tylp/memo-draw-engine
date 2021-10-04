@@ -9,8 +9,6 @@ class EventManager {
 
   constructor(canvasElement: HTMLCanvasElement) {
     this.canvasElement = canvasElement;
-    this.registerCanvasEvents();
-    this.registerDocumentEvents();
   }
 
   subscribeCanvasEventHandler(handler: ICanvasEventHandlder): void {
@@ -19,6 +17,11 @@ class EventManager {
 
   subscribeDocumentEventHandler(handler: IDocumentEventHandler): void {
     this.documentEventHandlers.push(handler);
+  }
+
+  public registerDefaultCanvasAndDocumentEvents(): void {
+    this.registerCanvasEvents();
+    this.registerDocumentEvents();
   }
 
   private registerCanvasEvents(): void {
