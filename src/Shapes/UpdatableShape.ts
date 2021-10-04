@@ -7,7 +7,7 @@ abstract class UpdatableShape extends Shape {
   endDate: number | undefined;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected getExportInfo() : any {
+  protected getExportInfo(): any {
     return {
       ...super.getExportInfo(),
       startDate: this.startDate,
@@ -16,7 +16,7 @@ abstract class UpdatableShape extends Shape {
   }
 
   // Use for live view of shape (drawer side)
-  abstract update(point : Point, shapeManager : ShapeManager) : void;
+  abstract update(point: Point, shapeManager: ShapeManager): void;
 }
 
 export default UpdatableShape;

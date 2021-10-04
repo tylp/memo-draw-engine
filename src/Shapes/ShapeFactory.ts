@@ -37,7 +37,7 @@ class ShapeFactory implements IFactory<IShapeInfo, Shape> {
     return shape;
   }
 
-  create(shapeType : ShapeType, styleInfo : { color: AlphaColor, thickness : number }) : Shape {
+  create(shapeType: ShapeType, styleInfo: { color: AlphaColor, thickness: number }): Shape {
     switch (shapeType) {
       case ShapeType.Pencil:
         return new Pencil(styleInfo.color, styleInfo.thickness);
@@ -58,7 +58,7 @@ class ShapeFactory implements IFactory<IShapeInfo, Shape> {
     }
   }
 
-  setInfo(shape : Shape, parameter : any) : void {
+  setInfo(shape: Shape, parameter: any): void {
     if (shape instanceof UpdatableShape) {
       shape.startDate = parameter.startDate as number;
       shape.endDate = parameter.endDate as number;
@@ -78,7 +78,7 @@ class ShapeFactory implements IFactory<IShapeInfo, Shape> {
     }
   }
 
-  setOriginPointshape(shape : Shape, basePoint : Point) : void {
+  setOriginPointshape(shape: Shape, basePoint: Point): void {
     if (shape instanceof Fill || shape instanceof DraggableShape) {
       shape.originPoint = basePoint;
     } else if (shape instanceof Pencil) {

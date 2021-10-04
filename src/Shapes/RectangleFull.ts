@@ -6,7 +6,7 @@ import ShapeType from './ShapeType';
 class RectangleFull extends DraggableShape {
   protected shapeType: ShapeType = ShapeType.RectangleFull;
 
-  protected drawShape(originPoint : Point, width : number, height : number) : void {
+  protected drawShape(originPoint: Point, width: number, height: number): void {
     canvas.ctx.fillRect(originPoint.x, originPoint.y, width, height);
   }
 }

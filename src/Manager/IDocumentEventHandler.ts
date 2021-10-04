@@ -1,6 +1,6 @@
 interface IDocumentEventHandler {
-  undo() : void;
-  redo() : void;
+  undo(): void;
+  redo(): void;
 }
 
 export default IDocumentEventHandler;

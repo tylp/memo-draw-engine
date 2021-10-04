@@ -16,14 +16,14 @@ import IDocumentEventHandler from './IDocumentEventHandler';
 
 // eslint-disable-next-line max-len
 class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction>, ICanvasEventHandlder, IDocumentEventHandler {
-  factory : ShapeFactory = new ShapeFactory();
-  shapes : Array<Shape> = [];
-  undoShapes : Array<Shape> = [];
-  currentShape : Shape | null = null;
-  basePoint : Point | null = null;
+  factory: ShapeFactory = new ShapeFactory();
+  shapes: Array<Shape> = [];
+  undoShapes: Array<Shape> = [];
+  currentShape: Shape | null = null;
+  basePoint: Point | null = null;
   isDrawing = false;
 
-  drawBegin(point : Point) : void {
+  drawBegin(point: Point): void {
     this.isDrawing = true;
     this.basePoint = point;
 
@@ -45,7 +45,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     }
   }
 
-  drawMove(event: MouseEvent) : void {
+  drawMove(event: MouseEvent): void {
     if (!this.isDrawing) return;
 
     if (this.currentShape === null) {
@@ -64,7 +64,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     });
   }
 
-  drawFinish() : void {
+  drawFinish(): void {
     if (this.currentShape === null) return;
     this.shapes.push(this.currentShape);
 
@@ -76,7 +76,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     this.undoShapes = [];
   }
 
-  emit() : void {
+  emit(): void {
     if (this.currentShape === null) return;
     this.notify({
       type: ActionType.draw,
@@ -97,32 +97,32 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     }
   }
 
-  addShapeFromShapeInfo(shapeInfo : IShapeInfo) : void {
+  addShapeFromShapeInfo(shapeInfo: IShapeInfo): void {
     const shape = this.factory.build(shapeInfo);
     this.shapes.push(shape);
     shape.draw(this);
   }
 
-  undo() : void {
+  undo(): void {
     this.drawFinish();
     canvas.clearCanvas();
-    const shape : Shape | undefined = this.shapes.pop();
+    const shape: Shape | undefined = this.shapes.pop();
     if (shape !== undefined) {
       this.undoShapes.push(shape);
     }
     this.redrawShapes();
   }
 
-  async redo() : Promise<void> {
+  async redo(): Promise<void> {
     this.drawFinish();
-    const shape : Shape | undefined = this.undoShapes.pop();
+    const shape: Shape | undefined = this.undoShapes.pop();
     if (shape !== undefined) {
       await shape.draw(this);
       this.shapes.push(shape);
     }
   }
 
-  redrawShapes() : void {
+  redrawShapes(): void {
     this.shapes.forEach((shp) => shp.draw(this));
   }
 }
