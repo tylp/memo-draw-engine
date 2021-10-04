@@ -2,12 +2,12 @@ module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   plugins: [
-      '@typescript-eslint',
+    '@typescript-eslint',
   ],
   extends: [
-      'eslint:recommended',
-      'plugin:@typescript-eslint/recommended',
-      'airbnb-typescript/base',
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'airbnb-typescript/base',
   ],
   overrides: [
     {
@@ -19,8 +19,10 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   rules: {
-      '@typescript-eslint/lines-between-class-members': 'off',
-      'class-methods-use-this': 'off',
-      'no-underscore-dangle': 'off',
+    '@typescript-eslint/lines-between-class-members': 'off',
+    'class-methods-use-this': 'off',
+    'no-underscore-dangle': 'off',
+    '@typescript-eslint/type-annotation-spacing': ['error'],
+    'linebreak-style': ["error", "windows"]
   }
 };

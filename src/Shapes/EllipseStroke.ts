@@ -5,7 +5,7 @@ import Ellipse from './Ellipse';
 class EllipseStroke extends Ellipse {
   protected shapeType: ShapeType = ShapeType.EllipseStroke;
 
-  protected endPath() : void {
+  protected endPath(): void {
     canvas.ctx.stroke();
   }
 }

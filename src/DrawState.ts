@@ -4,10 +4,10 @@ import AlphaColor from './Color/AlphaColor';
 
 // State class use as a singleton to share drawing state
 class DrawState {
-  color : Color;
-  opacity : number;
-  thickness : number;
-  shapeType : ShapeType;
+  color: Color;
+  opacity: number;
+  thickness: number;
+  shapeType: ShapeType;
 
   constructor() {
     this.shapeType = ShapeType.Line;
@@ -16,7 +16,7 @@ class DrawState {
     this.thickness = 5;
   }
 
-  getAlphaColor() : AlphaColor {
+  getAlphaColor(): AlphaColor {
     return new AlphaColor(this.color.red, this.color.green, this.color.blue, this.opacity * 255);
   }
 }

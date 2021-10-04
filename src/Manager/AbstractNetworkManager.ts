@@ -10,7 +10,7 @@ abstract class AbstractNetworkManager extends AbstractObservable<IAction> implem
   // Default function to notify the engine
   // You can override or inherit this function
   // But be sure to call notify
-  on(action : IAction) : void {
+  on(action: IAction): void {
     this.notify(action);
   }
 }

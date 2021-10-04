@@ -5,12 +5,12 @@ import UpdatableShape from './UpdatableShape';
 import type ShapeManager from '../Manager/ShapeManager';
 
 abstract class DraggableShape extends UpdatableShape {
-  originPoint : Point | null = null;
+  originPoint: Point | null = null;
   width = 0;
   height = 0;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected getExportInfo() : any {
+  protected getExportInfo(): any {
     return {
       ...super.getExportInfo(),
       originPoint: this.originPoint,
@@ -19,7 +19,7 @@ abstract class DraggableShape extends UpdatableShape {
     };
   }
 
-  async draw(shapeManager : ShapeManager) : Promise<void> {
+  async draw(shapeManager: ShapeManager): Promise<void> {
     super.draw(shapeManager);
     if (this.originPoint === null) return;
     if (!this.endDate || !this.startDate) {
@@ -30,7 +30,7 @@ abstract class DraggableShape extends UpdatableShape {
     }
   }
 
-  async drawWithAnimation(durationMs : number, shapeManager : ShapeManager) : Promise<void> {
+  async drawWithAnimation(durationMs: number, shapeManager: ShapeManager): Promise<void> {
     const numberOfFrame = (durationMs / 1000) * 60;
     const waitingIntervalMs = durationMs / numberOfFrame;
 
@@ -46,7 +46,7 @@ abstract class DraggableShape extends UpdatableShape {
     }
   }
 
-  update(point: Point, shapeManager : ShapeManager): void {
+  update(point: Point, shapeManager: ShapeManager): void {
     // Origin point is null if it is the first update
     if (this.originPoint === null) {
       this.originPoint = point;
@@ -62,12 +62,12 @@ abstract class DraggableShape extends UpdatableShape {
     this.drawShape(this.originPoint, this.width, this.height);
   }
 
-  protected clearAndRedrawShapes(shapeManager : ShapeManager): void {
+  protected clearAndRedrawShapes(shapeManager: ShapeManager): void {
     canvas.clearCanvas();
     shapeManager.redrawShapes();
   }
 
-  protected abstract drawShape(originPoint : Point, width : number, height : number) : void;
+  protected abstract drawShape(originPoint: Point, width: number, height: number): void;
 }
 
 export default DraggableShape;
