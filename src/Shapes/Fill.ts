@@ -9,14 +9,14 @@ import HueLight from '../Color/HueLight';
 import ShapeType from './ShapeType';
 
 class Fill extends Shape {
-  edges! : Set<number>;
-  baseColor! : AlphaColor;
-  drawColor! : AlphaColor;
-  imageData! : ImageData;
-  originData! : Uint8ClampedArray;
-  canvasWidth! : number;
-  canvasHeight! : number;
-  originPoint : Point | null = null;
+  edges!: Set<number>;
+  baseColor!: AlphaColor;
+  drawColor!: AlphaColor;
+  imageData!: ImageData;
+  originData!: Uint8ClampedArray;
+  canvasWidth!: number;
+  canvasHeight!: number;
+  originPoint: Point | null = null;
   protected shapeType: ShapeType = ShapeType.Fill;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,7 +24,7 @@ class Fill extends Shape {
     return { ...super.getExportInfo(), originPoint: this.originPoint };
   }
 
-  async draw(shapeManager : ShapeManager): Promise<void> {
+  async draw(shapeManager: ShapeManager): Promise<void> {
     return new Promise((resolve) => {
       super.draw(shapeManager);
       this.fill();
@@ -33,7 +33,7 @@ class Fill extends Shape {
   }
 
   // Algorithm from http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
-  private fill() : void {
+  private fill(): void {
     if (this.originPoint == null) return;
 
     this.initialize();
@@ -46,7 +46,7 @@ class Fill extends Shape {
     // display color using opacity variation
     if (HueLight.alphaColorEqual(this.baseColor, this.drawColor)) return;
 
-    const pixelStack : Array<Array<number>> = [[this.originPoint.x, this.originPoint.y]];
+    const pixelStack: Array<Array<number>> = [[this.originPoint.x, this.originPoint.y]];
 
     while (pixelStack.length) {
       let reachLeft: boolean;
@@ -122,11 +122,11 @@ class Fill extends Shape {
     this.drawColor = drawState.getAlphaColor();
   }
 
-  private getPixelPos(x : number, y : number) : number {
+  private getPixelPos(x: number, y: number): number {
     return (y * this.canvasWidth + x) * 4;
   }
 
-  private getPixelColor(pixelPos: number, data : Uint8ClampedArray = this.imageData.data) {
+  private getPixelColor(pixelPos: number, data: Uint8ClampedArray = this.imageData.data) {
     return new AlphaColor(
       data[pixelPos + 0],
       data[pixelPos + 1],
@@ -135,7 +135,7 @@ class Fill extends Shape {
     );
   }
 
-  private shouldFill(pixelPos: number) : boolean {
+  private shouldFill(pixelPos: number): boolean {
     const color = this.getPixelColor(pixelPos);
     const isBaseColor = this.baseColor.equal(color);
     if (!isBaseColor) {

@@ -6,7 +6,7 @@ import ShapeType from './ShapeType';
 class RectangleStroke extends DraggableShape {
   protected shapeType: ShapeType = ShapeType.RectangleStroke;
 
-  protected drawShape(originPoint : Point, width : number, height : number) : void {
+  protected drawShape(originPoint: Point, width: number, height: number): void {
     canvas.ctx.strokeRect(originPoint.x, originPoint.y, width, height);
   }
 }

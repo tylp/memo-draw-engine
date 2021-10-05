@@ -35,11 +35,11 @@ class HueLight {
     this.hue = Utils.round(this.hue);
   }
 
-  equal(hueLigt: HueLight) : boolean {
+  equal(hueLigt: HueLight): boolean {
     return this.hue === hueLigt.hue && this.light === hueLigt.light;
   }
 
-  static alphaColorEqual(c1 : AlphaColor, c2: AlphaColor) : boolean {
+  static alphaColorEqual(c1: AlphaColor, c2: AlphaColor): boolean {
     const hueLight1 = new HueLight(c1);
     const hueLight2 = new HueLight(c2);
     return hueLight1.equal(hueLight2);

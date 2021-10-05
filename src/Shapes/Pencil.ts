@@ -8,8 +8,8 @@ import ShapeType from './ShapeType';
 const INTERVAL_BETWEEN_LINE = 10;
 
 class Pencil extends UpdatableShape {
-  points : Array<Point> = [];
-  private timeLastPoint : Date | null = null;
+  points: Array<Point> = [];
+  private timeLastPoint: Date | null = null;
   protected shapeType: ShapeType = ShapeType.Pencil;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,7 +17,7 @@ class Pencil extends UpdatableShape {
     return { ...super.getExportInfo(), points: this.points };
   }
 
-  async draw(shapeManager : ShapeManager) : Promise<void> {
+  async draw(shapeManager: ShapeManager): Promise<void> {
     // To respect the durationMs when there is a lot of point to draw
     // in a short amount of time, thre are two issues :
     // - It's not possible to wait float ms
@@ -31,7 +31,7 @@ class Pencil extends UpdatableShape {
       : 0;
     const speedMultiplicator = 4;
     const latencyInterval = 1 * speedMultiplicator;
-    const waitingIntervalMs : number = this.getWaitingInterval(durationMs);
+    const waitingIntervalMs: number = this.getWaitingInterval(durationMs);
 
     // Represent the number of line drawned before a wait
     // If waitingIntervalMs is inferior to latencyInterval, wait for each line
@@ -49,11 +49,11 @@ class Pencil extends UpdatableShape {
     }
   }
 
-  private getWaitingInterval(durationMs : number) : number {
+  private getWaitingInterval(durationMs: number): number {
     return durationMs !== 0 ? durationMs / this.points.length : 0;
   }
 
-  update(point: Point) : void {
+  update(point: Point): void {
     const [lastPoint] = this.points.slice(-1);
     if (lastPoint === undefined) return;
 
@@ -68,7 +68,7 @@ class Pencil extends UpdatableShape {
     if (interval > INTERVAL_BETWEEN_LINE) this.addLine(lastPoint, point, now);
   }
 
-  private addLine(lastPt: Point, newPt: Point, time : Date) : void {
+  private addLine(lastPt: Point, newPt: Point, time: Date): void {
     this.points.push(newPt);
     this.timeLastPoint = time;
     this.drawLine(lastPt, newPt);

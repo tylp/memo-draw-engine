@@ -3,7 +3,7 @@ import DraggableShape from './DraggableShape';
 import canvas from '../Canvas';
 
 abstract class Ellipse extends DraggableShape {
-  protected drawShape(originPoint : Point, width : number, height : number) : void {
+  protected drawShape(originPoint: Point, width: number, height: number): void {
     const x = originPoint.x + (width / 2);
     const y = originPoint.y + (height / 2);
     canvas.ctx.beginPath();
@@ -11,7 +11,7 @@ abstract class Ellipse extends DraggableShape {
     this.endPath();
   }
 
-  protected abstract endPath() : void;
+  protected abstract endPath(): void;
 }
 
 export default Ellipse;
