@@ -17,7 +17,7 @@ import Canvas from '../Canvas';
 
 // eslint-disable-next-line max-len
 export default class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction>, ICanvasEventHandlder, IDocumentEventHandler {
-  factory: IFactory<IShapeInfo, Shape>;
+  factory: IFactory<IShapeInfo, Shape> = new ShapeFactory();
   shapes: Array<Shape> = [];
   undoShapes: Array<Shape> = [];
   currentShape: Shape | null = null;
@@ -27,7 +27,6 @@ export default class ShapeManager extends AbstractObservable<IAction> implements
 
   constructor(cnvs: Canvas) {
     super();
-    this.factory = new ShapeFactory();
     this.canvas = cnvs;
   }
 
