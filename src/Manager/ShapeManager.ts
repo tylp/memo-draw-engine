@@ -129,7 +129,12 @@ export default class ShapeManager extends AbstractObservable<IAction> implements
     }
   }
 
-  redrawShapes(): void {
+  public redrawShapes(): void {
     this.shapes.forEach((shp) => shp.draw(this));
+  }
+
+  public clearAndRedrawShapes(): void {
+    this.canvas.clearCanvas();
+    this.redrawShapes();
   }
 }

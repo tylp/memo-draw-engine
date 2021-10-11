@@ -36,7 +36,7 @@ abstract class DraggableShape extends UpdatableShape {
 
     for (let i = 1; i <= numberOfFrame; i += 1) {
       const doneIndex = i / numberOfFrame;
-      this.clearAndRedrawShapes(shapeManager);
+      shapeManager.clearAndRedrawShapes();
       this.drawShape(this.originPoint as Point, this.width * doneIndex, this.height * doneIndex, shapeManager.canvas);
       // Doesnt await if shape is completely drawn
       if (i !== numberOfFrame) {
@@ -52,7 +52,7 @@ abstract class DraggableShape extends UpdatableShape {
       this.originPoint = point;
     } else {
       // Clear the last update
-      this.clearAndRedrawShapes(shapeManager);
+      shapeManager.clearAndRedrawShapes();
     }
 
     this.width = point.x - this.originPoint.x;
@@ -60,11 +60,6 @@ abstract class DraggableShape extends UpdatableShape {
 
     shapeManager.canvas.setStyle(this.color, this.thickness);
     this.drawShape(this.originPoint, this.width, this.height, shapeManager.canvas);
-  }
-
-  protected clearAndRedrawShapes(shapeManager: ShapeManager): void {
-    shapeManager.canvas.clearCanvas();
-    shapeManager.redrawShapes();
   }
 
   protected abstract drawShape(originPoint: Point, width: number, height: number, canvas: Canvas): void;
