@@ -1,13 +1,19 @@
 import AlphaColor from './Color/AlphaColor';
 
-class Canvas {
-  private _ctx: CanvasRenderingContext2D | null = null;
-  private _canvasElement: HTMLCanvasElement | null = null;
+export default class Canvas {
+  private _ctx: CanvasRenderingContext2D;
+  private _canvasElement: HTMLCanvasElement;
+
+  constructor(canvasElement: HTMLCanvasElement) {
+    this._canvasElement = canvasElement;
+
+    const ctx = this.canvasElement.getContext('2d');
+    Canvas.validateContext(ctx);
+    this._ctx = ctx;
+    this.ctx.lineCap = 'round';
+  }
 
   get ctx(): CanvasRenderingContext2D {
-    if (this._ctx === null) {
-      throw new Error('Canvas rendering context is not registered');
-    }
     return this._ctx;
   }
 
@@ -18,20 +24,13 @@ class Canvas {
     return this._canvasElement;
   }
 
-  initialize(canvasElement: HTMLCanvasElement) {
-    this._canvasElement = canvasElement;
-    this._ctx = this.canvasElement.getContext('2d');
-    this.throwIfNotSupported();
-    this.ctx.lineCap = 'round';
-  }
-
-  private throwIfNotSupported() {
-    if (this._ctx === null) {
+  private static validateContext(ctx: CanvasRenderingContext2D | null): asserts ctx is CanvasRenderingContext2D {
+    if (ctx === null) {
       throw new Error('2d context of canvas is null, canvas may be not supported on your browser');
     }
   }
 
-  setStyle(color: AlphaColor, thickness: number) {
+  setStyle(color: AlphaColor, thickness: number): void {
     const rgba = color.toRgba();
     this.ctx.fillStyle = rgba;
     this.ctx.strokeStyle = rgba;
@@ -43,6 +42,3 @@ class Canvas {
     this.ctx.fillRect(0, 0, this.canvasElement.width, this.canvasElement.height);
   }
 }
-
-const canvas = new Canvas();
-export default canvas;

@@ -1,12 +1,12 @@
 /* eslint-disable no-param-reassign */
+import CanvasHolder from '../Manager/CanvasHolder';
 import drawState from '../DrawState';
 import Shape from './Shape';
-import canvas from '../Canvas';
 import AlphaColor from '../Color/AlphaColor';
 import Point from '../Point';
-import type ShapeManager from '../Manager/ShapeManager';
 import HueLight from '../Color/HueLight';
 import ShapeType from './ShapeType';
+import Canvas from '../Canvas';
 
 class Fill extends Shape {
   edges!: Set<number>;
@@ -24,16 +24,16 @@ class Fill extends Shape {
     return { ...super.getExportInfo(), originPoint: this.originPoint };
   }
 
-  async draw(shapeManager: ShapeManager): Promise<void> {
+  async draw(shapeManager: CanvasHolder): Promise<void> {
     return new Promise((resolve) => {
       super.draw(shapeManager);
-      this.fill();
+      this.fill(shapeManager.canvas);
       resolve();
     });
   }
 
   // Algorithm from http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
-  private fill(): void {
+  private fill(canvas: Canvas): void {
     // Redraw fill if it was already calculated
     if (this.imageData !== undefined) {
       canvas.ctx.putImageData(this.imageData, 0, 0);
@@ -42,7 +42,7 @@ class Fill extends Shape {
 
     if (this.originPoint == null) return;
 
-    this.initialize();
+    this.initialize(canvas);
 
     const basePixelPos = this.getPixelPos(this.originPoint.x, this.originPoint.y);
     this.baseColor = this.getPixelColor(basePixelPos);
@@ -113,7 +113,7 @@ class Fill extends Shape {
     canvas.ctx.putImageData(this.imageData, 0, 0);
   }
 
-  private initialize() {
+  private initialize(canvas: Canvas) {
     this.imageData = canvas.ctx.getImageData(0, 0,
       canvas.canvasElement.width,
       canvas.canvasElement.height);
