@@ -18,9 +18,6 @@ export default class Canvas {
   }
 
   get canvasElement(): HTMLCanvasElement {
-    if (this._canvasElement === null) {
-      throw new Error('Canvas is not intialized');
-    }
     return this._canvasElement;
   }
 
