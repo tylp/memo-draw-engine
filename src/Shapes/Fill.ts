@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-import CanvasHolder from '../Manager/CanvasHolder';
 import drawState from '../DrawState';
 import Shape from './Shape';
 import AlphaColor from '../Color/AlphaColor';
@@ -7,6 +6,7 @@ import Point from '../Point';
 import HueLight from '../Color/HueLight';
 import ShapeType from './ShapeType';
 import Canvas from '../Canvas';
+import CanvasHolder from '../Manager/CanvasHolder';
 
 class Fill extends Shape {
   edges!: Set<number>;

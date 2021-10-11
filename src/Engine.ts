@@ -9,7 +9,6 @@ class Engine {
 
   constructor(shapeManager: ShapeManager, networkManager: AbstractNetworkManager | null = null) {
     this.eventManager = new EventManager(shapeManager.canvas.canvasElement);
-    this.eventManager.registerDefaultCanvasAndDocumentEvents();
     this.shapeManager = shapeManager;
     this.networkManager = networkManager;
 

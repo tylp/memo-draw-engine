@@ -1,3 +1,4 @@
+import Canvas from '../Canvas';
 import Point from '../Point';
 import Utils from '../Utils';
 import UpdatableShape from './UpdatableShape';
@@ -39,7 +40,7 @@ class Pencil extends UpdatableShape {
       : 1;
 
     for (let i = 1; i < this.points.length; i += 1) {
-      this.drawLine(this.points[i - 1], this.points[i], shapeManager);
+      this.drawLine(this.points[i - 1], this.points[i], shapeManager.canvas);
       // If it is not the last line and indes reached numberOfDrawPerWait
       if (durationMs !== 0 && i % numberOfDrawPerWait === 0 && i !== this.points.length) {
         // eslint-disable-next-line no-await-in-loop
@@ -59,26 +60,26 @@ class Pencil extends UpdatableShape {
     const now = new Date();
 
     if (this.timeLastPoint === null) {
-      this.addLine(lastPoint, point, now, shapeManager);
+      this.addLine(lastPoint, point, now, shapeManager.canvas);
       return;
     }
 
     const interval = now.getTime() - this.timeLastPoint.getTime();
-    if (interval > INTERVAL_BETWEEN_LINE) this.addLine(lastPoint, point, now, shapeManager);
+    if (interval > INTERVAL_BETWEEN_LINE) this.addLine(lastPoint, point, now, shapeManager.canvas);
   }
 
-  private addLine(lastPt: Point, newPt: Point, time: Date, shapeManager: CanvasHolder): void {
+  private addLine(lastPt: Point, newPt: Point, time: Date, canvas: Canvas): void {
     this.points.push(newPt);
     this.timeLastPoint = time;
-    this.drawLine(lastPt, newPt, shapeManager);
+    this.drawLine(lastPt, newPt, canvas);
   }
 
-  private drawLine(p1: Point, p2: Point, shapeManager: CanvasHolder) {
-    shapeManager.canvas.ctx.beginPath();
-    shapeManager.canvas.ctx.moveTo(p1.x, p1.y);
-    shapeManager.canvas.ctx.lineTo(p2.x, p2.y);
-    shapeManager.canvas.ctx.stroke();
-    shapeManager.canvas.ctx.closePath();
+  private drawLine(p1: Point, p2: Point, canvas: Canvas) {
+    canvas.ctx.beginPath();
+    canvas.ctx.moveTo(p1.x, p1.y);
+    canvas.ctx.lineTo(p2.x, p2.y);
+    canvas.ctx.stroke();
+    canvas.ctx.closePath();
   }
 }
 
