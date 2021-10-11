@@ -42,7 +42,7 @@ class Pencil extends UpdatableShape {
     for (let i = 1; i < this.points.length; i += 1) {
       this.drawLine(this.points[i - 1], this.points[i]);
       // If it is not the last line and indes reached numberOfDrawPerWait
-      if (i % numberOfDrawPerWait === 0 && i !== this.points.length) {
+      if (durationMs !== 0 && i % numberOfDrawPerWait === 0 && i !== this.points.length) {
         // eslint-disable-next-line no-await-in-loop
         await Utils.waitInterval(waitingIntervalMs);
       }

@@ -18,8 +18,8 @@ class Canvas {
     return this._canvasElement;
   }
 
-  initialize(canvasId: string) {
-    this._canvasElement = document.getElementById(canvasId) as HTMLCanvasElement;
+  initialize(canvasElement: HTMLCanvasElement) {
+    this._canvasElement = canvasElement;
     this._ctx = this.canvasElement.getContext('2d');
     this.throwIfNotSupported();
     this.ctx.lineCap = 'round';

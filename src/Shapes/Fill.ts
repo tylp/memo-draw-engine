@@ -34,6 +34,12 @@ class Fill extends Shape {
 
   // Algorithm from http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
   private fill(): void {
+    // Redraw fill if it was already calculated
+    if (this.imageData !== undefined) {
+      canvas.ctx.putImageData(this.imageData, 0, 0);
+      return;
+    }
+
     if (this.originPoint == null) return;
 
     this.initialize();

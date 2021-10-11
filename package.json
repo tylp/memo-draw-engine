@@ -10,13 +10,16 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-plugin-import": "^2.23.4",
-    "snowpack": "^3.3.7",
-    "typescript": "^4.4.3"
+    "typescript": "^4.2.4",
+    "ts-loader": "^9.2.6",
+    "webpack": "^5.55.1",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.3.0"
   },
   "scripts": {
-    "start": "snowpack dev",
+    "start": "webpack serve --mode development",
     "prebuild": "tsc && npm run lint",
-    "build": "snowpack build",
+    "build": "webpack --mode production",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
