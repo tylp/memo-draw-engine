@@ -4,8 +4,8 @@ class Canvas {
   ctx: CanvasRenderingContext2D;
   canvasElement: HTMLCanvasElement;
 
-  constructor(canvasElem: HTMLCanvasElement) {
-    this.canvasElement = canvasElem;
+  constructor(canvasElement: HTMLCanvasElement) {
+    this.canvasElement = canvasElement;
 
     const newCtx = this.canvasElement.getContext('2d');
     Canvas.validateContext(newCtx);

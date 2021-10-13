@@ -25,9 +25,9 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   isDrawing = false;
   canvas: Canvas;
 
-  constructor(cnvs: Canvas) {
+  constructor(canvas: Canvas) {
     super();
-    this.canvas = cnvs;
+    this.canvas = canvas;
   }
 
   drawBegin(point: Point): void {
