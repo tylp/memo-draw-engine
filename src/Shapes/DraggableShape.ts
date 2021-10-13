@@ -1,5 +1,5 @@
+import Canvas from '../Canvas';
 import Point from '../Point';
-import canvas from '../Canvas';
 import Utils from '../Utils';
 import UpdatableShape from './UpdatableShape';
 import type ShapeManager from '../Manager/ShapeManager';
@@ -23,7 +23,7 @@ abstract class DraggableShape extends UpdatableShape {
     super.draw(shapeManager);
     if (this.originPoint === null) return;
     if (!this.endDate || !this.startDate) {
-      this.drawShape(this.originPoint, this.width, this.height);
+      this.drawShape(this.originPoint, this.width, this.height, shapeManager.canvas);
     } else {
       const durationMs = this.endDate - this.startDate;
       await this.drawWithAnimation(durationMs, shapeManager);
@@ -37,7 +37,7 @@ abstract class DraggableShape extends UpdatableShape {
     for (let i = 1; i <= numberOfFrame; i += 1) {
       const doneIndex = i / numberOfFrame;
       shapeManager.restoreLast();
-      this.drawShape(this.originPoint as Point, this.width * doneIndex, this.height * doneIndex);
+      this.drawShape(this.originPoint as Point, this.width * doneIndex, this.height * doneIndex, shapeManager.canvas);
       // Doesnt await if shape is completely drawn
       if (i !== numberOfFrame) {
         // eslint-disable-next-line no-await-in-loop
@@ -58,11 +58,11 @@ abstract class DraggableShape extends UpdatableShape {
     this.width = point.x - this.originPoint.x;
     this.height = point.y - this.originPoint.y;
 
-    canvas.setStyle(this.color, this.thickness);
-    this.drawShape(this.originPoint, this.width, this.height);
+    shapeManager.canvas.setStyle(this.color, this.thickness);
+    this.drawShape(this.originPoint, this.width, this.height, shapeManager.canvas);
   }
 
-  protected abstract drawShape(originPoint: Point, width: number, height: number): void;
+  protected abstract drawShape(originPoint: Point, width: number, height: number, canvas: Canvas): void;
 }
 
 export default DraggableShape;

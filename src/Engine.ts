@@ -1,18 +1,16 @@
-import canvas from './Canvas';
 import EventManager from './Manager/EventManager';
 import AbstractNetworkManager from './Manager/AbstractNetworkManager';
 import ShapeManager from './Manager/ShapeManager';
+import Canvas from './Canvas';
 
 class Engine {
   eventManager: EventManager;
   networkManager: AbstractNetworkManager | null;
   shapeManager: ShapeManager;
 
-  constructor(canvasElem: HTMLCanvasElement, networkManager: AbstractNetworkManager | null = null) {
-    canvas.initialize(canvasElem);
-
-    this.eventManager = new EventManager(canvas.canvasElement);
-    this.shapeManager = new ShapeManager();
+  constructor(canvasElement: HTMLCanvasElement, networkManager: AbstractNetworkManager | null = null) {
+    this.shapeManager = new ShapeManager(new Canvas(canvasElement));
+    this.eventManager = new EventManager(canvasElement);
     this.networkManager = networkManager;
 
     if (networkManager !== null) this.registerNetworkManager(networkManager);

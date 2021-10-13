@@ -1,7 +1,6 @@
+import CanvasHolder from '../Manager/CanvasHolder';
 import ShapeType from './ShapeType';
-import canvas from '../Canvas';
 import AlphaColor from '../Color/AlphaColor';
-import type ShapeManager from '../Manager/ShapeManager';
 import IShapeInfo from './IShapeInfo';
 
 abstract class Shape {
@@ -28,9 +27,8 @@ abstract class Shape {
   }
 
   // Use to definitely draw shape (viewer side)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  draw(shapeManager: ShapeManager): Promise<void> {
-    canvas.setStyle(this.color, this.thickness);
+  draw(shapeManager: CanvasHolder): Promise<void> {
+    shapeManager.canvas.setStyle(this.color, this.thickness);
     return Promise.resolve();
   }
 }

@@ -1,8 +1,8 @@
+import IFactory from '../Shapes/IFactory';
+import ShapeFactory from '../Shapes/ShapeFactory';
 import IShapeInfo from '../Shapes/IShapeInfo';
 import type Shape from '../Shapes/Shape';
 import Point from '../Point';
-import canvas from '../Canvas';
-import ShapeFactory from '../Shapes/ShapeFactory';
 import DraggableShape from '../Shapes/DraggableShape';
 import UpdatableShape from '../Shapes/UpdatableShape';
 import IObserver from '../Observer/IObserver';
@@ -13,16 +13,22 @@ import AbstractObservable from '../Observer/AbstractObservable';
 import IAction from '../Action/IAction';
 import ActionType from '../Action/ActionType';
 import IDocumentEventHandler from './IDocumentEventHandler';
+import Canvas from '../Canvas';
 
-// eslint-disable-next-line max-len
 class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction>, ICanvasEventHandlder, IDocumentEventHandler {
-  factory: ShapeFactory = new ShapeFactory();
+  factory: IFactory<IShapeInfo, Shape> = new ShapeFactory();
   shapes: Array<Shape> = [];
   undoShapes: Array<Shape> = [];
   currentShape: Shape | null = null;
   basePoint: Point | null = null;
   lastImageData: ImageData | null = null;
   isDrawing = false;
+  canvas: Canvas;
+
+  constructor(canvas: Canvas) {
+    super();
+    this.canvas = canvas;
+  }
 
   drawBegin(point: Point): void {
     this.isDrawing = true;
@@ -37,12 +43,12 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
       this.currentShape?.draw(this);
     } else if (this.currentShape !== null) {
       // Set style for new shape if the shape is not directly draw
-      canvas.setStyle(this.currentShape.color, this.currentShape.thickness);
+      this.canvas.setStyle(this.currentShape.color, this.currentShape.thickness);
     }
 
     // Update on create to draw single point
     if (this.currentShape instanceof Pencil) {
-      this.currentShape.update(point);
+      this.currentShape.update(point, this);
     }
   }
 
@@ -107,7 +113,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
   undo(): void {
     this.drawFinish();
-    canvas.clearCanvas();
+    this.canvas.clearCanvas();
     const shape: Shape | undefined = this.shapes.pop();
     if (shape !== undefined) {
       this.undoShapes.push(shape);
@@ -126,19 +132,19 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     }
   }
 
-  redrawShapes(): void {
+  public redrawShapes(): void {
     this.shapes.forEach((shp) => shp.draw(this));
   }
 
   private storeLast(): void {
-    this.lastImageData = canvas.ctx.getImageData(
-      0, 0, canvas.canvasElement.width, canvas.canvasElement.height,
+    this.lastImageData = this.canvas.ctx.getImageData(
+      0, 0, this.canvas.canvasElement.width, this.canvas.canvasElement.height,
     );
   }
 
   public restoreLast(): void {
     if (this.lastImageData !== null) {
-      canvas.ctx.putImageData(this.lastImageData, 0, 0);
+      this.canvas.ctx.putImageData(this.lastImageData, 0, 0);
     }
   }
 }

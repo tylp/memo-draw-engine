@@ -1,3 +1,4 @@
+import ShapeManager from './Manager/ShapeManager';
 import Engine from './Engine';
 import ShapeType from './Shapes/ShapeType';
 import ActionType from './Action/ActionType';
@@ -14,6 +15,7 @@ import drawState from './DrawState';
 import IAction from './Action/IAction';
 
 export {
+  ShapeManager,
   Engine,
   IAction,
   AbstractNetworkManager,
