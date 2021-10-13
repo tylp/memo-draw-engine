@@ -1,6 +1,6 @@
 import AlphaColor from './Color/AlphaColor';
 
-export default class Canvas {
+class Canvas {
   ctx: CanvasRenderingContext2D;
   canvasElement: HTMLCanvasElement;
 
@@ -31,3 +31,5 @@ export default class Canvas {
     this.ctx.fillRect(0, 0, this.canvasElement.width, this.canvasElement.height);
   }
 }
+
+export default Canvas;

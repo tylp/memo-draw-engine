@@ -16,7 +16,7 @@ import IDocumentEventHandler from './IDocumentEventHandler';
 import Canvas from '../Canvas';
 
 // eslint-disable-next-line max-len
-export default class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction>, ICanvasEventHandlder, IDocumentEventHandler {
+class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction>, ICanvasEventHandlder, IDocumentEventHandler {
   factory: IFactory<IShapeInfo, Shape> = new ShapeFactory();
   shapes: Array<Shape> = [];
   undoShapes: Array<Shape> = [];
@@ -138,3 +138,5 @@ export default class ShapeManager extends AbstractObservable<IAction> implements
     this.redrawShapes();
   }
 }
+
+export default ShapeManager;
