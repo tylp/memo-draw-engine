@@ -1,24 +1,16 @@
 import AlphaColor from './Color/AlphaColor';
 
 export default class Canvas {
-  private _ctx: CanvasRenderingContext2D;
-  private _canvasElement: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  canvasElement: HTMLCanvasElement;
 
-  constructor(canvasElement: HTMLCanvasElement) {
-    this._canvasElement = canvasElement;
+  constructor(canvasElem: HTMLCanvasElement) {
+    this.canvasElement = canvasElem;
 
-    const ctx = this.canvasElement.getContext('2d');
-    Canvas.validateContext(ctx);
-    this._ctx = ctx;
+    const newCtx = this.canvasElement.getContext('2d');
+    Canvas.validateContext(newCtx);
+    this.ctx = newCtx;
     this.ctx.lineCap = 'round';
-  }
-
-  get ctx(): CanvasRenderingContext2D {
-    return this._ctx;
-  }
-
-  get canvasElement(): HTMLCanvasElement {
-    return this._canvasElement;
   }
 
   private static validateContext(ctx: CanvasRenderingContext2D | null): asserts ctx is CanvasRenderingContext2D {
