@@ -1,4 +1,4 @@
-import { ShapeManager } from 'index';
+import CanvasHolder from '../Manager/CanvasHolder';
 import ShapeType from './ShapeType';
 import AlphaColor from '../Color/AlphaColor';
 import IShapeInfo from './IShapeInfo';
@@ -27,7 +27,7 @@ abstract class Shape {
   }
 
   // Use to definitely draw shape (viewer side)
-  draw(shapeManager: ShapeManager): Promise<void> {
+  draw(shapeManager: CanvasHolder): Promise<void> {
     shapeManager.canvas.setStyle(this.color, this.thickness);
     return Promise.resolve();
   }
