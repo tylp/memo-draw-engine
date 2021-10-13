@@ -15,7 +15,6 @@ import ActionType from '../Action/ActionType';
 import IDocumentEventHandler from './IDocumentEventHandler';
 import Canvas from '../Canvas';
 
-// eslint-disable-next-line max-len
 class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction>, ICanvasEventHandlder, IDocumentEventHandler {
   factory: IFactory<IShapeInfo, Shape> = new ShapeFactory();
   shapes: Array<Shape> = [];

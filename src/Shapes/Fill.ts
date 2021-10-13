@@ -1,3 +1,4 @@
+import { ShapeManager } from 'index';
 /* eslint-disable no-param-reassign */
 import drawState from '../DrawState';
 import Shape from './Shape';
@@ -6,7 +7,6 @@ import Point from '../Point';
 import HueLight from '../Color/HueLight';
 import ShapeType from './ShapeType';
 import Canvas from '../Canvas';
-import CanvasHolder from '../Manager/CanvasHolder';
 
 class Fill extends Shape {
   edges!: Set<number>;
@@ -24,7 +24,7 @@ class Fill extends Shape {
     return { ...super.getExportInfo(), originPoint: this.originPoint };
   }
 
-  async draw(shapeManager: CanvasHolder): Promise<void> {
+  async draw(shapeManager: ShapeManager): Promise<void> {
     return new Promise((resolve) => {
       super.draw(shapeManager);
       this.fill(shapeManager.canvas);

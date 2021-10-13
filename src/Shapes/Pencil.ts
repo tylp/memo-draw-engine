@@ -1,9 +1,9 @@
+import { ShapeManager } from 'index';
 import Canvas from '../Canvas';
 import Point from '../Point';
 import Utils from '../Utils';
 import UpdatableShape from './UpdatableShape';
 import ShapeType from './ShapeType';
-import CanvasHolder from '../Manager/CanvasHolder';
 
 const INTERVAL_BETWEEN_LINE = 10;
 
@@ -17,7 +17,7 @@ class Pencil extends UpdatableShape {
     return { ...super.getExportInfo(), points: this.points };
   }
 
-  async draw(shapeManager: CanvasHolder): Promise<void> {
+  async draw(shapeManager: ShapeManager): Promise<void> {
     // To respect the durationMs when there is a lot of point to draw
     // in a short amount of time, thre are two issues :
     // - It's not possible to wait float ms
@@ -53,7 +53,7 @@ class Pencil extends UpdatableShape {
     return durationMs !== 0 ? durationMs / this.points.length : 0;
   }
 
-  update(point: Point, shapeManager: CanvasHolder): void {
+  update(point: Point, shapeManager: ShapeManager): void {
     const [lastPoint] = this.points.slice(-1);
     if (lastPoint === undefined) return;
 
