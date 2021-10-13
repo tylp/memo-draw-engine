@@ -136,20 +136,15 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     this.shapes.forEach((shp) => shp.draw(this));
   }
 
-  public clearAndRedrawShapes(): void {
-    this.canvas.clearCanvas();
-    this.redrawShapes();
-  }
-
   private storeLast(): void {
-    this.lastImageData = canvas.ctx.getImageData(
-      0, 0, canvas.canvasElement.width, canvas.canvasElement.height,
+    this.lastImageData = this.canvas.ctx.getImageData(
+      0, 0, this.canvas.canvasElement.width, this.canvas.canvasElement.height,
     );
   }
 
   public restoreLast(): void {
     if (this.lastImageData !== null) {
-      canvas.ctx.putImageData(this.lastImageData, 0, 0);
+      this.canvas.ctx.putImageData(this.lastImageData, 0, 0);
     }
   }
 }
