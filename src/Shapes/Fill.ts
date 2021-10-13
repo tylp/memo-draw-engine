@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import CanvasHolder from '../Manager/CanvasHolder';
-import drawState from '../DrawState';
 import Shape from './Shape';
 import AlphaColor from '../Color/AlphaColor';
 import Point from '../Point';
