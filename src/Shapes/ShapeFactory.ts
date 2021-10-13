@@ -20,9 +20,13 @@ import AlphaColor from '../Color/AlphaColor';
 
 class ShapeFactory implements IFactory<IShapeInfo, Shape> {
   build(info: IShapeInfo): Shape {
+    const { color, thickness } = info.parameters;
+
     const styleInfo = {
-      color: info.parameters.color || drawState.getAlphaColor(),
-      thickness: info.parameters.thickness || drawState.thickness,
+      color: color
+        ? new AlphaColor(color.red, color.green, color.blue, color.alpha)
+        : drawState.getAlphaColor(),
+      thickness: thickness || drawState.thickness,
     };
 
     const shape = this.create(info.type, styleInfo);
@@ -65,7 +69,7 @@ class ShapeFactory implements IFactory<IShapeInfo, Shape> {
     }
 
     if (shape instanceof Fill || shape instanceof DraggableShape) {
-      this.setOriginPointshape(shape, parameter.originPoint as Point);
+      this.setOriginPointshape(shape, new Point(parameter.originPoint.x, parameter.originPoint.y));
     }
 
     if (shape instanceof DraggableShape) {

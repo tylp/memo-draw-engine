@@ -21,6 +21,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   undoShapes: Array<Shape> = [];
   currentShape: Shape | null = null;
   basePoint: Point | null = null;
+  lastImageData: ImageData | null = null;
   isDrawing = false;
   canvas: Canvas;
 
@@ -73,6 +74,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   drawFinish(): void {
     if (this.currentShape === null) return;
     this.shapes.push(this.currentShape);
+    this.storeLast();
 
     this.emit();
 
@@ -117,6 +119,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
       this.undoShapes.push(shape);
     }
     this.redrawShapes();
+    this.storeLast();
   }
 
   async redo(): Promise<void> {
@@ -125,6 +128,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     if (shape !== undefined) {
       await shape.draw(this);
       this.shapes.push(shape);
+      this.storeLast();
     }
   }
 
@@ -135,6 +139,18 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   public clearAndRedrawShapes(): void {
     this.canvas.clearCanvas();
     this.redrawShapes();
+  }
+
+  private storeLast(): void {
+    this.lastImageData = canvas.ctx.getImageData(
+      0, 0, canvas.canvasElement.width, canvas.canvasElement.height,
+    );
+  }
+
+  public restoreLast(): void {
+    if (this.lastImageData !== null) {
+      canvas.ctx.putImageData(this.lastImageData, 0, 0);
+    }
   }
 }
 

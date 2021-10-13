@@ -11,7 +11,6 @@ import Canvas from '../Canvas';
 class Fill extends Shape {
   edges!: Set<number>;
   baseColor!: AlphaColor;
-  drawColor!: AlphaColor;
   imageData!: ImageData;
   originData!: Uint8ClampedArray;
   canvasWidth!: number;
@@ -20,7 +19,7 @@ class Fill extends Shape {
   protected shapeType: ShapeType = ShapeType.Fill;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected exportInfo(): any {
+  protected getExportInfo(): any {
     return { ...super.getExportInfo(), originPoint: this.originPoint };
   }
 
@@ -50,7 +49,7 @@ class Fill extends Shape {
     // Check if the clicked color is not the current fill color
     // Do not check using pure color equality because canvas element
     // display color using opacity variation
-    if (HueLight.alphaColorEqual(this.baseColor, this.drawColor)) return;
+    if (HueLight.alphaColorEqual(this.baseColor, this.color)) return;
 
     const pixelStack: Array<Array<number>> = [[this.originPoint.x, this.originPoint.y]];
 
@@ -124,8 +123,6 @@ class Fill extends Shape {
 
     this.canvasWidth = canvas.canvasElement.width;
     this.canvasHeight = canvas.canvasElement.height;
-
-    this.drawColor = drawState.getAlphaColor();
   }
 
   private getPixelPos(x: number, y: number): number {
@@ -153,10 +150,10 @@ class Fill extends Shape {
   }
 
   private fillPixel(pixelPos: number) {
-    this.imageData.data[pixelPos] = this.drawColor.red;
-    this.imageData.data[pixelPos + 1] = this.drawColor.green;
-    this.imageData.data[pixelPos + 2] = this.drawColor.blue;
-    this.imageData.data[pixelPos + 3] = this.drawColor.alpha;
+    this.imageData.data[pixelPos] = this.color.red;
+    this.imageData.data[pixelPos + 1] = this.color.green;
+    this.imageData.data[pixelPos + 2] = this.color.blue;
+    this.imageData.data[pixelPos + 3] = this.color.alpha;
   }
 }
 
