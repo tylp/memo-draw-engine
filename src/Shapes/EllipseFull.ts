@@ -1,11 +1,11 @@
 import ShapeType from './ShapeType';
-import canvas from '../Canvas';
 import Ellipse from './Ellipse';
+import Canvas from '../Canvas';
 
 class EllipseFull extends Ellipse {
   protected shapeType: ShapeType = ShapeType.EllipseFull;
 
-  protected endPath(): void {
+  protected endPath(canvas: Canvas): void {
     canvas.ctx.fill();
   }
 }

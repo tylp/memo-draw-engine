@@ -4,7 +4,6 @@ import IAction from '../Action/IAction';
 import AbstractObservable from '../Observer/AbstractObservable';
 import IObserver from '../Observer/IObserver';
 
-// eslint-disable-next-line max-len
 abstract class AbstractNetworkManager extends AbstractObservable<IAction> implements IObserver<IAction>, IDocumentEventHandler {
   // Override this to emit the IAction over the network
   abstract update(elem: IAction): void;
