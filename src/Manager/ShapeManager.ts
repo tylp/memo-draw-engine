@@ -109,6 +109,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     const shape = this.factory.build(shapeInfo);
     this.shapes.push(shape);
     shape.draw(this);
+    this.storeLast();
   }
 
   undo(): void {
