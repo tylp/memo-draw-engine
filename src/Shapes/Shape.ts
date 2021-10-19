@@ -27,7 +27,7 @@ abstract class Shape {
   }
 
   // Use to definitely draw shape (viewer side)
-  draw(shapeManager: CanvasHolder): Promise<void> {
+  draw(shapeManager: CanvasHolder, animate: boolean): Promise<void> {
     shapeManager.canvas.setStyle(this.color, this.thickness);
     return Promise.resolve();
   }
