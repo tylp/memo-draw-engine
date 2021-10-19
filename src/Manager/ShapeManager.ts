@@ -14,6 +14,7 @@ import IAction from '../Action/IAction';
 import ActionType from '../Action/ActionType';
 import IDocumentEventHandler from './IDocumentEventHandler';
 import Canvas from '../Canvas';
+import Fill from '../Shapes/Fill';
 
 class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction>, ICanvasEventHandlder, IDocumentEventHandler {
   factory: IFactory<IShapeInfo, Shape> = new ShapeFactory();
@@ -73,6 +74,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
   drawFinish(): void {
     if (this.currentShape === null) return;
+    if (this.currentShape instanceof Fill && this.currentShape.dismissed) return;
     this.shapes.push(this.currentShape);
     this.storeLast();
 
