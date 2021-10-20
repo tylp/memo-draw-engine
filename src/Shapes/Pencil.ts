@@ -3,7 +3,7 @@ import Point from '../Point';
 import Utils from '../Utils';
 import UpdatableShape from './UpdatableShape';
 import ShapeType from './ShapeType';
-import ShapeManager from '../Manager/ShapeManager';
+import type ShapeManager from '../Manager/ShapeManager';
 
 const INTERVAL_BETWEEN_LINE = 10;
 const INTERVAL_BETWEEN_EMIT = 500;
