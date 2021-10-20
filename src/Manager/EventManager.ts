@@ -49,17 +49,11 @@ class EventManager {
     this.canvasEventHandlers.forEach((handler) => handler.mouseLeave());
   }
 
-  private getNewPoint(event: MouseEvent): Point {
-    return new Point(
-      event.clientX - this.canvasElement.offsetLeft,
-      event.clientY - this.canvasElement.offsetTop,
-    );
-  }
-
   private registerDocumentEvents(): void {
     this.registerUndoEvent();
     this.registerRedoEvent();
     document.addEventListener('mouseup', (event) => this.documentMouseUp(event));
+    document.addEventListener('mousemove', (event) => this.documentMouseMove(event));
   }
 
   private registerUndoEvent(): void {
@@ -82,6 +76,20 @@ class EventManager {
     if (event.target !== this.canvasElement) {
       this.documentEventHandlers.forEach((handler) => handler.documentMouseUp());
     }
+  }
+
+  private documentMouseMove(event: MouseEvent): void {
+    if (event.target !== this.canvasElement) {
+      const point = this.getNewPoint(event);
+      this.documentEventHandlers.forEach((handler) => handler.documentMouseMove(point));
+    }
+  }
+
+  private getNewPoint(event: MouseEvent): Point {
+    return new Point(
+      event.clientX - this.canvasElement.offsetLeft,
+      event.clientY - this.canvasElement.offsetTop,
+    );
   }
 }
 

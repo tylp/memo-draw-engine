@@ -23,6 +23,7 @@ abstract class AbstractNetworkManager extends AbstractObservable<IAction> implem
   }
 
   documentMouseUp(): void {}
+  documentMouseMove(): void {}
 }
 
 export default AbstractNetworkManager;

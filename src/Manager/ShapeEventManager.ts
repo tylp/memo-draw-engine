@@ -25,12 +25,13 @@ class ShapeEventManager implements ICanvasEventHandlder, IDocumentEventHandler {
   }
 
   mouseLeave(): void {
-    this.didLeave = true;
+    if (this.isDrawing) {
+      this.didLeave = true;
+    }
   }
 
   mouseUp(): void {
-    this.isDrawing = false;
-    this.shapeManager.drawFinish();
+    this.drawFinish();
   }
 
   undo(): void {
@@ -44,10 +45,19 @@ class ShapeEventManager implements ICanvasEventHandlder, IDocumentEventHandler {
   }
 
   documentMouseUp(): void {
+    if (this.didLeave) this.drawFinish();
+  }
+
+  documentMouseMove(point: Point): void {
     if (this.didLeave) {
-      this.isDrawing = false;
-      this.shapeManager.drawFinish();
+      this.shapeManager.drawMove(point);
     }
+  }
+
+  private drawFinish() {
+    this.isDrawing = false;
+    this.didLeave = false;
+    this.shapeManager.drawFinish();
   }
 }
 
