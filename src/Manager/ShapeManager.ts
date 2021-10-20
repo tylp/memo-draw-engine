@@ -54,8 +54,6 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   }
 
   drawMove(point: Point): void {
-    if (!this.isDrawing) return;
-
     if (this.currentShape === null) {
       this.createShape();
     }
