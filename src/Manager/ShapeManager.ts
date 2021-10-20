@@ -120,7 +120,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
   // Do not create a new pencil if the shape sent is a continuation of an existing pencil
   // Merge it with the existing pencil instead
-  private tryMergePencil(shapeInfo: IShapeInfo) : boolean {
+  private tryMergePencil(shapeInfo: IShapeInfo): boolean {
     if (shapeInfo.type !== ShapeType.Pencil) return false;
     if (this.shapes.length === 0) return false;
 

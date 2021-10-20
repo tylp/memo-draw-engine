@@ -12,10 +12,10 @@ abstract class UpdatableShape extends Shape {
     this.startDate = Date.now();
   }
 
-  get durationMs() { 
+  get durationMs(): number {
     if (this.endDate === undefined || this.startDate === undefined) return 0;
-    return this.endDate - this.startDate
-  };
+    return this.endDate - this.startDate;
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected getExportInfo(): any {

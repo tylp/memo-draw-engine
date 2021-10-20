@@ -24,7 +24,7 @@ class Pencil extends UpdatableShape {
     this.drawPoints(this.points, this.durationMs, animate, shapeManager);
   }
 
-  async mergePoints(points: Array<Point>, endDate: number, shapeManager: ShapeManager) : Promise<void> {
+  async mergePoints(points: Array<Point>, endDate: number, shapeManager: ShapeManager): Promise<void> {
     this.endDate = endDate;
     const newPoints = points.slice(this.points.length - 1);
     this.points = points;

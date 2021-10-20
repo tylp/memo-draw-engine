@@ -23,7 +23,7 @@ abstract class DraggableShape extends UpdatableShape {
     super.draw(shapeManager, animate);
     if (this.originPoint === null) return;
     if (animate) {
-      await this.drawWithAnimation( shapeManager);
+      await this.drawWithAnimation(shapeManager);
     } else {
       this.drawShape(this.originPoint, this.width, this.height, shapeManager.canvas);
     }
