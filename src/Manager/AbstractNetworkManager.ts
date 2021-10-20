@@ -21,6 +21,8 @@ abstract class AbstractNetworkManager extends AbstractObservable<IAction> implem
   redo(): void {
     this.update({ type: ActionType.redo, parameters: null });
   }
+
+  documentMouseUp(): void {}
 }
 
 export default AbstractNetworkManager;

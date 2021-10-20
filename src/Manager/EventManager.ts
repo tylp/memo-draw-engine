@@ -28,21 +28,25 @@ class EventManager {
     this.canvasElement.addEventListener('mousemove', (event) => this.onMouseMove(event));
     this.canvasElement.addEventListener('mousedown', (event) => this.onMouseDown(event));
     this.canvasElement.addEventListener('mouseup', () => this.onMouseUp());
-    this.canvasElement.addEventListener('mouseleave', () => this.onMouseUp());
+    this.canvasElement.addEventListener('mouseleave', () => this.onMouseLeave());
   }
 
   private onMouseMove(event: MouseEvent): void {
     const point = this.getNewPoint(event);
-    this.canvasEventHandlers.forEach((handler) => handler.drawMove(point));
+    this.canvasEventHandlers.forEach((handler) => handler.mouseMove(point));
   }
 
   private onMouseDown(event: MouseEvent): void {
     const point = this.getNewPoint(event);
-    this.canvasEventHandlers.forEach((handler) => handler.drawBegin(point));
+    this.canvasEventHandlers.forEach((handler) => handler.mouseDown(point));
   }
 
   private onMouseUp(): void {
-    this.canvasEventHandlers.forEach((handler) => handler.drawFinish());
+    this.canvasEventHandlers.forEach((handler) => handler.mouseUp());
+  }
+
+  private onMouseLeave(): void {
+    this.canvasEventHandlers.forEach((handler) => handler.mouseLeave());
   }
 
   private getNewPoint(event: MouseEvent): Point {
@@ -55,6 +59,7 @@ class EventManager {
   private registerDocumentEvents(): void {
     this.registerUndoEvent();
     this.registerRedoEvent();
+    document.addEventListener('mouseup', (event) => this.documentMouseUp(event));
   }
 
   private registerUndoEvent(): void {
@@ -71,6 +76,12 @@ class EventManager {
         this.documentEventHandlers.forEach((handler) => handler.redo());
       }
     });
+  }
+
+  private documentMouseUp(event: MouseEvent): void {
+    if (event.target !== this.canvasElement) {
+      this.documentEventHandlers.forEach((handler) => handler.documentMouseUp());
+    }
   }
 }
 
