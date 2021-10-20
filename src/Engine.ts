@@ -16,8 +16,8 @@ class Engine {
     if (networkManager !== null) this.registerNetworkManager(networkManager);
     else this.networkManager = null;
 
-    this.eventManager.subscribeCanvasEventHandler(this.shapeManager);
-    this.eventManager.subscribeDocumentEventHandler(this.shapeManager);
+    this.eventManager.subscribeCanvasEventHandler(this.shapeManager.internalEventManager);
+    this.eventManager.subscribeDocumentEventHandler(this.shapeManager.internalEventManager);
   }
 
   registerNetworkManager(networkManager: AbstractNetworkManager): void {
