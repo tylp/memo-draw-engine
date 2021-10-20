@@ -1,9 +1,10 @@
 import Point from '../Point';
 
 interface ICanvasEventHandlder {
-  drawBegin(point: Point): void;
-  drawMove(point: Point): void;
-  drawFinish(): void;
+  mouseDown(point: Point): void;
+  mouseMove(point: Point): void;
+  mouseLeave(): void;
+  mouseUp(): void;
 }
 
 export default ICanvasEventHandlder;
