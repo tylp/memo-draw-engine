@@ -19,20 +19,19 @@ abstract class DraggableShape extends UpdatableShape {
     };
   }
 
-  async draw(shapeManager: ShapeManager): Promise<void> {
-    super.draw(shapeManager);
+  async draw(shapeManager: ShapeManager, animate: boolean): Promise<void> {
+    super.draw(shapeManager, animate);
     if (this.originPoint === null) return;
-    if (!this.endDate || !this.startDate) {
-      this.drawShape(this.originPoint, this.width, this.height, shapeManager.canvas);
+    if (animate) {
+      await this.drawWithAnimation(shapeManager);
     } else {
-      const durationMs = this.endDate - this.startDate;
-      await this.drawWithAnimation(durationMs, shapeManager);
+      this.drawShape(this.originPoint, this.width, this.height, shapeManager.canvas);
     }
   }
 
-  async drawWithAnimation(durationMs: number, shapeManager: ShapeManager): Promise<void> {
-    const numberOfFrame = (durationMs / 1000) * 60;
-    const waitingIntervalMs = durationMs / numberOfFrame;
+  async drawWithAnimation(shapeManager: ShapeManager): Promise<void> {
+    const numberOfFrame = (this.durationMs / 1000) * 60;
+    const waitingIntervalMs = this.durationMs / numberOfFrame;
 
     for (let i = 1; i <= numberOfFrame; i += 1) {
       const doneIndex = i / numberOfFrame;

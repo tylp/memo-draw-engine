@@ -12,6 +12,7 @@ import AbstractObservable from '../Observer/AbstractObservable';
 import IAction from '../Action/IAction';
 import ActionType from '../Action/ActionType';
 import Canvas from '../Canvas';
+import ShapeType from '../Shapes/ShapeType';
 import Fill from '../Shapes/Fill';
 import ShapeEventManager from './ShapeEventManager';
 
@@ -28,6 +29,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   constructor(canvas: Canvas) {
     super();
     this.canvas = canvas;
+    this.storeLast();
   }
 
   drawBegin(point: Point): void {
@@ -39,7 +41,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     this.createShape();
 
     if (!(this.currentShape instanceof UpdatableShape)) {
-      this.currentShape?.draw(this);
+      this.currentShape?.draw(this, false);
     } else if (this.currentShape !== null) {
       // Set style for new shape if the shape is not directly draw
       this.canvas.setStyle(this.currentShape.color, this.currentShape.thickness);
@@ -70,7 +72,13 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
   drawFinish(): void {
     if (this.currentShape === null) return;
+
+    if (this.currentShape instanceof UpdatableShape) {
+      this.currentShape.endDate = Date.now();
+    }
+
     if (this.currentShape instanceof Fill && this.currentShape.dismissed) return;
+
     this.shapes.push(this.currentShape);
     this.storeLast();
 
@@ -102,11 +110,27 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     }
   }
 
-  addShapeFromShapeInfo(shapeInfo: IShapeInfo): void {
+  async addShapeFromShapeInfo(shapeInfo: IShapeInfo): Promise<void> {
+    if (this.tryMergePencil(shapeInfo)) return;
     const shape = this.factory.build(shapeInfo);
     this.shapes.push(shape);
-    shape.draw(this);
+    await shape.draw(this, true);
     this.storeLast();
+  }
+
+  // Do not create a new pencil if the shape sent is a continuation of an existing pencil
+  // Merge it with the existing pencil instead
+  private tryMergePencil(shapeInfo: IShapeInfo): boolean {
+    if (shapeInfo.type !== ShapeType.Pencil) return false;
+    if (this.shapes.length === 0) return false;
+
+    const lastShape = this.shapes[this.shapes.length - 1];
+
+    if (!(lastShape instanceof Pencil)) return false;
+    if (lastShape.startDate !== shapeInfo.parameters.startDate) return false;
+
+    lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this);
+    return true;
   }
 
   undo(): void {
@@ -124,14 +148,14 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     this.drawFinish();
     const shape: Shape | undefined = this.undoShapes.pop();
     if (shape !== undefined) {
-      await shape.draw(this);
+      await shape.draw(this, false);
       this.shapes.push(shape);
       this.storeLast();
     }
   }
 
   public redrawShapes(): void {
-    this.shapes.forEach((shp) => shp.draw(this));
+    this.shapes.forEach((shp) => shp.draw(this, false));
   }
 
   private storeLast(): void {
