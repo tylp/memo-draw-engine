@@ -8,22 +8,22 @@ import UpdatableShape from '../Shapes/UpdatableShape';
 import IObserver from '../Observer/IObserver';
 import drawState from '../DrawState';
 import Pencil from '../Shapes/Pencil';
-import ICanvasEventHandlder from './ICanvasEventHandlder';
 import AbstractObservable from '../Observer/AbstractObservable';
 import IAction from '../Action/IAction';
 import ActionType from '../Action/ActionType';
-import IDocumentEventHandler from './IDocumentEventHandler';
 import Canvas from '../Canvas';
 import ShapeType from '../Shapes/ShapeType';
+import Fill from '../Shapes/Fill';
+import ShapeEventManager from './ShapeEventManager';
 
-class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction>, ICanvasEventHandlder, IDocumentEventHandler {
+class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction> {
+  internalEventManager: ShapeEventManager = new ShapeEventManager(this);
   factory: IFactory<IShapeInfo, Shape> = new ShapeFactory();
   shapes: Array<Shape> = [];
   undoShapes: Array<Shape> = [];
   currentShape: Shape | null = null;
   basePoint: Point | null = null;
   lastImageData: ImageData | null = null;
-  isDrawing = false;
   canvas: Canvas;
 
   constructor(canvas: Canvas) {
@@ -33,7 +33,6 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   }
 
   drawBegin(point: Point): void {
-    this.isDrawing = true;
     this.basePoint = point;
 
     // We dont want to draw anything if DraggableShape
@@ -75,9 +74,13 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
   drawFinish(): void {
     if (this.currentShape === null) return;
+
     if (this.currentShape instanceof UpdatableShape) {
       this.currentShape.endDate = Date.now();
     }
+
+    if (this.currentShape instanceof Fill && this.currentShape.dismissed) return;
+
     this.shapes.push(this.currentShape);
     this.storeLast();
 
@@ -85,7 +88,6 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
     this.currentShape = null;
     this.basePoint = null;
-    this.isDrawing = false;
     this.undoShapes = [];
   }
 

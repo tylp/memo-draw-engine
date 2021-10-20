@@ -8,6 +8,7 @@ import ShapeType from './ShapeType';
 import Canvas from '../Canvas';
 
 class Fill extends Shape {
+  dismissed = false;
   edges!: Set<number>;
   baseColor!: AlphaColor;
   imageData!: ImageData;
@@ -48,7 +49,11 @@ class Fill extends Shape {
     // Check if the clicked color is not the current fill color
     // Do not check using pure color equality because canvas element
     // display color using opacity variation
-    if (HueLight.alphaColorEqual(this.baseColor, this.color)) return;
+    // Store the result to avoid adding it to shape stack
+    if (HueLight.alphaColorEqual(this.baseColor, this.color)) {
+      this.dismissed = true;
+      return;
+    }
 
     const pixelStack: Array<Array<number>> = [[this.originPoint.x, this.originPoint.y]];
 
