@@ -1,4 +1,3 @@
-import Canvas from '../Canvas';
 import Point from '../Point';
 import Utils from '../Utils';
 import UpdatableShape from './UpdatableShape';
@@ -21,40 +20,27 @@ class Pencil extends UpdatableShape {
 
   async draw(shapeManager: ShapeManager, animate: boolean): Promise<void> {
     super.draw(shapeManager, animate);
-    this.drawPoints(this.points, this.durationMs, animate, shapeManager);
+    if (animate) this.drawWithAnimation([], this.points, this.durationMs, shapeManager);
+    else this.drawPoints(this.points, shapeManager);
   }
 
   async mergePoints(points: Array<Point>, endDate: number, shapeManager: ShapeManager): Promise<void> {
     this.endDate = endDate;
     const newPoints = points.slice(this.points.length - 1);
+    const oldPoints = [...this.points];
     this.points = points;
-    await this.drawPoints(newPoints, INTERVAL_BETWEEN_EMIT, true, shapeManager);
+    await this.drawWithAnimation(oldPoints, newPoints, INTERVAL_BETWEEN_EMIT, shapeManager);
   }
 
-  private async drawPoints(points: Array<Point>, durationMs: number, animate: boolean, shapeManager: ShapeManager) {
-    // To respect the durationMs when there is a lot of point to draw
-    // in a short amount of time, thre are two issues :
-    // - It's not possible to wait float ms
-    // - The function take more than a ms to execute
-    // That's why, to create the animation effect :
-    // multiple point are drawed, and then a wait is done
-    const speedMultiplicator = 4;
-    const latencyInterval = 1 * speedMultiplicator;
-    const waitingIntervalMs: number = this.getWaitingInterval(durationMs, points);
+  private async drawWithAnimation(oldPoints: Array<Point>, newPoints: Array<Point>, durationMs: number, shapeManager: ShapeManager) {
+    const drawPoints = [...oldPoints];
+    const waitingInterval = durationMs / newPoints.length;
 
-    // Represent the number of line drawned before a wait
-    // If waitingIntervalMs is inferior to latencyInterval, wait for each line
-    const numberOfDrawPerWait = (waitingIntervalMs !== 0 && waitingIntervalMs <= latencyInterval)
-      ? Math.round(latencyInterval / waitingIntervalMs)
-      : 1;
-
-    for (let i = 1; i < points.length; i += 1) {
-      this.drawLine(points[i - 1], points[i], shapeManager.canvas);
-      // If it is not the last line and indes reached numberOfDrawPerWait
-      if (animate && i % numberOfDrawPerWait === 0 && i !== points.length) {
-        // eslint-disable-next-line no-await-in-loop
-        await Utils.waitInterval(waitingIntervalMs);
-      }
+    for (let i = 0; i < newPoints.length - 1; i += 1) {
+      drawPoints.push(newPoints[i]);
+      if (drawPoints.length >= 2) this.drawPoints(drawPoints, shapeManager);
+      // eslint-disable-next-line no-await-in-loop
+      await Utils.waitInterval(waitingInterval);
     }
   }
 
@@ -63,20 +49,18 @@ class Pencil extends UpdatableShape {
   }
 
   update(point: Point, shapeManager: ShapeManager): void {
-    const [lastPoint] = this.points.slice(-1);
-    if (lastPoint === undefined || this.startDate === undefined) return;
-
+    if (this.startDate === undefined) return;
     const now = Date.now();
 
     if (this.timeLastPoint === null) {
-      this.addLine(lastPoint, point, now, shapeManager.canvas);
+      this.addPoint(point, now, shapeManager);
       return;
     }
 
     const interval = now - this.timeLastPoint;
     if (interval < INTERVAL_BETWEEN_LINE) return;
 
-    this.addLine(lastPoint, point, now, shapeManager.canvas);
+    this.addPoint(point, now, shapeManager);
 
     // Mechanism to pre-emit pencil for better UX
     this.timeSinceLastEmit += interval;
@@ -87,18 +71,40 @@ class Pencil extends UpdatableShape {
     }
   }
 
-  private addLine(lastPt: Point, newPt: Point, time: number, canvas: Canvas): void {
-    this.points.push(newPt);
+  private addPoint(point: Point, time: number, shapeManager: ShapeManager): void {
+    this.points.push(point);
     this.timeLastPoint = time;
-    this.drawLine(lastPt, newPt, canvas);
+    this.drawPoints(this.points, shapeManager);
   }
 
-  private drawLine(p1: Point, p2: Point, canvas: Canvas) {
-    canvas.ctx.beginPath();
-    canvas.ctx.moveTo(p1.x, p1.y);
-    canvas.ctx.lineTo(p2.x, p2.y);
-    canvas.ctx.stroke();
-    canvas.ctx.closePath();
+  // Draw points unsing quadraticCurve between each points
+  // From https://github.com/embiem/react-canvas-draw (MIT)
+  private drawPoints(points: Array<Point>, shapeManager: ShapeManager) {
+    shapeManager.restoreLast();
+
+    let p1 = points[0];
+    let p2 = points[1];
+
+    shapeManager.canvas.ctx.moveTo(p2.x, p2.y);
+    shapeManager.canvas.ctx.beginPath();
+
+    for (let i = 1; i < points.length; i += 1) {
+      const midPoint = this.midPointBtw(p1, p2);
+      shapeManager.canvas.ctx.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
+      p1 = this.points[i];
+      p2 = this.points[i + 1];
+    }
+
+    // Finish last point with straight line
+    shapeManager.canvas.ctx.lineTo(p1.x, p1.y);
+    shapeManager.canvas.ctx.stroke();
+  }
+
+  private midPointBtw(p1: Point, p2: Point) {
+    return new Point(
+      p1.x + (p2.x - p1.x) / 2,
+      p1.y + (p2.y - p1.y) / 2,
+    );
   }
 }
 
