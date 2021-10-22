@@ -38,14 +38,13 @@ class Pencil extends UpdatableShape {
 
     for (let i = 0; i < newPoints.length - 1; i += 1) {
       drawPoints.push(newPoints[i]);
-      if (drawPoints.length >= 2) this.drawPoints(drawPoints, shapeManager);
+      if (drawPoints.length >= 2) {
+        shapeManager.restoreLast();
+        this.drawPoints(drawPoints, shapeManager);
+      }
       // eslint-disable-next-line no-await-in-loop
       await Utils.waitInterval(waitingInterval);
     }
-  }
-
-  private getWaitingInterval(durationMs: number, points: Array<Point>): number {
-    return durationMs !== 0 ? durationMs / points.length : 0;
   }
 
   update(point: Point, shapeManager: ShapeManager): void {
@@ -74,14 +73,13 @@ class Pencil extends UpdatableShape {
   private addPoint(point: Point, time: number, shapeManager: ShapeManager): void {
     this.points.push(point);
     this.timeLastPoint = time;
+    shapeManager.restoreLast();
     this.drawPoints(this.points, shapeManager);
   }
 
   // Draw points unsing quadraticCurve between each points
   // From https://github.com/embiem/react-canvas-draw (MIT)
   private drawPoints(points: Array<Point>, shapeManager: ShapeManager) {
-    shapeManager.restoreLast();
-
     let p1 = points[0];
     let p2 = points[1];
 
@@ -91,8 +89,8 @@ class Pencil extends UpdatableShape {
     for (let i = 1; i < points.length; i += 1) {
       const midPoint = this.midPointBtw(p1, p2);
       shapeManager.canvas.ctx.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
-      p1 = this.points[i];
-      p2 = this.points[i + 1];
+      p1 = points[i];
+      p2 = points[i + 1];
     }
 
     // Finish last point with straight line
