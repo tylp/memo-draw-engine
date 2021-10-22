@@ -23,7 +23,7 @@ module.exports = {
     'class-methods-use-this': 'off',
     'no-underscore-dangle': 'off',
     '@typescript-eslint/type-annotation-spacing': ['error'],
-    'linebreak-style': ["error", "windows"],
+    'linebreak-style': 'off',
     'max-len': 'off'
   }
 };
