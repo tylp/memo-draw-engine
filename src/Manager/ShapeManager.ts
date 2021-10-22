@@ -77,12 +77,11 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
       this.currentShape.endDate = Date.now();
     }
 
-    if (this.currentShape instanceof Fill && this.currentShape.dismissed) return;
-
-    this.shapes.push(this.currentShape);
-    this.storeLast();
-
-    this.emit();
+    if (!(this.currentShape instanceof Fill && this.currentShape.dismissed)) {
+      this.shapes.push(this.currentShape);
+      this.storeLast();
+      this.emit();
+    }
 
     this.currentShape = null;
     this.basePoint = null;
