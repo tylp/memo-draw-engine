@@ -10,6 +10,7 @@ class Canvas {
     const newCtx = this.canvasElement.getContext('2d');
     Canvas.validateContext(newCtx);
     this.ctx = newCtx;
+    this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';
   }
 
