@@ -46,18 +46,17 @@ class Fill extends Shape {
     const basePixelPos = this.getPixelPos(this.originPoint.x, this.originPoint.y);
     this.baseColor = this.getPixelColor(basePixelPos);
 
+    // Replace color by addition of base + new to allow opacity addition
+    this.color = this.baseColor.add(this.color);
+
     // Check if the clicked color is not the current fill color
-    // And that we doesnt want opacity
     // Do not check using pure color equality because canvas element
     // display color using opacity variation
     // Store the result to avoid adding it to shape stack
-    if (HueLight.alphaColorEqual(this.baseColor, this.color) && this.color.alpha === 255) {
+    if (HueLight.alphaColorEqual(this.baseColor, this.color)) {
       this.dismissed = true;
       return;
     }
-
-    // Replace color by addition of base + new to allow opacity addition
-    this.color = this.baseColor.add(this.color);
 
     const pixelStack: Array<Array<number>> = [[this.originPoint.x, this.originPoint.y]];
 
