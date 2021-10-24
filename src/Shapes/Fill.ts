@@ -46,6 +46,9 @@ class Fill extends Shape {
     const basePixelPos = this.getPixelPos(this.originPoint.x, this.originPoint.y);
     this.baseColor = this.getPixelColor(basePixelPos);
 
+    // Replace color by addition of base + new to allow opacity addition
+    this.color = this.baseColor.add(this.color);
+
     // Check if the clicked color is not the current fill color
     // Do not check using pure color equality because canvas element
     // display color using opacity variation

@@ -18,6 +18,19 @@ class AlphaColor extends Color {
       && color.blue === this.blue
       && color.alpha === this.alpha;
   }
+
+  add(newColor: AlphaColor): AlphaColor {
+    const oldColorAlpha = this.alpha / 255;
+    const newColorAlpha = newColor.alpha / 255;
+    const newAlpha = 1 - (1 - newColorAlpha) * (1 - oldColorAlpha);
+
+    return new AlphaColor(
+      Math.round(((newColor.red * newColorAlpha) / newAlpha) + (((this.red * oldColorAlpha) * (1 - newColorAlpha)) / newAlpha)),
+      Math.round(((newColor.green * newColorAlpha) / newAlpha) + (((this.green * oldColorAlpha) * (1 - newColorAlpha)) / newAlpha)),
+      Math.round(((newColor.blue * newColorAlpha) / newAlpha) + (((this.blue * oldColorAlpha) * (1 - newColorAlpha)) / newAlpha)),
+      newAlpha * 255,
+    );
+  }
 }
 
 export default AlphaColor;
