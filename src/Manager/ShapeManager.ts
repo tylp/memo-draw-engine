@@ -15,10 +15,8 @@ import Canvas from '../Canvas';
 import ShapeType from '../Shapes/ShapeType';
 import Fill from '../Shapes/Fill';
 import ShapeEventManager from './ShapeEventManager';
-import AnimationQueue from './AnimationQueue';
 
 class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction> {
-  animationQueue: AnimationQueue = new AnimationQueue();
   internalEventManager: ShapeEventManager = new ShapeEventManager(this);
   factory: IFactory<IShapeInfo, Shape> = new ShapeFactory();
   shapes: Array<Shape> = [];
@@ -115,10 +113,8 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     if (this.tryMergePencil(shapeInfo)) return;
     const shape = this.factory.build(shapeInfo);
     this.shapes.push(shape);
-    await this.animationQueue.add(async () => {
-      await shape.draw(this, true);
-      this.storeLast();
-    });
+    await shape.draw(this, true);
+    this.storeLast();
   }
 
   // Do not create a new pencil if the shape sent is a continuation of an existing pencil
@@ -132,10 +128,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     if (!(lastShape instanceof Pencil)) return false;
     if (lastShape.startDate !== shapeInfo.parameters.startDate) return false;
 
-    this.animationQueue.add(async () => {
-      await lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this);
-      this.storeLast();
-    });
+    lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this);
     return true;
   }
 
