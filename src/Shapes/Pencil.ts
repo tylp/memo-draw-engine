@@ -20,9 +20,8 @@ class Pencil extends UpdatableShape {
 
   async draw(shapeManager: ShapeManager, animate: boolean): Promise<void> {
     super.draw(shapeManager, animate);
-    if (animate) return this.drawWithAnimation([], this.points, this.durationMs, shapeManager);
-    this.drawPoints(this.points, shapeManager);
-    return Promise.resolve();
+    if (animate) this.drawWithAnimation([], this.points, this.durationMs, shapeManager);
+    else this.drawPoints(this.points, shapeManager);
   }
 
   async mergePoints(points: Array<Point>, endDate: number, shapeManager: ShapeManager): Promise<void> {
@@ -32,16 +31,18 @@ class Pencil extends UpdatableShape {
     const newPoints = points.slice(this.points.length - 1);
     const oldPoints = [...this.points];
     this.points = points;
-    await this.drawWithAnimation(oldPoints, newPoints, INTERVAL_BETWEEN_EMIT, shapeManager);
+    await this.drawWithAnimation(oldPoints, newPoints, duration, shapeManager);
   }
 
   private async drawWithAnimation(oldPoints: Array<Point>, newPoints: Array<Point>, durationMs: number, shapeManager: ShapeManager) {
+    const drawPoints = [...oldPoints];
     const waitingInterval = durationMs / newPoints.length;
+
     for (let i = 0; i < newPoints.length - 1; i += 1) {
-      oldPoints.push(newPoints[i]);
-      if (oldPoints.length >= 2) {
+      drawPoints.push(newPoints[i]);
+      if (drawPoints.length >= 2) {
         shapeManager.restoreLast();
-        this.drawPoints(oldPoints, shapeManager);
+        this.drawPoints(drawPoints, shapeManager);
       }
       // eslint-disable-next-line no-await-in-loop
       await Utils.waitInterval(waitingInterval);
