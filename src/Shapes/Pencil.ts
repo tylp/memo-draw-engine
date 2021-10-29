@@ -32,7 +32,7 @@ class Pencil extends UpdatableShape {
     const newPoints = points.slice(this.points.length - 1);
     const oldPoints = [...this.points];
     this.points = points;
-    await this.drawWithAnimation(oldPoints, newPoints, INTERVAL_BETWEEN_EMIT, shapeManager);
+    await this.drawWithAnimation(oldPoints, newPoints, duration, shapeManager);
   }
 
   private async drawWithAnimation(oldPoints: Array<Point>, newPoints: Array<Point>, durationMs: number, shapeManager: ShapeManager) {
