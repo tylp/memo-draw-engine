@@ -37,7 +37,7 @@ class Pencil extends UpdatableShape {
 
   private async drawWithAnimation(oldPoints: Array<Point>, newPoints: Array<Point>, durationMs: number, shapeManager: ShapeManager) {
     const waitingInterval = durationMs / newPoints.length;
-    for (let i = 0; i < newPoints.length - 1; i += 1) {
+    for (let i = 0; i < newPoints.length; i += 1) {
       oldPoints.push(newPoints[i]);
       if (oldPoints.length >= 2) {
         shapeManager.restoreLast();
