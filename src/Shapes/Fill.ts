@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-import CanvasHolder from '../Manager/CanvasHolder';
 import Shape from './Shape';
 import AlphaColor from '../Color/AlphaColor';
 import Point from '../Point';
@@ -23,10 +22,10 @@ class Fill extends Shape {
     return { ...super.getExportInfo(), originPoint: this.originPoint };
   }
 
-  async draw(shapeManager: CanvasHolder, animate: boolean): Promise<void> {
+  async draw(canvas: Canvas, animate: boolean): Promise<void> {
     return new Promise((resolve) => {
-      super.draw(shapeManager, animate);
-      this.fill(shapeManager.canvas);
+      super.draw(canvas, animate);
+      this.fill(canvas);
       resolve();
     });
   }

@@ -2,7 +2,7 @@ import Point from '../Point';
 import Utils from '../Utils';
 import UpdatableShape from './UpdatableShape';
 import ShapeType from './ShapeType';
-import type ShapeManager from '../Manager/ShapeManager';
+import Canvas from '../Canvas';
 
 const INTERVAL_BETWEEN_LINE = 10;
 const INTERVAL_BETWEEN_EMIT = 500;
@@ -18,85 +18,91 @@ class Pencil extends UpdatableShape {
     return { ...super.getExportInfo(), points: this.points };
   }
 
-  async draw(shapeManager: ShapeManager, animate: boolean): Promise<void> {
-    super.draw(shapeManager, animate);
-    if (animate) return this.drawWithAnimation([], this.points, this.durationMs, shapeManager);
-    this.drawPoints(this.points, shapeManager);
+  async draw(canvas: Canvas, animate: boolean): Promise<void> {
+    super.draw(canvas, animate);
+    if (animate) return this.drawWithAnimation([], this.points, this.durationMs, canvas);
+    this.drawPoints(this.points, canvas);
     return Promise.resolve();
   }
 
-  async mergePoints(points: Array<Point>, endDate: number, shapeManager: ShapeManager): Promise<void> {
+  async mergePoints(points: Array<Point>, endDate: number, canvas: Canvas): Promise<void> {
     if (!this.endDate) return;
     const duration = endDate - this.endDate;
     this.endDate = endDate;
     const newPoints = points.slice(this.points.length - 1);
     const oldPoints = [...this.points];
     this.points = points;
-    await this.drawWithAnimation(oldPoints, newPoints, duration, shapeManager);
+    await this.drawWithAnimation(oldPoints, newPoints, duration, canvas);
   }
 
-  private async drawWithAnimation(oldPoints: Array<Point>, newPoints: Array<Point>, durationMs: number, shapeManager: ShapeManager) {
+  private async drawWithAnimation(oldPoints: Array<Point>, newPoints: Array<Point>, durationMs: number, canvas: Canvas) {
     const waitingInterval = durationMs / newPoints.length;
     for (let i = 0; i < newPoints.length - 1; i += 1) {
       oldPoints.push(newPoints[i]);
       if (oldPoints.length >= 2) {
-        shapeManager.canvas.restoreLast();
-        this.drawPoints(oldPoints, shapeManager);
+        canvas.restoreLast();
+        this.drawPoints(oldPoints, canvas);
       }
       // eslint-disable-next-line no-await-in-loop
       await Utils.waitInterval(waitingInterval);
     }
   }
 
-  update(point: Point, shapeManager: ShapeManager): void {
+  update(point: Point, canvas: Canvas): void {
     if (this.startDate === undefined) return;
     const now = Date.now();
 
     if (this.timeLastPoint === null) {
-      this.addPoint(point, now, shapeManager);
+      this.addPoint(point, now, canvas);
       return;
     }
 
     const interval = now - this.timeLastPoint;
     if (interval < INTERVAL_BETWEEN_LINE) return;
 
-    this.addPoint(point, now, shapeManager);
+    this.addPoint(point, now, canvas);
 
     // Mechanism to pre-emit pencil for better UX
     this.timeSinceLastEmit += interval;
-    if (this.timeSinceLastEmit > INTERVAL_BETWEEN_EMIT) {
-      this.endDate = now;
-      this.timeSinceLastEmit = 0;
-      shapeManager.emit();
-    }
   }
 
-  private addPoint(point: Point, time: number, shapeManager: ShapeManager): void {
+  // Pre-emit the pencil if more than INTERVAL_BETWEEN_EMIT
+  // To allow a better real-time UX
+  shouldPreEmit(): boolean {
+    return this.timeSinceLastEmit > INTERVAL_BETWEEN_EMIT;
+  }
+
+  resetForPreEmit(): void {
+    this.endDate = Date.now();
+    this.timeSinceLastEmit = 0;
+  }
+
+  private addPoint(point: Point, time: number, canvas: Canvas): void {
     this.points.push(point);
     this.timeLastPoint = time;
-    shapeManager.canvas.restoreLast();
-    this.drawPoints(this.points, shapeManager);
+    canvas.restoreLast();
+    this.drawPoints(this.points, canvas);
   }
 
   // Draw points unsing quadraticCurve between each points
   // From https://github.com/embiem/react-canvas-draw (MIT)
-  private drawPoints(points: Array<Point>, shapeManager: ShapeManager) {
+  private drawPoints(points: Array<Point>, canvas: Canvas) {
     let p1 = points[0];
     let p2 = points[1];
 
-    shapeManager.canvas.ctx.moveTo(p2.x, p2.y);
-    shapeManager.canvas.ctx.beginPath();
+    canvas.ctx.moveTo(p2.x, p2.y);
+    canvas.ctx.beginPath();
 
     for (let i = 1; i < points.length; i += 1) {
       const midPoint = this.midPointBtw(p1, p2);
-      shapeManager.canvas.ctx.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
+      canvas.ctx.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
       p1 = points[i];
       p2 = points[i + 1];
     }
 
     // Finish last point with straight line
-    shapeManager.canvas.ctx.lineTo(p1.x, p1.y);
-    shapeManager.canvas.ctx.stroke();
+    canvas.ctx.lineTo(p1.x, p1.y);
+    canvas.ctx.stroke();
   }
 
   private midPointBtw(p1: Point, p2: Point) {

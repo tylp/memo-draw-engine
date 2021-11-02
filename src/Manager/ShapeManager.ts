@@ -42,7 +42,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     this.createShape();
 
     if (!(this.currentShape instanceof UpdatableShape)) {
-      this.currentShape?.draw(this, false);
+      this.currentShape?.draw(this.canvas, false);
     } else if (this.currentShape !== null) {
       // Set style for new shape if the shape is not directly draw
       this.canvas.setStyle(this.currentShape.color, this.currentShape.thickness);
@@ -50,7 +50,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
     // Update on create to draw single point
     if (this.currentShape instanceof Pencil) {
-      this.currentShape.update(point, this);
+      this.currentShape.update(point, this.canvas);
     }
   }
 
@@ -60,7 +60,13 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     }
 
     if (this.currentShape instanceof UpdatableShape) {
-      this.currentShape.update(point, this);
+      this.currentShape.update(point, this.canvas);
+    }
+
+    // Handle Pencil pre-emit for real-time draw
+    if (this.currentShape instanceof Pencil && this.currentShape.shouldPreEmit()) {
+      this.currentShape.resetForPreEmit();
+      this.emit();
     }
   }
 
@@ -115,7 +121,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     const shape = this.factory.build(shapeInfo);
     this.shapes.push(shape);
     await this.animationQueue.add(async () => {
-      await shape.draw(this, true);
+      await shape.draw(this.canvas, true);
       this.canvas.storeLast();
     });
   }
@@ -132,7 +138,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     if (lastShape.startDate !== shapeInfo.parameters.startDate) return false;
 
     this.animationQueue.add(async () => {
-      await lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this);
+      await lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this.canvas);
       this.canvas.storeLast();
     });
     return true;
@@ -153,14 +159,14 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     this.drawFinish();
     const shape: Shape | undefined = this.undoShapes.pop();
     if (shape !== undefined) {
-      await shape.draw(this, false);
+      await shape.draw(this.canvas, false);
       this.shapes.push(shape);
       this.canvas.storeLast();
     }
   }
 
   public redrawShapes(): void {
-    this.shapes.forEach((shp) => shp.draw(this, false));
+    this.shapes.forEach((shp) => shp.draw(this.canvas, false));
   }
 }
 
