@@ -31,7 +31,6 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   constructor(canvas: Canvas) {
     super();
     this.canvas = canvas;
-    this.storeLast();
   }
 
   drawBegin(point: Point): void {
@@ -81,7 +80,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
     if (!(this.currentShape instanceof Fill && this.currentShape.dismissed)) {
       this.shapes.push(this.currentShape);
-      this.storeLast();
+      this.canvas.storeLast();
       this.emit();
     }
 
@@ -117,7 +116,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     this.shapes.push(shape);
     await this.animationQueue.add(async () => {
       await shape.draw(this, true);
-      this.storeLast();
+      this.canvas.storeLast();
     });
   }
 
@@ -134,7 +133,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
     this.animationQueue.add(async () => {
       await lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this);
-      this.storeLast();
+      this.canvas.storeLast();
     });
     return true;
   }
@@ -147,7 +146,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
       this.undoShapes.push(shape);
     }
     this.redrawShapes();
-    this.storeLast();
+    this.canvas.storeLast();
   }
 
   async redo(): Promise<void> {
@@ -156,24 +155,12 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     if (shape !== undefined) {
       await shape.draw(this, false);
       this.shapes.push(shape);
-      this.storeLast();
+      this.canvas.storeLast();
     }
   }
 
   public redrawShapes(): void {
     this.shapes.forEach((shp) => shp.draw(this, false));
-  }
-
-  private storeLast(): void {
-    this.lastImageData = this.canvas.ctx.getImageData(
-      0, 0, this.canvas.canvasElement.width, this.canvas.canvasElement.height,
-    );
-  }
-
-  public restoreLast(): void {
-    if (this.lastImageData !== null) {
-      this.canvas.ctx.putImageData(this.lastImageData, 0, 0);
-    }
   }
 }
 

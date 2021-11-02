@@ -3,6 +3,7 @@ import AlphaColor from './Color/AlphaColor';
 class Canvas {
   ctx: CanvasRenderingContext2D;
   canvasElement: HTMLCanvasElement;
+  lastImageData: ImageData | null = null;
 
   constructor(canvasElement: HTMLCanvasElement) {
     this.canvasElement = canvasElement;
@@ -12,6 +13,8 @@ class Canvas {
     this.ctx = newCtx;
     this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';
+
+    this.storeLast();
   }
 
   private static validateContext(ctx: CanvasRenderingContext2D | null): asserts ctx is CanvasRenderingContext2D {
@@ -30,6 +33,18 @@ class Canvas {
   clearCanvas(): void {
     this.ctx.fillStyle = 'white';
     this.ctx.fillRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+  }
+
+  storeLast(): void {
+    this.lastImageData = this.ctx.getImageData(
+      0, 0, this.canvasElement.width, this.canvasElement.height,
+    );
+  }
+
+  restoreLast(): void {
+    if (this.lastImageData !== null) {
+      this.ctx.putImageData(this.lastImageData, 0, 0);
+    }
   }
 }
 

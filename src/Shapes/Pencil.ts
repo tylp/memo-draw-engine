@@ -40,7 +40,7 @@ class Pencil extends UpdatableShape {
     for (let i = 0; i < newPoints.length - 1; i += 1) {
       oldPoints.push(newPoints[i]);
       if (oldPoints.length >= 2) {
-        shapeManager.restoreLast();
+        shapeManager.canvas.restoreLast();
         this.drawPoints(oldPoints, shapeManager);
       }
       // eslint-disable-next-line no-await-in-loop
@@ -74,7 +74,7 @@ class Pencil extends UpdatableShape {
   private addPoint(point: Point, time: number, shapeManager: ShapeManager): void {
     this.points.push(point);
     this.timeLastPoint = time;
-    shapeManager.restoreLast();
+    shapeManager.canvas.restoreLast();
     this.drawPoints(this.points, shapeManager);
   }
 
