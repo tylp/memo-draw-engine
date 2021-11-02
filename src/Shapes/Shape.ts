@@ -28,10 +28,7 @@ abstract class Shape {
 
   // Use to definitely draw shape (viewer side)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  draw(canvas: Canvas, animate: boolean): Promise<void> {
-    canvas.setStyle(this.color, this.thickness);
-    return Promise.resolve();
-  }
+  abstract draw(canvas: Canvas, animate: boolean): Promise<void>;
 }
 
 export default Shape;

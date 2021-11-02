@@ -42,7 +42,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     this.createShape();
 
     if (!(this.currentShape instanceof UpdatableShape)) {
-      this.currentShape?.draw(this.canvas, false);
+      this.currentShape?.draw(this.canvas.backgroundCanvas, false);
     } else if (this.currentShape !== null) {
       // Set style for new shape if the shape is not directly draw
       this.canvas.setStyle(this.currentShape.color, this.currentShape.thickness);
@@ -84,9 +84,16 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
       this.currentShape.endDate = Date.now();
     }
 
+    // If shape was not dismissed
     if (!(this.currentShape instanceof Fill && this.currentShape.dismissed)) {
+      // If shape was on temporary canvas draw it on the backgroeund canvas
+      if (this.currentShape instanceof UpdatableShape) {
+        this.currentShape.draw(this.canvas.backgroundCanvas, false);
+      }
+
+      this.canvas.clearCanvas();
       this.shapes.push(this.currentShape);
-      this.canvas.storeLast();
+      this.canvas.backgroundCanvas.storeLast();
       this.emit();
     }
 
@@ -121,8 +128,8 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     const shape = this.factory.build(shapeInfo);
     this.shapes.push(shape);
     await this.animationQueue.add(async () => {
-      await shape.draw(this.canvas, true);
-      this.canvas.storeLast();
+      await shape.draw(this.canvas.backgroundCanvas, true);
+      this.canvas.backgroundCanvas.storeLast();
     });
   }
 
@@ -138,35 +145,35 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     if (lastShape.startDate !== shapeInfo.parameters.startDate) return false;
 
     this.animationQueue.add(async () => {
-      await lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this.canvas);
-      this.canvas.storeLast();
+      await lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this.canvas.backgroundCanvas);
+      this.canvas.backgroundCanvas.storeLast();
     });
     return true;
   }
 
   undo(): void {
     this.drawFinish();
-    this.canvas.clearCanvas();
+    this.canvas.backgroundCanvas.clearCanvas();
     const shape: Shape | undefined = this.shapes.pop();
     if (shape !== undefined) {
       this.undoShapes.push(shape);
     }
     this.redrawShapes();
-    this.canvas.storeLast();
+    this.canvas.backgroundCanvas.storeLast();
   }
 
   async redo(): Promise<void> {
     this.drawFinish();
     const shape: Shape | undefined = this.undoShapes.pop();
     if (shape !== undefined) {
-      await shape.draw(this.canvas, false);
+      await shape.draw(this.canvas.backgroundCanvas, false);
       this.shapes.push(shape);
-      this.canvas.storeLast();
+      this.canvas.backgroundCanvas.storeLast();
     }
   }
 
   public redrawShapes(): void {
-    this.shapes.forEach((shp) => shp.draw(this.canvas, false));
+    this.shapes.forEach((shp) => shp.draw(this.canvas.backgroundCanvas, false));
   }
 }
 

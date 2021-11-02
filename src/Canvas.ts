@@ -40,8 +40,7 @@ class Canvas {
   }
 
   clearCanvas(): void {
-    this.ctx.fillStyle = 'white';
-    this.ctx.fillRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+    this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
   }
 
   storeLast(): void {

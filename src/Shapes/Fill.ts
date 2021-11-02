@@ -22,9 +22,8 @@ class Fill extends Shape {
     return { ...super.getExportInfo(), originPoint: this.originPoint };
   }
 
-  async draw(canvas: Canvas, animate: boolean): Promise<void> {
+  async draw(canvas: Canvas): Promise<void> {
     return new Promise((resolve) => {
-      super.draw(canvas, animate);
       this.fill(canvas);
       resolve();
     });
