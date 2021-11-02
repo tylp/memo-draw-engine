@@ -21,7 +21,7 @@ class Canvas {
     this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';
 
-    if (createBackground) this.createTemporaryCanvas();
+    if (createBackground) this.createBackgroundCanvas();
 
     this.storeLast();
   }
@@ -55,7 +55,7 @@ class Canvas {
     }
   }
 
-  createTemporaryCanvas(): void {
+  createBackgroundCanvas(): void {
     const tempCanvasElement = this.canvasElement.cloneNode() as HTMLCanvasElement;
     tempCanvasElement.style.zIndex = '-1';
     tempCanvasElement.style.position = 'absolute';
