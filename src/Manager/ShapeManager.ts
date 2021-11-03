@@ -43,6 +43,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
     if (!(this.currentShape instanceof UpdatableShape)) {
       this.currentShape?.draw(this.canvas.backgroundCanvas, false);
+      this.canvas.backgroundCanvas.storeLast();
     } else if (this.currentShape !== null) {
       // Set style for new shape if the shape is not directly draw
       this.canvas.setStyle(this.currentShape.color, this.currentShape.thickness);
@@ -86,20 +87,37 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
     // If shape was not dismissed
     if (!(this.currentShape instanceof Fill && this.currentShape.dismissed)) {
-      // If shape was on temporary canvas draw it on the backgroeund canvas
+      // If shape is UpdatableShape draw on background canvas
       if (this.currentShape instanceof UpdatableShape) {
-        this.currentShape.draw(this.canvas.backgroundCanvas, false);
+        this.drawCurrentShapeToBackground();
       }
 
-      this.canvas.clearCanvas();
       this.shapes.push(this.currentShape);
-      this.canvas.backgroundCanvas.storeLast();
       this.emit();
     }
 
     this.currentShape = null;
     this.basePoint = null;
     this.undoShapes = [];
+  }
+
+  // Draw the current shape (drawn on the main canvas) to the background canvas
+  // Use animation queue to not override currents animation
+  // Store main canvas to persist not already backgrouded shapes
+  drawCurrentShapeToBackground(): void {
+    if (this.currentShape === null) return;
+    // Store main canvas while animation queue
+    this.canvas.storeLast();
+    // Wait last animation end before add to background
+    const shape = this.currentShape;
+    this.animationQueue.add(async () => {
+      shape.draw(this.canvas.backgroundCanvas, false);
+      this.canvas.backgroundCanvas.storeLast();
+    }).then(() => {
+      // Reset main canvas when animation queue finished
+      this.canvas.clearCanvas();
+      this.canvas.storeLast();
+    });
   }
 
   emit(): void {
