@@ -160,7 +160,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     const lastShape = this.shapes[this.shapes.length - 1];
 
     if (!(lastShape instanceof Pencil)) return false;
-    if (lastShape.startDate !== shapeInfo.parameters.startDate) return false;
+    if (lastShape.id !== shapeInfo.parameters.id) return false;
 
     this.animationQueue.add(async () => {
       await lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this.canvas.backgroundCanvas);
