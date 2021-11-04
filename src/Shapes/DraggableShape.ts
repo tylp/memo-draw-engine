@@ -29,19 +29,21 @@ abstract class DraggableShape extends UpdatableShape {
   }
 
   async drawWithAnimation(canvas: Canvas): Promise<void> {
-    const numberOfFrame = (this.durationMs / 1000) * 60;
+    const numberOfFrame = (this.durationMs / 1000) * 100;
     const waitingIntervalMs = this.durationMs / numberOfFrame;
 
     for (let i = 1; i <= numberOfFrame; i += 1) {
       const doneIndex = i / numberOfFrame;
       canvas.restoreLast();
       this.drawShape(this.originPoint as Point, this.width * doneIndex, this.height * doneIndex, canvas);
-      // Doesnt await if shape is completely drawn
-      if (i !== numberOfFrame) {
-        // eslint-disable-next-line no-await-in-loop
-        await Utils.waitInterval(waitingIntervalMs);
-      }
+      // eslint-disable-next-line no-await-in-loop
+      await Utils.waitInterval(waitingIntervalMs);
     }
+
+    // Draw a last time using full width / height, because doneIndex could no be equal to 1
+    // in case of not round numberOfFrame
+    canvas.restoreLast();
+    this.drawShape(this.originPoint as Point, this.width, this.height, canvas);
   }
 
   update(point: Point, canvas: Canvas): void {
