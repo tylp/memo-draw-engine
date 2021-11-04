@@ -7,8 +7,8 @@ abstract class UpdatableShape extends Shape {
   startDate: number | undefined;
   endDate: number | undefined;
 
-  constructor(color: AlphaColor, thickness: number) {
-    super(color, thickness);
+  constructor(id: string, color: AlphaColor, thickness: number) {
+    super(id, color, thickness);
     this.startDate = Date.now();
   }
 

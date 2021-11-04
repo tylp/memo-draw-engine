@@ -5,10 +5,12 @@ import Canvas from '../Canvas';
 
 abstract class Shape {
   protected abstract shapeType: ShapeType;
+  id: string;
   color: AlphaColor;
   thickness: number;
 
-  constructor(color: AlphaColor, thickness: number) {
+  constructor(id: string, color: AlphaColor, thickness: number) {
+    this.id = id;
     this.color = color;
     this.thickness = thickness;
   }
@@ -23,7 +25,7 @@ abstract class Shape {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected getExportInfo(): any {
-    return { color: this.color, thickness: this.thickness };
+    return { color: this.color, thickness: this.thickness, id: this.id };
   }
 
   // Use to definitely draw shape (viewer side)
