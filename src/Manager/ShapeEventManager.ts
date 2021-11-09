@@ -36,12 +36,12 @@ class ShapeEventManager implements ICanvasEventHandlder, IDocumentEventHandler {
 
   undo(): void {
     this.isDrawing = false;
-    this.shapeManager.undo();
+    this.shapeManager.undoRedoManager.undo();
   }
 
   redo(): void {
     this.isDrawing = false;
-    this.shapeManager.redo();
+    this.shapeManager.undoRedoManager.redo();
   }
 
   documentMouseUp(): void {
