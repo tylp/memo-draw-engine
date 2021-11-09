@@ -1,3 +1,4 @@
+import Utils from '../Utils';
 import ShapeType from './ShapeType';
 import AlphaColor from '../Color/AlphaColor';
 import IShapeInfo from './IShapeInfo';
@@ -8,9 +9,11 @@ abstract class Shape {
   id: string;
   color: AlphaColor;
   thickness: number;
+  created: boolean;
 
-  constructor(id: string, color: AlphaColor, thickness: number) {
-    this.id = id;
+  constructor(id: string | undefined, color: AlphaColor, thickness: number) {
+    this.id = id || Utils.generateUID();
+    this.created = (id === undefined);
     this.color = color;
     this.thickness = thickness;
   }

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-param-reassign */
-import Utils from '../Utils';
 import Point from '../Point';
 import IFactory from './IFactory';
 import ShapeType from './ShapeType';
@@ -42,23 +41,22 @@ class ShapeFactory implements IFactory<IShapeInfo, Shape> {
     return shape;
   }
 
-  create(shapeType: ShapeType, id: string, styleInfo: { color: AlphaColor, thickness: number }): Shape {
-    const shapeId = id || Utils.generateUID();
+  create(shapeType: ShapeType, id: string | undefined, styleInfo: { color: AlphaColor, thickness: number }): Shape {
     switch (shapeType) {
       case ShapeType.Pencil:
-        return new Pencil(shapeId, styleInfo.color, styleInfo.thickness);
+        return new Pencil(id, styleInfo.color, styleInfo.thickness);
       case ShapeType.RectangleFull:
-        return new RectangleFull(shapeId, styleInfo.color, styleInfo.thickness);
+        return new RectangleFull(id, styleInfo.color, styleInfo.thickness);
       case ShapeType.RectangleStroke:
-        return new RectangleStroke(shapeId, styleInfo.color, styleInfo.thickness);
+        return new RectangleStroke(id, styleInfo.color, styleInfo.thickness);
       case ShapeType.EllipseFull:
-        return new EllipseFull(shapeId, styleInfo.color, styleInfo.thickness);
+        return new EllipseFull(id, styleInfo.color, styleInfo.thickness);
       case ShapeType.EllipseStroke:
-        return new EllipseStroke(shapeId, styleInfo.color, styleInfo.thickness);
+        return new EllipseStroke(id, styleInfo.color, styleInfo.thickness);
       case ShapeType.Line:
-        return new Line(shapeId, styleInfo.color, styleInfo.thickness);
+        return new Line(id, styleInfo.color, styleInfo.thickness);
       case ShapeType.Fill:
-        return new Fill(shapeId, styleInfo.color, styleInfo.thickness);
+        return new Fill(id, styleInfo.color, styleInfo.thickness);
       default:
         throw new Error('Shape is not implemented');
     }
