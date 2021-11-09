@@ -24,7 +24,6 @@ class Engine {
     this.networkManager = networkManager;
     this.networkManager.subscribe(this.shapeManager);
     this.shapeManager.subscribe(this.networkManager);
-    this.eventManager.subscribeDocumentEventHandler(this.networkManager);
   }
 }
 

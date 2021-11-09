@@ -1,10 +1,8 @@
-import ActionType from '../Action/ActionType';
-import IDocumentEventHandler from './IDocumentEventHandler';
 import IAction from '../Action/IAction';
 import AbstractObservable from '../Observer/AbstractObservable';
 import IObserver from '../Observer/IObserver';
 
-abstract class AbstractNetworkManager extends AbstractObservable<IAction> implements IObserver<IAction>, IDocumentEventHandler {
+abstract class AbstractNetworkManager extends AbstractObservable<IAction> implements IObserver<IAction> {
   // Override this to emit the IAction over the network
   abstract update(elem: IAction): void;
 
@@ -13,17 +11,6 @@ abstract class AbstractNetworkManager extends AbstractObservable<IAction> implem
     const action = info as IAction;
     if (action !== null) this.notify(action);
   }
-
-  undo(): void {
-    this.update({ type: ActionType.undo, parameters: null });
-  }
-
-  redo(): void {
-    this.update({ type: ActionType.redo, parameters: null });
-  }
-
-  documentMouseUp(): void {}
-  documentMouseMove(): void {}
 }
 
 export default AbstractNetworkManager;
