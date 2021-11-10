@@ -85,8 +85,12 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     this.createShape();
 
     if (!(this.currentShape instanceof UpdatableShape)) {
-      this.currentShape?.draw(this.canvasManager.backgroundCanvas, false);
-      this.canvasManager.backgroundCanvas.storeLast();
+      const { currentShape } = this;
+      this.animationQueue.add(() => {
+        currentShape?.draw(this.canvasManager.backgroundCanvas, false);
+        this.canvasManager.backgroundCanvas.storeLast();
+        return Promise.resolve();
+      });
     } else if (this.currentShape !== null) {
       // Set style for new shape if the shape is not directly draw
       this.canvasManager.userCanvas.setStyle(this.currentShape.color, this.currentShape.thickness);
