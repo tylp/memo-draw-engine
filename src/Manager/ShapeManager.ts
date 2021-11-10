@@ -11,11 +11,11 @@ import Pencil from '../Shapes/Pencil';
 import AbstractObservable from '../Observer/AbstractObservable';
 import IAction from '../Action/IAction';
 import ActionType from '../Action/ActionType';
-import Canvas from '../Canvas';
 import ShapeType from '../Shapes/ShapeType';
 import Fill from '../Shapes/Fill';
 import ShapeEventManager from './ShapeEventManager';
 import AnimationQueue from './AnimationQueue';
+import CanvasManager from './CanvasManager';
 
 class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction> {
   animationQueue: AnimationQueue = new AnimationQueue();
@@ -26,12 +26,11 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   currentShape: Shape | null = null;
   basePoint: Point | null = null;
   lastImageData: ImageData | null = null;
-  canvas: Canvas;
+  canvasManager: CanvasManager;
 
-  constructor(canvas: Canvas) {
+  constructor(canvasManager: CanvasManager) {
     super();
-    this.canvas = canvas;
-    this.storeLast();
+    this.canvasManager = canvasManager;
   }
 
   drawBegin(point: Point): void {
@@ -43,15 +42,16 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     this.createShape();
 
     if (!(this.currentShape instanceof UpdatableShape)) {
-      this.currentShape?.draw(this, false);
+      this.currentShape?.draw(this.canvasManager.backgroundCanvas, false);
+      this.canvasManager.backgroundCanvas.storeLast();
     } else if (this.currentShape !== null) {
       // Set style for new shape if the shape is not directly draw
-      this.canvas.setStyle(this.currentShape.color, this.currentShape.thickness);
+      this.canvasManager.userCanvas.setStyle(this.currentShape.color, this.currentShape.thickness);
     }
 
     // Update on create to draw single point
     if (this.currentShape instanceof Pencil) {
-      this.currentShape.update(point, this);
+      this.currentShape.update(point, this.canvasManager.userCanvas);
     }
   }
 
@@ -61,7 +61,13 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     }
 
     if (this.currentShape instanceof UpdatableShape) {
-      this.currentShape.update(point, this);
+      this.currentShape.update(point, this.canvasManager.userCanvas);
+    }
+
+    // Handle Pencil pre-emit for real-time draw
+    if (this.currentShape instanceof Pencil && this.currentShape.shouldPreEmit()) {
+      this.currentShape.resetForPreEmit();
+      this.emit();
     }
   }
 
@@ -79,15 +85,39 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
       this.currentShape.endDate = Date.now();
     }
 
+    // If shape was not dismissed
     if (!(this.currentShape instanceof Fill && this.currentShape.dismissed)) {
+      // If shape is UpdatableShape draw on background canvas
+      if (this.currentShape instanceof UpdatableShape) {
+        this.drawCurrentShapeToBackground();
+      }
+
       this.shapes.push(this.currentShape);
-      this.storeLast();
       this.emit();
     }
 
     this.currentShape = null;
     this.basePoint = null;
     this.undoShapes = [];
+  }
+
+  // Draw the current shape (drawn on the main canvas) to the background canvas
+  // Use animation queue to not override currents animation
+  // Store main canvas to persist not already backgrouded shapes
+  drawCurrentShapeToBackground(): void {
+    if (this.currentShape === null) return;
+    // Store main canvas while animation queue
+    this.canvasManager.userCanvas.storeLast();
+    // Wait last animation end before add to background
+    const shape = this.currentShape;
+    this.animationQueue.add(async () => {
+      shape.draw(this.canvasManager.backgroundCanvas, false);
+      this.canvasManager.backgroundCanvas.storeLast();
+    }).then(() => {
+      // Reset main canvas when animation queue finished
+      this.canvasManager.userCanvas.clearCanvas();
+      this.canvasManager.userCanvas.storeLast();
+    });
   }
 
   emit(): void {
@@ -116,8 +146,8 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     const shape = this.factory.build(shapeInfo);
     this.shapes.push(shape);
     await this.animationQueue.add(async () => {
-      await shape.draw(this, true);
-      this.storeLast();
+      await shape.draw(this.canvasManager.backgroundCanvas, true);
+      this.canvasManager.backgroundCanvas.storeLast();
     });
   }
 
@@ -133,47 +163,35 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     if (lastShape.startDate !== shapeInfo.parameters.startDate) return false;
 
     this.animationQueue.add(async () => {
-      await lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this);
-      this.storeLast();
+      await lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this.canvasManager.backgroundCanvas);
+      this.canvasManager.backgroundCanvas.storeLast();
     });
     return true;
   }
 
   undo(): void {
     this.drawFinish();
-    this.canvas.clearCanvas();
+    this.canvasManager.backgroundCanvas.clearCanvas();
     const shape: Shape | undefined = this.shapes.pop();
     if (shape !== undefined) {
       this.undoShapes.push(shape);
     }
     this.redrawShapes();
-    this.storeLast();
+    this.canvasManager.backgroundCanvas.storeLast();
   }
 
   async redo(): Promise<void> {
     this.drawFinish();
     const shape: Shape | undefined = this.undoShapes.pop();
     if (shape !== undefined) {
-      await shape.draw(this, false);
+      await shape.draw(this.canvasManager.backgroundCanvas, false);
       this.shapes.push(shape);
-      this.storeLast();
+      this.canvasManager.backgroundCanvas.storeLast();
     }
   }
 
   public redrawShapes(): void {
-    this.shapes.forEach((shp) => shp.draw(this, false));
-  }
-
-  private storeLast(): void {
-    this.lastImageData = this.canvas.ctx.getImageData(
-      0, 0, this.canvas.canvasElement.width, this.canvas.canvasElement.height,
-    );
-  }
-
-  public restoreLast(): void {
-    if (this.lastImageData !== null) {
-      this.canvas.ctx.putImageData(this.lastImageData, 0, 0);
-    }
+    this.shapes.forEach((shp) => shp.draw(this.canvasManager.backgroundCanvas, false));
   }
 }
 

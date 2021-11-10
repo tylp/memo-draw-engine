@@ -1,7 +1,7 @@
 import Shape from './Shape';
-import type ShapeManager from '../Manager/ShapeManager';
 import Point from '../Point';
 import type AlphaColor from '../Color/AlphaColor';
+import Canvas from '../Canvas';
 
 abstract class UpdatableShape extends Shape {
   startDate: number | undefined;
@@ -27,7 +27,13 @@ abstract class UpdatableShape extends Shape {
   }
 
   // Use for live view of shape (drawer side)
-  abstract update(point: Point, shapeManager: ShapeManager): void;
+  abstract update(point: Point, canvas: Canvas): void;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async draw(canvas: Canvas, animate: boolean): Promise<void> {
+    canvas.setStyle(this.color, this.thickness);
+    return Promise.resolve();
+  }
 }
 
 export default UpdatableShape;
