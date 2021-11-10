@@ -6,12 +6,15 @@ import HueLight from '../Color/HueLight';
 import ShapeType from './ShapeType';
 import Canvas from '../Canvas';
 
+type CustomNumberCollection = Uint8ClampedArray | Array<number>;
+
 class Fill extends Shape {
   dismissed = false;
   edges!: Set<number>;
   baseColor!: AlphaColor;
   imageData!: ImageData;
   originData!: Uint8ClampedArray;
+  filledPixels!: Array<number>;
   canvasWidth!: number;
   canvasHeight!: number;
   originPoint: Point | null = null;
@@ -25,6 +28,7 @@ class Fill extends Shape {
   async draw(canvas: Canvas): Promise<void> {
     return new Promise((resolve) => {
       this.fill(canvas);
+      this.clearData();
       resolve();
     });
   }
@@ -32,8 +36,8 @@ class Fill extends Shape {
   // Algorithm from http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
   private fill(canvas: Canvas): void {
     // Redraw fill if it was already calculated
-    if (this.imageData !== undefined) {
-      canvas.ctx.putImageData(this.imageData, 0, 0);
+    if (this.filledPixels !== undefined) {
+      this.redraw(canvas);
       return;
     }
 
@@ -122,6 +126,8 @@ class Fill extends Shape {
       canvas.canvasElement.width,
       canvas.canvasElement.height);
 
+    // Used for further redraw
+    this.filledPixels = [];
     // Used to get the edges
     this.originData = new Uint8ClampedArray(this.imageData.data);
     this.edges = new Set();
@@ -155,10 +161,32 @@ class Fill extends Shape {
   }
 
   private fillPixel(pixelPos: number) {
-    this.imageData.data[pixelPos] = this.color.red;
-    this.imageData.data[pixelPos + 1] = this.color.green;
-    this.imageData.data[pixelPos + 2] = this.color.blue;
-    this.imageData.data[pixelPos + 3] = this.color.alpha;
+    this.setPixelData(pixelPos, this.imageData.data);
+    this.setPixelData(pixelPos, this.filledPixels);
+  }
+
+  private setPixelData(pixelPos: number, data: CustomNumberCollection) {
+    data[pixelPos] = this.color.red;
+    data[pixelPos + 1] = this.color.green;
+    data[pixelPos + 2] = this.color.blue;
+    data[pixelPos + 3] = this.color.alpha;
+  }
+
+  // Avoid to store useless large objects
+  // Only keep filledPixels for further redraw
+  private clearData() {
+    // Trick because image data cannot be 0 length
+    this.imageData = new ImageData(1, 1);
+    this.edges = new Set();
+    this.originData = new Uint8ClampedArray();
+  }
+
+  private redraw(canvas: Canvas) {
+    const imageData = canvas.ctx.getImageData(0, 0,
+      canvas.canvasElement.width,
+      canvas.canvasElement.height);
+    this.filledPixels.forEach((pix, i) => { imageData.data[i] = pix; });
+    canvas.ctx.putImageData(imageData, 0, 0);
   }
 }
 
