@@ -51,8 +51,8 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   async addShapeFromShapeInfo(shapeInfo: IShapeInfo): Promise<void> {
     if (this.tryMergePencil(shapeInfo)) return;
     const shape = this.factory.build(shapeInfo);
-    this.undoRedoManager.addShape(shape);
     await this.animationQueue.add(async () => {
+      this.undoRedoManager.addShape(shape);
       await shape.draw(this.canvasManager.backgroundCanvas, true);
       this.canvasManager.backgroundCanvas.storeLast();
     });
