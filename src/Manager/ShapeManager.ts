@@ -11,12 +11,12 @@ import Pencil from '../Shapes/Pencil';
 import AbstractObservable from '../Observer/AbstractObservable';
 import IAction from '../Action/IAction';
 import ActionType from '../Action/ActionType';
-import Canvas from '../Canvas';
 import ShapeType from '../Shapes/ShapeType';
 import Fill from '../Shapes/Fill';
 import ShapeEventManager from './ShapeEventManager';
 import AnimationQueue from './AnimationQueue';
 import UndoRedoManager from './UndoRedoManager';
+import CanvasManager from './CanvasManager';
 
 class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction> {
   animationQueue: AnimationQueue = new AnimationQueue();
@@ -26,11 +26,11 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   currentShape: Shape | null = null;
   basePoint: Point | null = null;
   lastImageData: ImageData | null = null;
-  canvas: Canvas;
+  canvasManager: CanvasManager;
 
-  constructor(canvas: Canvas) {
+  constructor(canvasManager: CanvasManager) {
     super();
-    this.canvas = canvas;
+    this.canvasManager = canvasManager;
   }
 
   update(action: IAction): void {
@@ -53,8 +53,8 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     const shape = this.factory.build(shapeInfo);
     this.undoRedoManager.addShape(shape);
     await this.animationQueue.add(async () => {
-      await shape.draw(this.canvas.backgroundCanvas, true);
-      this.canvas.backgroundCanvas.storeLast();
+      await shape.draw(this.canvasManager.backgroundCanvas, true);
+      this.canvasManager.backgroundCanvas.storeLast();
     });
   }
 
@@ -70,8 +70,8 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     if (lastShape.id !== shapeInfo.parameters.id) return false;
 
     this.animationQueue.add(async () => {
-      await lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this.canvas.backgroundCanvas);
-      this.canvas.backgroundCanvas.storeLast();
+      await lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this.canvasManager.backgroundCanvas);
+      this.canvasManager.backgroundCanvas.storeLast();
     });
     return true;
   }
@@ -85,16 +85,16 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     this.createShape();
 
     if (!(this.currentShape instanceof UpdatableShape)) {
-      this.currentShape?.draw(this.canvas.backgroundCanvas, false);
-      this.canvas.backgroundCanvas.storeLast();
+      this.currentShape?.draw(this.canvasManager.backgroundCanvas, false);
+      this.canvasManager.backgroundCanvas.storeLast();
     } else if (this.currentShape !== null) {
       // Set style for new shape if the shape is not directly draw
-      this.canvas.setStyle(this.currentShape.color, this.currentShape.thickness);
+      this.canvasManager.userCanvas.setStyle(this.currentShape.color, this.currentShape.thickness);
     }
 
     // Update on create to draw single point
     if (this.currentShape instanceof Pencil) {
-      this.currentShape.update(point, this.canvas);
+      this.currentShape.update(point, this.canvasManager.userCanvas);
     }
   }
 
@@ -104,7 +104,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     }
 
     if (this.currentShape instanceof UpdatableShape) {
-      this.currentShape.update(point, this.canvas);
+      this.currentShape.update(point, this.canvasManager.userCanvas);
     }
 
     // Handle Pencil pre-emit for real-time draw
@@ -150,16 +150,16 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   drawCurrentShapeToBackground(): void {
     if (this.currentShape === null) return;
     // Store main canvas while animation queue
-    this.canvas.storeLast();
+    this.canvasManager.userCanvas.storeLast();
     // Wait last animation end before add to background
     const shape = this.currentShape;
     this.animationQueue.add(async () => {
-      shape.draw(this.canvas.backgroundCanvas, false);
-      this.canvas.backgroundCanvas.storeLast();
+      shape.draw(this.canvasManager.backgroundCanvas, false);
+      this.canvasManager.backgroundCanvas.storeLast();
     }).then(() => {
       // Reset main canvas when animation queue finished
-      this.canvas.clearCanvas();
-      this.canvas.storeLast();
+      this.canvasManager.userCanvas.clearCanvas();
+      this.canvasManager.userCanvas.storeLast();
     });
   }
 

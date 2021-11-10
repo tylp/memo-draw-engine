@@ -85,21 +85,21 @@ class UndoRedoManager {
   }
 
   private applyUndo(shape: Shape) {
-    this.shapeManager.canvas.backgroundCanvas.clearCanvas();
+    this.shapeManager.canvasManager.backgroundCanvas.clearCanvas();
     this.undoShapes.push(shape);
     this.redrawShapes();
-    this.shapeManager.canvas.backgroundCanvas.storeLast();
+    this.shapeManager.canvasManager.backgroundCanvas.storeLast();
   }
 
   private applyRedo(shape: Shape) {
-    shape.draw(this.shapeManager.canvas.backgroundCanvas, false);
+    shape.draw(this.shapeManager.canvasManager.backgroundCanvas, false);
     this.shapes.push(shape);
-    this.shapeManager.canvas.backgroundCanvas.storeLast();
+    this.shapeManager.canvasManager.backgroundCanvas.storeLast();
   }
 
   private redrawShapes(): void {
     this.shapes.forEach(
-      (shp) => shp.draw(this.shapeManager.canvas.backgroundCanvas, false),
+      (shp) => shp.draw(this.shapeManager.canvasManager.backgroundCanvas, false),
     );
   }
 
