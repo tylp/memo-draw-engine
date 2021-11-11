@@ -1,3 +1,5 @@
+import { DrawPermission } from '../Permission';
+import drawState from '../DrawState';
 import Point from '../Point';
 import ICanvasEventHandlder from './ICanvasEventHandlder';
 import IDocumentEventHandler from './IDocumentEventHandler';
@@ -32,20 +34,24 @@ class EventManager {
   }
 
   private onMouseMove(event: MouseEvent): void {
+    if (drawState.drawPermission === DrawPermission.Slave) return;
     const point = this.getNewPoint(event);
     this.canvasEventHandlers.forEach((handler) => handler.mouseMove(point));
   }
 
   private onMouseDown(event: MouseEvent): void {
+    if (drawState.drawPermission === DrawPermission.Slave) return;
     const point = this.getNewPoint(event);
     this.canvasEventHandlers.forEach((handler) => handler.mouseDown(point));
   }
 
   private onMouseUp(): void {
+    if (drawState.drawPermission === DrawPermission.Slave) return;
     this.canvasEventHandlers.forEach((handler) => handler.mouseUp());
   }
 
   private onMouseLeave(): void {
+    if (drawState.drawPermission === DrawPermission.Slave) return;
     this.canvasEventHandlers.forEach((handler) => handler.mouseLeave());
   }
 
@@ -58,6 +64,7 @@ class EventManager {
 
   private registerUndoEvent(): void {
     document.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (drawState.drawPermission === DrawPermission.Slave) return;
       if (event.ctrlKey && event.key.toLowerCase() === 'z') {
         this.documentEventHandlers.forEach((handler) => handler.undo());
       }
@@ -66,6 +73,7 @@ class EventManager {
 
   private registerRedoEvent(): void {
     document.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (drawState.drawPermission === DrawPermission.Slave) return;
       if (event.ctrlKey && event.key.toLowerCase() === 'y') {
         this.documentEventHandlers.forEach((handler) => handler.redo());
       }
@@ -73,12 +81,14 @@ class EventManager {
   }
 
   private documentMouseUp(event: MouseEvent): void {
+    if (drawState.drawPermission === DrawPermission.Slave) return;
     if (event.target !== this.canvasElement) {
       this.documentEventHandlers.forEach((handler) => handler.documentMouseUp());
     }
   }
 
   private documentMouseMove(event: MouseEvent): void {
+    if (drawState.drawPermission === DrawPermission.Slave) return;
     if (event.target !== this.canvasElement) {
       const point = this.getNewPoint(event);
       this.documentEventHandlers.forEach((handler) => handler.documentMouseMove(point));
