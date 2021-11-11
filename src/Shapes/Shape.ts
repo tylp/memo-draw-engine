@@ -1,3 +1,4 @@
+import Utils from '../Utils';
 import ShapeType from './ShapeType';
 import AlphaColor from '../Color/AlphaColor';
 import IShapeInfo from './IShapeInfo';
@@ -5,10 +6,14 @@ import Canvas from '../Canvas';
 
 abstract class Shape {
   protected abstract shapeType: ShapeType;
+  id: string;
   color: AlphaColor;
   thickness: number;
+  created: boolean;
 
-  constructor(color: AlphaColor, thickness: number) {
+  constructor(id: string | undefined, color: AlphaColor, thickness: number) {
+    this.id = id || Utils.generateUID();
+    this.created = (id === undefined);
     this.color = color;
     this.thickness = thickness;
   }
@@ -23,7 +28,7 @@ abstract class Shape {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected getExportInfo(): any {
-    return { color: this.color, thickness: this.thickness };
+    return { color: this.color, thickness: this.thickness, id: this.id };
   }
 
   // Use to definitely draw shape (viewer side)

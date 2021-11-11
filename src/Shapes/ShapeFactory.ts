@@ -20,7 +20,7 @@ import AlphaColor from '../Color/AlphaColor';
 
 class ShapeFactory implements IFactory<IShapeInfo, Shape> {
   build(info: IShapeInfo): Shape {
-    const { color, thickness } = info.parameters;
+    const { id, color, thickness } = info.parameters;
 
     const styleInfo = {
       color: color
@@ -29,7 +29,7 @@ class ShapeFactory implements IFactory<IShapeInfo, Shape> {
       thickness: thickness || drawState.thickness,
     };
 
-    const shape = this.create(info.type, styleInfo);
+    const shape = this.create(info.type, id, styleInfo);
 
     // info.parameters is the basePoint when a shape is created by the drawer
     if (info.parameters instanceof Point) {
@@ -41,22 +41,22 @@ class ShapeFactory implements IFactory<IShapeInfo, Shape> {
     return shape;
   }
 
-  create(shapeType: ShapeType, styleInfo: { color: AlphaColor, thickness: number }): Shape {
+  create(shapeType: ShapeType, id: string | undefined, styleInfo: { color: AlphaColor, thickness: number }): Shape {
     switch (shapeType) {
       case ShapeType.Pencil:
-        return new Pencil(styleInfo.color, styleInfo.thickness);
+        return new Pencil(id, styleInfo.color, styleInfo.thickness);
       case ShapeType.RectangleFull:
-        return new RectangleFull(styleInfo.color, styleInfo.thickness);
+        return new RectangleFull(id, styleInfo.color, styleInfo.thickness);
       case ShapeType.RectangleStroke:
-        return new RectangleStroke(styleInfo.color, styleInfo.thickness);
+        return new RectangleStroke(id, styleInfo.color, styleInfo.thickness);
       case ShapeType.EllipseFull:
-        return new EllipseFull(styleInfo.color, styleInfo.thickness);
+        return new EllipseFull(id, styleInfo.color, styleInfo.thickness);
       case ShapeType.EllipseStroke:
-        return new EllipseStroke(styleInfo.color, styleInfo.thickness);
+        return new EllipseStroke(id, styleInfo.color, styleInfo.thickness);
       case ShapeType.Line:
-        return new Line(styleInfo.color, styleInfo.thickness);
+        return new Line(id, styleInfo.color, styleInfo.thickness);
       case ShapeType.Fill:
-        return new Fill(styleInfo.color, styleInfo.thickness);
+        return new Fill(id, styleInfo.color, styleInfo.thickness);
       default:
         throw new Error('Shape is not implemented');
     }
