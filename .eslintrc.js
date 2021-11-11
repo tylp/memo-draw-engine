@@ -1,6 +1,5 @@
 module.exports = {
   root: true,
-  parser: '@typescript-eslint/parser',
   plugins: [
     '@typescript-eslint',
   ],
@@ -18,6 +17,7 @@ module.exports = {
     }
   ],
   parser: '@typescript-eslint/parser',
+  ignorePatterns: ["lib/**"],
   rules: {
     '@typescript-eslint/lines-between-class-members': 'off',
     'class-methods-use-this': 'off',

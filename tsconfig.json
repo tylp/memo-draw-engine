@@ -1,13 +1,19 @@
 {
   "compilerOptions": {
-      "target": "ESNext",
-      "moduleResolution": "node",
-      "baseUrl": "./src",
-      "allowJs": true,
-      "allowSyntheticDefaultImports": true,
-      "strict": true
+    "target": "ES6",
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "allowJs": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "declaration": true,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "outDir": "./lib",
+    "allowSyntheticDefaultImports": true,
+    "strict": true
   },
   "include": [
-      "./src/**/*"
+    "./src/**/*"
   ]
 }

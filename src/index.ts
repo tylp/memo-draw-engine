@@ -1,33 +1,24 @@
-import ShapeManager from './Manager/ShapeManager';
-import Engine from './Engine';
-import ShapeType from './Shapes/ShapeType';
 import ActionType from './Action/ActionType';
+import IAction from './Action/IAction';
 import AlphaColor from './Color/AlphaColor';
 import Color from './Color/Color';
-import ICanvasEventHandlder from './Manager/ICanvasEventHandlder';
-import IDocumentEventHandler from './Manager/IDocumentEventHandler';
-import IObserver from './Observer/IObserver';
-import IObservable from './Observer/IObservable';
-import IShapeInfo from './Shapes/IShapeInfo';
-import Point from './Point';
 import AbstractNetworkManager from './Manager/AbstractNetworkManager';
+import IShapeInfo from './Shapes/IShapeInfo';
+import ShapeType from './Shapes/ShapeType';
 import drawState from './DrawState';
-import IAction from './Action/IAction';
+import Engine from './Engine';
+import { DrawPermission, PermissionParameter } from './Permission';
 
 export {
-  ShapeManager,
-  Engine,
-  IAction,
-  AbstractNetworkManager,
-  drawState,
-  ShapeType,
   ActionType,
+  IAction,
   AlphaColor,
   Color,
-  ICanvasEventHandlder,
-  IDocumentEventHandler,
-  IObserver,
-  IObservable,
+  AbstractNetworkManager,
   IShapeInfo,
-  Point,
+  ShapeType,
+  Engine,
+  drawState,
+  DrawPermission,
+  PermissionParameter,
 };

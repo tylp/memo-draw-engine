@@ -1,25 +1,25 @@
 {
   "name": "memo-draw-engine",
-  "version": "0.0.1",
+  "version": "0.1.2",
   "description": "Drawing engine for [MemoDraw](https://github.com/tylp/memo-draw)",
-  "main": "src/index.ts",
+  "main": "lib/index.js",
+  "files": [
+    "lib/"
+  ],
   "dependencies": {},
   "devDependencies": {
+    "@types/estree": "0.0.50",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-plugin-import": "^2.23.4",
-    "typescript": "^4.2.4",
     "ts-loader": "^9.2.6",
-    "webpack": "^5.55.1",
-    "webpack-cli": "^4.8.0",
-    "webpack-dev-server": "^4.3.0"
+    "typescript": "^4.2.4"
   },
   "scripts": {
-    "start": "webpack serve --mode development",
-    "prebuild": "tsc && npm run lint",
-    "build": "webpack --mode production",
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
