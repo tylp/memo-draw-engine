@@ -64,9 +64,7 @@ class UndoRedoManager {
   private static popLastCreated(shapes: Array<Shape>): Shape | undefined {
     for (let i = shapes.length - 1; i >= 0; i -= 1) {
       if (shapes[i].created) {
-        const shape = shapes[i];
-        shapes.splice(i, 1);
-        return shape;
+        return shapes.splice(i, 1)[0];
       }
     }
     return undefined;
@@ -76,9 +74,7 @@ class UndoRedoManager {
   private getAndRemove(shapes: Array<Shape>, id: string) {
     for (let i = shapes.length - 1; i >= 0; i -= 1) {
       if (shapes[i].id === id) {
-        const shape = shapes[i];
-        shapes.splice(i, 1);
-        return shape;
+        return shapes.splice(i, 1)[0];
       }
     }
     throw new Error(`Shape (id:${id}) doesn't exist`);
