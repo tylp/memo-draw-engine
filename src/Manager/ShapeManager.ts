@@ -1,4 +1,3 @@
-import IFactory from '../Shapes/IFactory';
 import ShapeFactory from '../Shapes/ShapeFactory';
 import IShapeInfo from '../Shapes/IShapeInfo';
 import type Shape from '../Shapes/Shape';
@@ -22,7 +21,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   animationQueue: AnimationQueue = new AnimationQueue();
   internalEventManager: ShapeEventManager = new ShapeEventManager(this);
   undoRedoManager: UndoRedoManager = new UndoRedoManager(this);
-  factory: IFactory<IShapeInfo, Shape> = new ShapeFactory();
+  factory: ShapeFactory = new ShapeFactory();
   currentShape: Shape | null = null;
   basePoint: Point | null = null;
   lastImageData: ImageData | null = null;
