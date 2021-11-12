@@ -34,12 +34,6 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
   update(action: IAction): void {
     switch (action.type) {
-      case ActionType.Undo:
-        this.undoRedoManager.externalUndo(action.parameters as string);
-        break;
-      case ActionType.Redo:
-        this.undoRedoManager.externalRedo(action.parameters as string);
-        break;
       case ActionType.Draw:
         this.addShapeFromShapeInfo(action.parameters as IShapeInfo);
         break;

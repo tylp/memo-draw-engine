@@ -28,6 +28,7 @@ class Engine {
     this.networkManager = networkManager;
     this.networkManager.subscribe(this.permissionManager);
     this.networkManager.subscribe(this.shapeManager);
+    this.networkManager.subscribe(this.shapeManager.undoRedoManager);
     this.shapeManager.subscribe(this.networkManager);
   }
 }
