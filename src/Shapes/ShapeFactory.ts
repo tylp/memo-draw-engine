@@ -17,6 +17,8 @@ import UpdatableShape from './UpdatableShape';
 import drawState from '../DrawState';
 import AlphaColor from '../Color/AlphaColor';
 
+type StyleInfo = { color: AlphaColor, thickness: number };
+
 class ShapeFactory {
   build(info: IShapeInfo): Shape {
     const { id, color, thickness } = info.parameters;
@@ -40,7 +42,7 @@ class ShapeFactory {
     return shape;
   }
 
-  create(shapeType: ShapeType, id: string | undefined, styleInfo: { color: AlphaColor, thickness: number }): Shape {
+  create(shapeType: ShapeType, id: string | undefined, styleInfo: StyleInfo): Shape {
     switch (shapeType) {
       case ShapeType.Pencil:
         return new Pencil(id, styleInfo.color, styleInfo.thickness);
