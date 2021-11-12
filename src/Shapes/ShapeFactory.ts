@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-param-reassign */
 import Point from '../Point';
-import IFactory from './IFactory';
 import ShapeType from './ShapeType';
 import type Shape from './Shape';
 import type IShapeInfo from './IShapeInfo';
@@ -18,7 +17,7 @@ import UpdatableShape from './UpdatableShape';
 import drawState from '../DrawState';
 import AlphaColor from '../Color/AlphaColor';
 
-class ShapeFactory implements IFactory<IShapeInfo, Shape> {
+class ShapeFactory {
   build(info: IShapeInfo): Shape {
     const { id, color, thickness } = info.parameters;
 
