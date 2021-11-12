@@ -1,8 +1,8 @@
 enum ActionType {
-  undo,
-  redo,
-  draw,
-  permission,
+  Undo,
+  Redo,
+  Draw,
+  Permission,
 }
 
 export default ActionType;

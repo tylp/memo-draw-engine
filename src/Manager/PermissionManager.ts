@@ -6,7 +6,7 @@ import IObserver from '../Observer/IObserver';
 
 class PermissionManager implements IObserver<IAction> {
   update(elem: IAction): void {
-    if (elem.type !== ActionType.permission) return;
+    if (elem.type !== ActionType.Permission) return;
     const permissionParameter = elem.parameters as PermissionParameter;
     drawState.drawPermission = permissionParameter.type;
   }

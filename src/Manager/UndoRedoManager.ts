@@ -2,7 +2,7 @@ import ActionType from '../Action/ActionType';
 import Shape from '../Shapes/Shape';
 import type ShapeManager from './ShapeManager';
 
-type UndoOrRedo = ActionType.undo | ActionType.redo;
+type UndoOrRedo = ActionType.Undo | ActionType.Redo;
 
 class UndoRedoManager {
   private shapes: Array<Shape> = [];
@@ -30,7 +30,7 @@ class UndoRedoManager {
     this.shapeManager.drawFinish();
     const shape: Shape | undefined = UndoRedoManager.popLastCreated(this.shapes);
     if (shape !== undefined) {
-      this.emit(ActionType.undo, shape);
+      this.emit(ActionType.Undo, shape);
       this.applyUndo(shape);
     }
   }
@@ -47,7 +47,7 @@ class UndoRedoManager {
     this.shapeManager.drawFinish();
     const shape: Shape | undefined = UndoRedoManager.popLastCreated(this.undoShapes);
     if (shape !== undefined) {
-      this.emit(ActionType.redo, shape);
+      this.emit(ActionType.Redo, shape);
       this.applyRedo(shape);
     }
   }
