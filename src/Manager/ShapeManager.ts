@@ -37,6 +37,9 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
       case ActionType.Draw:
         this.addShapeFromShapeInfo(action.parameters as IShapeInfo);
         break;
+      case ActionType.DrawMultiple:
+        this.addShapes(action.parameters as Array<IShapeInfo>);
+        break;
       default: break;
     }
   }
@@ -49,6 +52,15 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
       await shape.draw(this.canvasManager.backgroundCanvas, true);
       this.canvasManager.backgroundCanvas.storeLast();
     });
+  }
+
+  addShapes(shapesInfo: Array<IShapeInfo>): void {
+    shapesInfo.forEach((shapeInfo) => {
+      const shape = this.factory.build(shapeInfo);
+      this.undoRedoManager.addShape(shape);
+      shape.draw(this.canvasManager.backgroundCanvas, false);
+    });
+    this.canvasManager.backgroundCanvas.storeLast();
   }
 
   // Do not create a new pencil if the shape sent is a continuation of an existing pencil

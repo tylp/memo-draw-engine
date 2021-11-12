@@ -2,6 +2,7 @@ enum ActionType {
   Undo,
   Redo,
   Draw,
+  DrawMultiple,
   Permission,
 }
 
