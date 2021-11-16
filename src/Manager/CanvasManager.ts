@@ -14,7 +14,7 @@ class CanvasManager {
 
   duplicateCanvas(canvasElement: HTMLCanvasElement): HTMLCanvasElement {
     const tempCanvasElement = canvasElement.cloneNode() as HTMLCanvasElement;
-    tempCanvasElement.style.zIndex = '-1';
+    tempCanvasElement.style.zIndex = String(Number(canvasElement.style.zIndex || 0) - 1);
     tempCanvasElement.style.position = 'absolute';
     canvasElement.parentElement?.insertBefore(tempCanvasElement, canvasElement);
     return tempCanvasElement;
