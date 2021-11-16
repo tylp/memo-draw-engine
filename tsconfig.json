@@ -8,8 +8,7 @@
     "preserveConstEnums": true,
     "declaration": true,
     "strictNullChecks": true,
-    "sourceMap": true,
-    "outDir": "./lib",
+    "outDir": "lib/esm",
     "allowSyntheticDefaultImports": true,
     "strict": true
   },
