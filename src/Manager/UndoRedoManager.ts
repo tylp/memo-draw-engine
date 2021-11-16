@@ -1,16 +1,30 @@
+import IObserver from '../Observer/IObserver';
 import ActionType from '../Action/ActionType';
+import IAction from '../Action/IAction';
 import Shape from '../Shapes/Shape';
 import type ShapeManager from './ShapeManager';
 
 type UndoOrRedo = ActionType.Undo | ActionType.Redo;
 
-class UndoRedoManager {
+class UndoRedoManager implements IObserver<IAction> {
   private shapes: Array<Shape> = [];
   private undoShapes: Array<Shape> = [];
   private shapeManager: ShapeManager;
 
   constructor(shapeManager: ShapeManager) {
     this.shapeManager = shapeManager;
+  }
+
+  update(action: IAction): void {
+    switch (action.type) {
+      case ActionType.Undo:
+        this.externalUndo(action.parameters as string);
+        break;
+      case ActionType.Redo:
+        this.externalRedo(action.parameters as string);
+        break;
+      default: break;
+    }
   }
 
   public addShape(shape: Shape): void {
