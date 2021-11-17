@@ -10,12 +10,10 @@ class EventManager {
   private canvasEventHandlers: Array<ICanvasEventHandlder> = [];
   private documentEventHandlers: Array<IDocumentEventHandler> = [];
   private resizeEventHandlers: Array<IResizeEventHandler> = [];
-  private canvasElement: HTMLCanvasElement;
-  private canvasBounds: DOMRect;
+  private canvasManager: CanvasManager;
 
   constructor(canvasManager: CanvasManager) {
-    this.canvasElement = canvasManager.userCanvas.canvasElement;
-    this.canvasBounds = canvasManager.canvasBounds;
+    this.canvasManager = canvasManager;
   }
 
   subscribeCanvasEventHandler(handler: ICanvasEventHandlder): void {
@@ -37,10 +35,10 @@ class EventManager {
   }
 
   private registerCanvasEvents(): void {
-    this.canvasElement.addEventListener('mousemove', (event) => this.onMouseMove(event));
-    this.canvasElement.addEventListener('mousedown', (event) => this.onMouseDown(event));
-    this.canvasElement.addEventListener('mouseup', () => this.onMouseUp());
-    this.canvasElement.addEventListener('mouseleave', () => this.onMouseLeave());
+    this.canvasManager.userCanvas.canvasElement.addEventListener('mousemove', (event) => this.onMouseMove(event));
+    this.canvasManager.userCanvas.canvasElement.addEventListener('mousedown', (event) => this.onMouseDown(event));
+    this.canvasManager.userCanvas.canvasElement.addEventListener('mouseup', () => this.onMouseUp());
+    this.canvasManager.userCanvas.canvasElement.addEventListener('mouseleave', () => this.onMouseLeave());
   }
 
   private onMouseMove(event: MouseEvent): void {
@@ -92,14 +90,14 @@ class EventManager {
 
   private documentMouseUp(event: MouseEvent): void {
     if (drawState.drawPermission === DrawPermission.Slave) return;
-    if (event.target !== this.canvasElement) {
+    if (event.target !== this.canvasManager.userCanvas.canvasElement) {
       this.documentEventHandlers.forEach((handler) => handler.documentMouseUp());
     }
   }
 
   private documentMouseMove(event: MouseEvent): void {
     if (drawState.drawPermission === DrawPermission.Slave) return;
-    if (event.target !== this.canvasElement) {
+    if (event.target !== this.canvasManager.userCanvas.canvasElement) {
       const point = this.getNewPoint(event);
       this.documentEventHandlers.forEach((handler) => handler.documentMouseMove(point));
     }
@@ -115,8 +113,8 @@ class EventManager {
 
   private getNewPoint(event: MouseEvent): Point {
     return new Point(
-      event.clientX - this.canvasBounds.left,
-      event.clientY - this.canvasBounds.top,
+      event.clientX - this.canvasManager.canvasBounds.left,
+      event.clientY - this.canvasManager.canvasBounds.top,
     );
   }
 }
