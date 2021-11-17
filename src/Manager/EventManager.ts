@@ -3,14 +3,19 @@ import drawState from '../DrawState';
 import Point from '../Point';
 import ICanvasEventHandlder from './ICanvasEventHandlder';
 import IDocumentEventHandler from './IDocumentEventHandler';
+import CanvasManager from './CanvasManager';
+import IResizeEventHandler from './IResizeEventHandler';
 
 class EventManager {
   private canvasEventHandlers: Array<ICanvasEventHandlder> = [];
   private documentEventHandlers: Array<IDocumentEventHandler> = [];
+  private resizeEventHandlers: Array<IResizeEventHandler> = [];
   private canvasElement: HTMLCanvasElement;
+  private canvasBounds: DOMRect;
 
-  constructor(canvasElement: HTMLCanvasElement) {
-    this.canvasElement = canvasElement;
+  constructor(canvasManager: CanvasManager) {
+    this.canvasElement = canvasManager.userCanvas.canvasElement;
+    this.canvasBounds = canvasManager.canvasBounds;
   }
 
   subscribeCanvasEventHandler(handler: ICanvasEventHandlder): void {
@@ -21,9 +26,14 @@ class EventManager {
     this.documentEventHandlers.push(handler);
   }
 
+  subscribeResizeEventHandler(handler: IResizeEventHandler): void {
+    this.resizeEventHandlers.push(handler);
+  }
+
   public registerDefaultCanvasAndDocumentEvents(): void {
     this.registerCanvasEvents();
     this.registerDocumentEvents();
+    this.registerResizeEvent();
   }
 
   private registerCanvasEvents(): void {
@@ -95,10 +105,18 @@ class EventManager {
     }
   }
 
+  private registerResizeEvent(): void {
+    window.addEventListener('resize', () => this.onResize());
+  }
+
+  private onResize(): void {
+    this.resizeEventHandlers.forEach((handler) => handler.resize());
+  }
+
   private getNewPoint(event: MouseEvent): Point {
     return new Point(
-      event.clientX - this.canvasElement.offsetLeft,
-      event.clientY - this.canvasElement.offsetTop,
+      event.clientX - this.canvasBounds.left,
+      event.clientY - this.canvasBounds.top,
     );
   }
 }

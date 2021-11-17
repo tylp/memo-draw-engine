@@ -13,7 +13,7 @@ class Engine {
   constructor(canvasElement: HTMLCanvasElement, networkManager: AbstractNetworkManager | null = null) {
     const canvasManager = new CanvasManager(canvasElement);
     this.shapeManager = new ShapeManager(canvasManager);
-    this.eventManager = new EventManager(canvasElement);
+    this.eventManager = new EventManager(canvasManager);
     this.permissionManager = new PermissionManager();
     this.networkManager = networkManager;
 
@@ -22,6 +22,7 @@ class Engine {
 
     this.eventManager.subscribeCanvasEventHandler(this.shapeManager.internalEventManager);
     this.eventManager.subscribeDocumentEventHandler(this.shapeManager.internalEventManager);
+    this.eventManager.subscribeResizeEventHandler(canvasManager);
   }
 
   registerNetworkManager(networkManager: AbstractNetworkManager): void {
