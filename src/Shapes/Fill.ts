@@ -60,7 +60,10 @@ class Fill extends Shape {
       return;
     }
 
-    const pixelStack: Array<Array<number>> = [[this.originPoint.x, this.originPoint.y]];
+    const pixelStack: Array<Array<number>> = [[
+      Math.round(this.originPoint.x),
+      Math.round(this.originPoint.y),
+    ]];
 
     while (pixelStack.length) {
       let reachLeft: boolean;
