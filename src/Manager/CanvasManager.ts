@@ -6,7 +6,6 @@ class CanvasManager implements IResizeEventHandler {
   backgroundCanvas: Canvas;
   // Canvas on which shape are drawn
   userCanvas: Canvas;
-  // canvas dimension
   canvasBounds: DOMRect;
 
   constructor(canvasElement: HTMLCanvasElement) {
