@@ -4,12 +4,12 @@ import Point from '../Point';
 import ICanvasEventHandlder from './ICanvasEventHandlder';
 import IDocumentEventHandler from './IDocumentEventHandler';
 import CanvasManager from './CanvasManager';
-import IResizeEventHandler from './IResizeEventHandler';
+import IWindowEventHandler from './IWindowEventHandler';
 
 class EventManager {
   private canvasEventHandlers: Array<ICanvasEventHandlder> = [];
   private documentEventHandlers: Array<IDocumentEventHandler> = [];
-  private resizeEventHandlers: Array<IResizeEventHandler> = [];
+  private windowEventHandlers: Array<IWindowEventHandler> = [];
   private canvasManager: CanvasManager;
 
   constructor(canvasManager: CanvasManager) {
@@ -24,14 +24,14 @@ class EventManager {
     this.documentEventHandlers.push(handler);
   }
 
-  subscribeResizeEventHandler(handler: IResizeEventHandler): void {
-    this.resizeEventHandlers.push(handler);
+  subscribeWindowEventHandler(handler: IWindowEventHandler): void {
+    this.windowEventHandlers.push(handler);
   }
 
   public registerDefaultCanvasAndDocumentEvents(): void {
     this.registerCanvasEvents();
     this.registerDocumentEvents();
-    this.registerResizeEvent();
+    this.registerWindowEvent();
   }
 
   private registerCanvasEvents(): void {
@@ -103,12 +103,17 @@ class EventManager {
     }
   }
 
-  private registerResizeEvent(): void {
+  private registerWindowEvent(): void {
     window.addEventListener('resize', () => this.onResize());
+    window.addEventListener('scroll', () => this.onScroll());
   }
 
   private onResize(): void {
-    this.resizeEventHandlers.forEach((handler) => handler.resize());
+    this.windowEventHandlers.forEach((handler) => handler.resize());
+  }
+
+  private onScroll(): void {
+    this.windowEventHandlers.forEach((handler) => handler.scroll());
   }
 
   private getNewPoint(event: MouseEvent): Point {

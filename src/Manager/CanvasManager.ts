@@ -1,7 +1,7 @@
 import Canvas from '../Canvas';
-import IResizeEventHandler from './IResizeEventHandler';
+import IWindowEventHandler from './IWindowEventHandler';
 
-class CanvasManager implements IResizeEventHandler {
+class CanvasManager implements IWindowEventHandler {
   // Canvas on which shape are stored and animated
   backgroundCanvas: Canvas;
   // Canvas on which shape are drawn
@@ -28,6 +28,10 @@ class CanvasManager implements IResizeEventHandler {
   }
 
   resize(): void {
+    this.updateBounds();
+  }
+
+  scroll(): void {
     this.updateBounds();
   }
 }

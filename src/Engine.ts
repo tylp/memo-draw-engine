@@ -23,7 +23,7 @@ class Engine {
 
     this.eventManager.subscribeCanvasEventHandler(this.shapeManager.internalEventManager);
     this.eventManager.subscribeDocumentEventHandler(this.shapeManager.internalEventManager);
-    this.eventManager.subscribeResizeEventHandler(this.canvasManager);
+    this.eventManager.subscribeWindowEventHandler(this.canvasManager);
   }
 
   registerNetworkManager(networkManager: AbstractNetworkManager): void {
