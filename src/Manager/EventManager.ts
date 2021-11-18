@@ -3,14 +3,17 @@ import drawState from '../DrawState';
 import Point from '../Point';
 import ICanvasEventHandlder from './ICanvasEventHandlder';
 import IDocumentEventHandler from './IDocumentEventHandler';
+import CanvasManager from './CanvasManager';
+import IWindowEventHandler from './IWindowEventHandler';
 
 class EventManager {
   private canvasEventHandlers: Array<ICanvasEventHandlder> = [];
   private documentEventHandlers: Array<IDocumentEventHandler> = [];
-  private canvasElement: HTMLCanvasElement;
+  private windowEventHandlers: Array<IWindowEventHandler> = [];
+  private canvasManager: CanvasManager;
 
-  constructor(canvasElement: HTMLCanvasElement) {
-    this.canvasElement = canvasElement;
+  constructor(canvasManager: CanvasManager) {
+    this.canvasManager = canvasManager;
   }
 
   subscribeCanvasEventHandler(handler: ICanvasEventHandlder): void {
@@ -21,16 +24,21 @@ class EventManager {
     this.documentEventHandlers.push(handler);
   }
 
+  subscribeWindowEventHandler(handler: IWindowEventHandler): void {
+    this.windowEventHandlers.push(handler);
+  }
+
   public registerDefaultCanvasAndDocumentEvents(): void {
     this.registerCanvasEvents();
     this.registerDocumentEvents();
+    this.registerWindowEvent();
   }
 
   private registerCanvasEvents(): void {
-    this.canvasElement.addEventListener('mousemove', (event) => this.onMouseMove(event));
-    this.canvasElement.addEventListener('mousedown', (event) => this.onMouseDown(event));
-    this.canvasElement.addEventListener('mouseup', () => this.onMouseUp());
-    this.canvasElement.addEventListener('mouseleave', () => this.onMouseLeave());
+    this.canvasManager.userCanvas.canvasElement.addEventListener('mousemove', (event) => this.onMouseMove(event));
+    this.canvasManager.userCanvas.canvasElement.addEventListener('mousedown', (event) => this.onMouseDown(event));
+    this.canvasManager.userCanvas.canvasElement.addEventListener('mouseup', () => this.onMouseUp());
+    this.canvasManager.userCanvas.canvasElement.addEventListener('mouseleave', () => this.onMouseLeave());
   }
 
   private onMouseMove(event: MouseEvent): void {
@@ -82,23 +90,36 @@ class EventManager {
 
   private documentMouseUp(event: MouseEvent): void {
     if (drawState.drawPermission === DrawPermission.Slave) return;
-    if (event.target !== this.canvasElement) {
+    if (event.target !== this.canvasManager.userCanvas.canvasElement) {
       this.documentEventHandlers.forEach((handler) => handler.documentMouseUp());
     }
   }
 
   private documentMouseMove(event: MouseEvent): void {
     if (drawState.drawPermission === DrawPermission.Slave) return;
-    if (event.target !== this.canvasElement) {
+    if (event.target !== this.canvasManager.userCanvas.canvasElement) {
       const point = this.getNewPoint(event);
       this.documentEventHandlers.forEach((handler) => handler.documentMouseMove(point));
     }
   }
 
+  private registerWindowEvent(): void {
+    window.addEventListener('resize', () => this.onResize());
+    window.addEventListener('scroll', () => this.onScroll());
+  }
+
+  private onResize(): void {
+    this.windowEventHandlers.forEach((handler) => handler.resize());
+  }
+
+  private onScroll(): void {
+    this.windowEventHandlers.forEach((handler) => handler.scroll());
+  }
+
   private getNewPoint(event: MouseEvent): Point {
     return new Point(
-      event.clientX - this.canvasElement.offsetLeft,
-      event.clientY - this.canvasElement.offsetTop,
+      event.clientX - this.canvasManager.canvasBounds.left,
+      event.clientY - this.canvasManager.canvasBounds.top,
     );
   }
 }

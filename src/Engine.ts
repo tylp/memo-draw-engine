@@ -9,11 +9,12 @@ class Engine {
   eventManager: EventManager;
   networkManager: AbstractNetworkManager | null;
   shapeManager: ShapeManager;
+  canvasManager: CanvasManager;
 
   constructor(canvasElement: HTMLCanvasElement, networkManager: AbstractNetworkManager | null = null) {
-    const canvasManager = new CanvasManager(canvasElement);
-    this.shapeManager = new ShapeManager(canvasManager);
-    this.eventManager = new EventManager(canvasElement);
+    this.canvasManager = new CanvasManager(canvasElement);
+    this.shapeManager = new ShapeManager(this.canvasManager);
+    this.eventManager = new EventManager(this.canvasManager);
     this.permissionManager = new PermissionManager();
     this.networkManager = networkManager;
 
@@ -22,6 +23,7 @@ class Engine {
 
     this.eventManager.subscribeCanvasEventHandler(this.shapeManager.internalEventManager);
     this.eventManager.subscribeDocumentEventHandler(this.shapeManager.internalEventManager);
+    this.eventManager.subscribeWindowEventHandler(this.canvasManager);
   }
 
   registerNetworkManager(networkManager: AbstractNetworkManager): void {
