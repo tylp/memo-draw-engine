@@ -15,7 +15,7 @@ class CanvasManager implements IResizeEventHandler {
     this.canvasBounds = canvasElement.getBoundingClientRect();
   }
 
-  resize(): void {
+  updateBounds(): void {
     this.canvasBounds = this.userCanvas.canvasElement.getBoundingClientRect();
   }
 
@@ -25,6 +25,10 @@ class CanvasManager implements IResizeEventHandler {
     tempCanvasElement.style.position = 'absolute';
     canvasElement.parentElement?.insertBefore(tempCanvasElement, canvasElement);
     return tempCanvasElement;
+  }
+
+  resize(): void {
+    this.updateBounds();
   }
 }
 
