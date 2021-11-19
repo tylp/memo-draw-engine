@@ -25,12 +25,9 @@ class Fill extends Shape {
     return { ...super.getExportInfo(), originPoint: this.originPoint };
   }
 
-  async draw(canvas: Canvas): Promise<void> {
-    return new Promise((resolve) => {
-      this.fill(canvas);
-      this.clearData();
-      resolve();
-    });
+  public draw(canvas: Canvas): void {
+    this.fill(canvas);
+    this.clearData();
   }
 
   // Algorithm from http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
