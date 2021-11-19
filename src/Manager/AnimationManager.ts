@@ -50,6 +50,12 @@ class AnimationManager {
     });
   }
 
+  public reset(): void {
+    this.queue = [];
+    this.stop();
+    this.animationsInfo = [];
+  }
+
   public stop(): void {
     this.animationsInfo.forEach((animationInfo) => {
       cancelAnimationFrame(animationInfo.requestFrameId);

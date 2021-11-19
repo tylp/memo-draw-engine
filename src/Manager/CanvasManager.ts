@@ -19,6 +19,11 @@ class CanvasManager implements IWindowEventHandler {
     this.canvasBounds = this.userCanvas.canvasElement.getBoundingClientRect();
   }
 
+  public reset(): void {
+    this.backgroundCanvas.reset();
+    this.userCanvas.reset();
+  }
+
   private duplicateCanvas(canvasElement: HTMLCanvasElement): HTMLCanvasElement {
     const tempCanvasElement = canvasElement.cloneNode() as HTMLCanvasElement;
     tempCanvasElement.style.zIndex = String(Number(canvasElement.style.zIndex || 0) - 1);
