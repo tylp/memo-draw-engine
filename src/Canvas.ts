@@ -28,6 +28,11 @@ class Canvas {
     this.ctx.lineWidth = thickness;
   }
 
+  public reset(): void {
+    this.clearCanvas();
+    this.storeLast();
+  }
+
   clearCanvas(): void {
     this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
   }

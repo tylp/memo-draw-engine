@@ -31,6 +31,11 @@ class UndoRedoManager implements IObserver<IAction> {
     this.shapes.push(shape);
   }
 
+  public reset(): void {
+    this.shapes = [];
+    this.undoShapes = [];
+  }
+
   public resetCreatedRedo(): void {
     this.undoShapes = this.undoShapes.filter((shape) => !shape.created);
   }

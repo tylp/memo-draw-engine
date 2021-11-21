@@ -24,7 +24,6 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   factory: ShapeFactory = new ShapeFactory();
   currentShape: Shape | null = null;
   basePoint: Point | null = null;
-  lastImageData: ImageData | null = null;
   canvasManager: CanvasManager;
 
   constructor(canvasManager: CanvasManager) {
@@ -36,6 +35,9 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     switch (action.type) {
       case ActionType.Draw:
         this.addShapeFromShapeInfo(action.parameters as IShapeInfo);
+        break;
+      case ActionType.Reset:
+        this.reset();
         break;
       default: break;
     }
@@ -171,6 +173,14 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
       type: ActionType.Draw,
       parameters: this.currentShape.serialize(),
     });
+  }
+
+  private reset(): void {
+    this.animationManager.reset();
+    this.currentShape = null;
+    this.basePoint = null;
+    this.undoRedoManager.reset();
+    this.canvasManager.reset();
   }
 }
 
