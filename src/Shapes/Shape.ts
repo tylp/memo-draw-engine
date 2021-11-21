@@ -18,22 +18,21 @@ abstract class Shape {
     this.thickness = thickness;
   }
 
-  getType(): ShapeType {
+  public getType(): ShapeType {
     return this.shapeType;
   }
 
-  serialize(): IShapeInfo {
+  public serialize(): IShapeInfo {
     return { type: this.getType(), parameters: this.getExportInfo() };
   }
+
+  // Use to definitely draw shape (viewer side)
+  public abstract draw(canvas: Canvas): void;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected getExportInfo(): any {
     return { color: this.color, thickness: this.thickness, id: this.id };
   }
-
-  // Use to definitely draw shape (viewer side)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  abstract draw(canvas: Canvas, animate: boolean): Promise<void>;
 }
 
 export default Shape;

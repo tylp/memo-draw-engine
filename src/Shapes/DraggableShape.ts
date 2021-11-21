@@ -1,6 +1,6 @@
+import AnimationManager from '../Manager/AnimationManager';
 import Canvas from '../Canvas';
 import Point from '../Point';
-import Utils from '../Utils';
 import UpdatableShape from './UpdatableShape';
 
 abstract class DraggableShape extends UpdatableShape {
@@ -8,42 +8,22 @@ abstract class DraggableShape extends UpdatableShape {
   width = 0;
   height = 0;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected getExportInfo(): any {
-    return {
-      ...super.getExportInfo(),
-      originPoint: this.originPoint,
-      width: this.width,
-      height: this.height,
-    };
-  }
-
-  async draw(canvas: Canvas, animate: boolean): Promise<void> {
-    super.draw(canvas, animate);
+  public draw(canvas: Canvas): void {
+    super.draw(canvas);
     if (this.originPoint === null) return;
-    if (animate) {
-      await this.drawWithAnimation(canvas);
-    } else {
-      this.drawShape(this.originPoint, this.width, this.height, canvas);
-    }
+    this.drawShape(this.originPoint, this.width, this.height, canvas);
   }
 
-  async drawWithAnimation(canvas: Canvas): Promise<void> {
-    const numberOfFrame = (this.durationMs / 1000) * 100;
-    const waitingIntervalMs = this.durationMs / numberOfFrame;
+  public async animate(canvas: Canvas, animationManager: AnimationManager): Promise<void> {
+    super.animate(canvas, animationManager);
 
-    for (let i = 1; i <= numberOfFrame; i += 1) {
-      const doneIndex = i / numberOfFrame;
-      canvas.restoreLast();
-      this.drawShape(this.originPoint as Point, this.width * doneIndex, this.height * doneIndex, canvas);
-      // eslint-disable-next-line no-await-in-loop
-      await Utils.waitInterval(waitingIntervalMs);
-    }
-
-    // Draw a last time using full width / height, because doneIndex could no be equal to 1
-    // in case of not round numberOfFrame
-    canvas.restoreLast();
-    this.drawShape(this.originPoint as Point, this.width, this.height, canvas);
+    return animationManager.animate({
+      draw: (progress: number) => {
+        canvas.restoreLast();
+        this.drawShape(this.originPoint as Point, this.width * progress, this.height * progress, canvas);
+      },
+      duration: this.durationMs,
+    });
   }
 
   update(point: Point, canvas: Canvas): void {
@@ -63,6 +43,16 @@ abstract class DraggableShape extends UpdatableShape {
   }
 
   protected abstract drawShape(originPoint: Point, width: number, height: number, canvas: Canvas): void;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected getExportInfo(): any {
+    return {
+      ...super.getExportInfo(),
+      originPoint: this.originPoint,
+      width: this.width,
+      height: this.height,
+    };
+  }
 }
 
 export default DraggableShape;

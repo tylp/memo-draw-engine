@@ -51,7 +51,7 @@ class UndoRedoManager implements IObserver<IAction> {
 
   public externalUndo(id: string): void {
     const shape: Shape = this.getAndRemove(this.shapes, id);
-    this.shapeManager.animationQueue.add(() => {
+    this.shapeManager.animationManager.add(() => {
       this.applyUndo(shape);
       return Promise.resolve();
     });
@@ -68,7 +68,7 @@ class UndoRedoManager implements IObserver<IAction> {
 
   public externalRedo(id: string): void {
     const shape: Shape = this.getAndRemove(this.undoShapes, id);
-    this.shapeManager.animationQueue.add(() => {
+    this.shapeManager.animationManager.add(() => {
       this.applyRedo(shape);
       return Promise.resolve();
     });
@@ -102,14 +102,14 @@ class UndoRedoManager implements IObserver<IAction> {
   }
 
   private applyRedo(shape: Shape) {
-    shape.draw(this.shapeManager.canvasManager.backgroundCanvas, false);
+    shape.draw(this.shapeManager.canvasManager.backgroundCanvas);
     this.shapes.push(shape);
     this.shapeManager.canvasManager.backgroundCanvas.storeLast();
   }
 
   private redrawShapes(): void {
     this.shapes.forEach(
-      (shp) => shp.draw(this.shapeManager.canvasManager.backgroundCanvas, false),
+      (shp) => shp.draw(this.shapeManager.canvasManager.backgroundCanvas),
     );
   }
 

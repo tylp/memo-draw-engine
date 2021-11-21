@@ -13,12 +13,12 @@ import ActionType from '../Action/ActionType';
 import ShapeType from '../Shapes/ShapeType';
 import Fill from '../Shapes/Fill';
 import ShapeEventManager from './ShapeEventManager';
-import AnimationQueue from './AnimationQueue';
+import AnimationManager from './AnimationManager';
 import UndoRedoManager from './UndoRedoManager';
 import CanvasManager from './CanvasManager';
 
 class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction> {
-  animationQueue: AnimationQueue = new AnimationQueue();
+  animationManager: AnimationManager = new AnimationManager();
   internalEventManager: ShapeEventManager = new ShapeEventManager(this);
   undoRedoManager: UndoRedoManager = new UndoRedoManager(this);
   factory: ShapeFactory = new ShapeFactory();
@@ -44,9 +44,9 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   async addShapeFromShapeInfo(shapeInfo: IShapeInfo): Promise<void> {
     if (this.tryMergePencil(shapeInfo)) return;
     const shape = this.factory.build(shapeInfo);
-    await this.animationQueue.add(async () => {
+    await this.animationManager.add(async () => {
       this.undoRedoManager.addShape(shape);
-      await shape.draw(this.canvasManager.backgroundCanvas, true);
+      await this.animationManager.animateDrawShape(shape, this.canvasManager.backgroundCanvas);
       this.canvasManager.backgroundCanvas.storeLast();
     });
   }
@@ -62,8 +62,13 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     if (!(lastShape instanceof Pencil)) return false;
     if (lastShape.id !== shapeInfo.parameters.id) return false;
 
-    this.animationQueue.add(async () => {
-      await lastShape.mergePoints(shapeInfo.parameters.points, shapeInfo.parameters.endDate, this.canvasManager.backgroundCanvas);
+    this.animationManager.add(async () => {
+      await lastShape.mergePoints(
+        shapeInfo.parameters.points,
+        shapeInfo.parameters.endDate,
+        this.canvasManager.backgroundCanvas,
+        this.animationManager,
+      );
       this.canvasManager.backgroundCanvas.storeLast();
     });
     return true;
@@ -79,8 +84,8 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
     if (!(this.currentShape instanceof UpdatableShape)) {
       const { currentShape } = this;
-      this.animationQueue.add(() => {
-        currentShape?.draw(this.canvasManager.backgroundCanvas, false);
+      this.animationManager.add(() => {
+        currentShape?.draw(this.canvasManager.backgroundCanvas);
         this.canvasManager.backgroundCanvas.storeLast();
         return Promise.resolve();
       });
@@ -150,8 +155,8 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
     this.canvasManager.userCanvas.storeLast();
     // Wait last animation end before add to background
     const shape = this.currentShape;
-    this.animationQueue.add(async () => {
-      shape.draw(this.canvasManager.backgroundCanvas, false);
+    this.animationManager.add(async () => {
+      shape.draw(this.canvasManager.backgroundCanvas);
       this.canvasManager.backgroundCanvas.storeLast();
     }).then(() => {
       // Reset main canvas when animation queue finished

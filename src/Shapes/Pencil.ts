@@ -1,8 +1,8 @@
 import Point from '../Point';
-import Utils from '../Utils';
 import UpdatableShape from './UpdatableShape';
 import ShapeType from './ShapeType';
 import Canvas from '../Canvas';
+import AnimationManager from '../Manager/AnimationManager';
 
 const INTERVAL_BETWEEN_LINE = 10;
 const INTERVAL_BETWEEN_EMIT = 500;
@@ -18,34 +18,36 @@ class Pencil extends UpdatableShape {
     return { ...super.getExportInfo(), points: this.points };
   }
 
-  async draw(canvas: Canvas, animate: boolean): Promise<void> {
-    super.draw(canvas, animate);
-    if (animate) return this.drawWithAnimation([], this.points, this.durationMs, canvas);
+  public draw(canvas: Canvas): void {
+    super.draw(canvas);
     this.drawPoints(this.points, canvas);
-    return Promise.resolve();
   }
 
-  async mergePoints(points: Array<Point>, endDate: number, canvas: Canvas): Promise<void> {
+  async mergePoints(points: Array<Point>, endDate: number, canvas: Canvas, animationManager: AnimationManager): Promise<void> {
     if (!this.endDate) return;
     const duration = endDate - this.endDate;
     this.endDate = endDate;
     const newPoints = points.slice(this.points.length - 1);
     const oldPoints = [...this.points];
     this.points = points;
-    await this.drawWithAnimation(oldPoints, newPoints, duration, canvas);
+    await this.drawWithAnimation(oldPoints, newPoints, duration, canvas, animationManager);
   }
 
-  private async drawWithAnimation(oldPoints: Array<Point>, newPoints: Array<Point>, durationMs: number, canvas: Canvas) {
-    const waitingInterval = durationMs / newPoints.length;
-    for (let i = 0; i < newPoints.length; i += 1) {
-      oldPoints.push(newPoints[i]);
-      if (oldPoints.length >= 2) {
+  public animate(canvas: Canvas, animationManager: AnimationManager): Promise<void> {
+    super.animate(canvas, animationManager);
+    return this.drawWithAnimation([], this.points, this.durationMs, canvas, animationManager);
+  }
+
+  private async drawWithAnimation(oldPoints: Array<Point>, newPoints: Array<Point>, durationMs: number, canvas: Canvas, animationManager: AnimationManager) {
+    return animationManager.animate({
+      draw: (progress: number) => {
         canvas.restoreLast();
-        this.drawPoints(oldPoints, canvas);
-      }
-      // eslint-disable-next-line no-await-in-loop
-      await Utils.waitInterval(waitingInterval);
-    }
+        const nbPointsToDraw = newPoints.length * progress;
+        const pointsToDraw = oldPoints.concat(newPoints.slice(0, nbPointsToDraw));
+        this.drawPoints(pointsToDraw, canvas);
+      },
+      duration: durationMs,
+    });
   }
 
   update(point: Point, canvas: Canvas): void {
@@ -87,6 +89,7 @@ class Pencil extends UpdatableShape {
   // Draw points unsing quadraticCurve between each points
   // From https://github.com/embiem/react-canvas-draw (MIT)
   private drawPoints(points: Array<Point>, canvas: Canvas) {
+    if (points.length <= 2) return;
     let p1 = points[0];
     let p2 = points[1];
 
