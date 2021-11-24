@@ -89,7 +89,7 @@ class Pencil extends UpdatableShape {
   // Draw points unsing quadraticCurve between each points
   // From https://github.com/embiem/react-canvas-draw (MIT)
   private drawPoints(points: Array<Point>, canvas: Canvas) {
-    if (points.length <= 2) return;
+    if (points.length <= 1) return;
     let p1 = points[0];
     let p2 = points[1];
 
