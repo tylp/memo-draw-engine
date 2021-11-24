@@ -4,6 +4,9 @@ enum ActionType {
   Draw,
   Permission,
   Reset,
+  GetImage,
+  SendImage,
+  SetImage,
 }
 
 export default ActionType;
