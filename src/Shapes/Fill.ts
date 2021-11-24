@@ -181,7 +181,7 @@ class Fill extends Shape {
     // Trick because image data cannot be 0 length
     this.imageData = new ImageData(1, 1);
     this.edges = new Set();
-    this.originData = new Uint8ClampedArray();
+    this.originData = new Uint8ClampedArray(0);
   }
 
   private redraw(canvas: Canvas) {
