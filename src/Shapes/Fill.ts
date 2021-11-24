@@ -40,6 +40,12 @@ class Fill extends Shape {
 
     if (this.originPoint == null) return;
 
+    // Ovewrite originPoint with round numbers
+    this.originPoint = {
+      x: Math.round(this.originPoint.x),
+      y: Math.round(this.originPoint.y),
+    };
+
     this.initialize(canvas);
 
     const basePixelPos = this.getPixelPos(this.originPoint.x, this.originPoint.y);
@@ -57,10 +63,7 @@ class Fill extends Shape {
       return;
     }
 
-    const pixelStack: Array<Array<number>> = [[
-      Math.round(this.originPoint.x),
-      Math.round(this.originPoint.y),
-    ]];
+    const pixelStack: Array<Array<number>> = [[this.originPoint.x, this.originPoint.y]];
 
     while (pixelStack.length) {
       let reachLeft: boolean;

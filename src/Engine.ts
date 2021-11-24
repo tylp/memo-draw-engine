@@ -17,8 +17,8 @@ class Engine {
     this.canvasManager = new CanvasManager(canvasElement);
     this.shapeManager = new ShapeManager(this.canvasManager);
     this.eventManager = new EventManager(this.canvasManager);
-    this.permissionManager = new PermissionManager();
     this.imageManager = new ImageManager(this.canvasManager);
+    this.permissionManager = new PermissionManager(this.shapeManager);
     this.networkManager = networkManager;
 
     if (networkManager !== null) this.registerNetworkManager(networkManager);

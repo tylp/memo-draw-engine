@@ -176,6 +176,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
   }
 
   private reset(): void {
+    this.internalEventManager.drawFinish();
     this.animationManager.reset();
     this.currentShape = null;
     this.basePoint = null;
