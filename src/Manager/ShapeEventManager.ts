@@ -54,7 +54,7 @@ class ShapeEventManager implements ICanvasEventHandlder, IDocumentEventHandler {
     }
   }
 
-  private drawFinish() {
+  drawFinish(): void {
     this.isDrawing = false;
     this.didLeave = false;
     this.shapeManager.drawFinish();
