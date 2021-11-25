@@ -73,7 +73,7 @@ class EventManager {
   private registerUndoEvent(): void {
     document.addEventListener('keydown', (event: KeyboardEvent) => {
       if (drawState.drawPermission === DrawPermission.Slave) return;
-      if (event.ctrlKey && event.key.toLowerCase() === 'z') {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
         this.documentEventHandlers.forEach((handler) => handler.undo());
       }
     });
@@ -82,7 +82,7 @@ class EventManager {
   private registerRedoEvent(): void {
     document.addEventListener('keydown', (event: KeyboardEvent) => {
       if (drawState.drawPermission === DrawPermission.Slave) return;
-      if (event.ctrlKey && event.key.toLowerCase() === 'y') {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'y') {
         this.documentEventHandlers.forEach((handler) => handler.redo());
       }
     });
