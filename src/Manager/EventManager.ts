@@ -8,6 +8,11 @@ import IWindowEventHandler from './IWindowEventHandler';
 
 const MOUSE_EVENT_LEFT = 0;
 
+interface XYEvent {
+  clientX: number,
+  clientY: number,
+}
+
 class EventManager {
   private canvasEventHandlers: Array<ICanvasEventHandlder> = [];
   private documentEventHandlers: Array<IDocumentEventHandler> = [];
@@ -37,40 +42,32 @@ class EventManager {
   }
 
   private registerCanvasEvents(): void {
-    this.canvasManager.userCanvas.canvasElement.addEventListener('mousemove', (event) => this.onMouseMove(event));
     this.canvasManager.userCanvas.canvasElement.addEventListener('mousedown', (event) => this.onMouseDown(event));
-    this.canvasManager.userCanvas.canvasElement.addEventListener('mouseup', () => this.onMouseUp());
-    this.canvasManager.userCanvas.canvasElement.addEventListener('mouseleave', () => this.onMouseLeave());
-  }
-
-  private onMouseMove(event: MouseEvent): void {
-    if (drawState.drawPermission === DrawPermission.Slave) return;
-    const point = this.getNewPoint(event);
-    this.canvasEventHandlers.forEach((handler) => handler.mouseMove(point));
+    this.canvasManager.userCanvas.canvasElement.addEventListener('touchstart', (event) => this.onTouchStart(event));
   }
 
   private onMouseDown(event: MouseEvent): void {
     if (event.button !== MOUSE_EVENT_LEFT) return;
+    this.onDown(event);
+  }
+
+  private onTouchStart(event: TouchEvent): void {
+    this.onDown(event.touches[0]);
+  }
+
+  private onDown(event: XYEvent): void {
     if (drawState.drawPermission === DrawPermission.Slave) return;
     const point = this.getNewPoint(event);
-    this.canvasEventHandlers.forEach((handler) => handler.mouseDown(point));
-  }
-
-  private onMouseUp(): void {
-    if (drawState.drawPermission === DrawPermission.Slave) return;
-    this.canvasEventHandlers.forEach((handler) => handler.mouseUp());
-  }
-
-  private onMouseLeave(): void {
-    if (drawState.drawPermission === DrawPermission.Slave) return;
-    this.canvasEventHandlers.forEach((handler) => handler.mouseLeave());
+    this.canvasEventHandlers.forEach((handler) => handler.canvasDown(point));
   }
 
   private registerDocumentEvents(): void {
     this.registerUndoEvent();
     this.registerRedoEvent();
-    document.addEventListener('mouseup', (event) => this.documentMouseUp(event));
-    document.addEventListener('mousemove', (event) => this.documentMouseMove(event));
+    document.addEventListener('mouseup', () => this.onDocumentUp());
+    document.addEventListener('mousemove', (event) => this.onDocumentMouseMove(event));
+    document.addEventListener('touchmove', (event) => this.onDocumentTouchMove(event));
+    document.addEventListener('touchend', () => this.onDocumentUp());
   }
 
   private registerUndoEvent(): void {
@@ -91,19 +88,23 @@ class EventManager {
     });
   }
 
-  private documentMouseUp(event: MouseEvent): void {
+  private onDocumentUp(): void {
     if (drawState.drawPermission === DrawPermission.Slave) return;
-    if (event.target !== this.canvasManager.userCanvas.canvasElement) {
-      this.documentEventHandlers.forEach((handler) => handler.documentMouseUp());
-    }
+    this.documentEventHandlers.forEach((handler) => handler.documentUp());
   }
 
-  private documentMouseMove(event: MouseEvent): void {
+  private onDocumentMouseMove(event: MouseEvent): void {
+    this.onDocumentMove(event);
+  }
+
+  private onDocumentTouchMove(event: TouchEvent) {
+    this.onDocumentMove(event.touches[0]);
+  }
+
+  private onDocumentMove(event: XYEvent): void {
     if (drawState.drawPermission === DrawPermission.Slave) return;
-    if (event.target !== this.canvasManager.userCanvas.canvasElement) {
-      const point = this.getNewPoint(event);
-      this.documentEventHandlers.forEach((handler) => handler.documentMouseMove(point));
-    }
+    const point = this.getNewPoint(event);
+    this.documentEventHandlers.forEach((handler) => handler.documentMove(point));
   }
 
   private registerWindowEvent(): void {
@@ -119,7 +120,7 @@ class EventManager {
     this.windowEventHandlers.forEach((handler) => handler.scroll());
   }
 
-  private getNewPoint(event: MouseEvent): Point {
+  private getNewPoint(event: XYEvent): Point {
     return new Point(
       event.clientX - this.canvasManager.canvasBounds.left,
       event.clientY - this.canvasManager.canvasBounds.top,
