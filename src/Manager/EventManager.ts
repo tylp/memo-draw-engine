@@ -6,6 +6,8 @@ import IDocumentEventHandler from './IDocumentEventHandler';
 import CanvasManager from './CanvasManager';
 import IWindowEventHandler from './IWindowEventHandler';
 
+const MOUSE_EVENT_LEFT = 0;
+
 class EventManager {
   private canvasEventHandlers: Array<ICanvasEventHandlder> = [];
   private documentEventHandlers: Array<IDocumentEventHandler> = [];
@@ -48,6 +50,7 @@ class EventManager {
   }
 
   private onMouseDown(event: MouseEvent): void {
+    if (event.button !== MOUSE_EVENT_LEFT) return;
     if (drawState.drawPermission === DrawPermission.Slave) return;
     const point = this.getNewPoint(event);
     this.canvasEventHandlers.forEach((handler) => handler.mouseDown(point));
