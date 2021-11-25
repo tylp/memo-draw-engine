@@ -46,7 +46,7 @@ class UndoRedoManager implements IObserver<IAction> {
   }
 
   public undo(): void {
-    this.shapeManager.drawFinish();
+    this.shapeManager.internalEventManager.drawFinish();
     const shape: Shape | undefined = UndoRedoManager.popLastCreated(this.shapes);
     if (shape !== undefined) {
       this.emit(ActionType.Undo, shape);
@@ -63,7 +63,7 @@ class UndoRedoManager implements IObserver<IAction> {
   }
 
   public redo(): void {
-    this.shapeManager.drawFinish();
+    this.shapeManager.internalEventManager.drawFinish();
     const shape: Shape | undefined = UndoRedoManager.popLastCreated(this.undoShapes);
     if (shape !== undefined) {
       this.emit(ActionType.Redo, shape);
