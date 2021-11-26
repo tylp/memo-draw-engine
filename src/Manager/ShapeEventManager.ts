@@ -6,58 +6,39 @@ import Point from '../Point';
 class ShapeEventManager implements ICanvasEventHandlder, IDocumentEventHandler {
   shapeManager: ShapeManager;
   isDrawing = false;
-  didLeave = false;
 
   constructor(shapeManager: ShapeManager) {
     this.shapeManager = shapeManager;
   }
 
-  mouseDown(point: Point): void {
+  public canvasDown(point: Point): void {
     this.isDrawing = true;
     this.shapeManager.drawBegin(point);
   }
 
-  mouseMove(point: Point): void {
+  public documentUp(): void {
+    if (this.isDrawing) this.drawFinish();
+  }
+
+  public documentMove(point: Point): void {
     if (this.isDrawing) {
-      this.didLeave = false;
       this.shapeManager.drawMove(point);
     }
   }
 
-  mouseLeave(): void {
-    if (this.isDrawing) {
-      this.didLeave = true;
-    }
+  public drawFinish(): void {
+    this.isDrawing = false;
+    this.shapeManager.drawFinish();
   }
 
-  mouseUp(): void {
-    this.drawFinish();
-  }
-
-  undo(): void {
+  public undo(): void {
     this.isDrawing = false;
     this.shapeManager.undoRedoManager.undo();
   }
 
-  redo(): void {
+  public redo(): void {
     this.isDrawing = false;
     this.shapeManager.undoRedoManager.redo();
-  }
-
-  documentMouseUp(): void {
-    if (this.didLeave) this.drawFinish();
-  }
-
-  documentMouseMove(point: Point): void {
-    if (this.didLeave) {
-      this.shapeManager.drawMove(point);
-    }
-  }
-
-  drawFinish(): void {
-    this.isDrawing = false;
-    this.didLeave = false;
-    this.shapeManager.drawFinish();
   }
 }
 
