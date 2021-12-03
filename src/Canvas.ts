@@ -33,6 +33,11 @@ class Canvas {
     this.storeLast();
   }
 
+  updateDimension(bounds: DOMRect): void {
+    this.canvasElement.width = bounds.width;
+    this.canvasElement.height = bounds.height;
+  }
+
   clearCanvas(): void {
     this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
   }
