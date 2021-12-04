@@ -11,6 +11,7 @@ class CanvasManager implements IWindowEventHandler {
   constructor(canvasElement: HTMLCanvasElement) {
     const backCanvasEl = this.duplicateCanvas(canvasElement);
     this.userCanvas = new Canvas(canvasElement);
+    this.userCanvas.preventMobileScrolling();
     this.backgroundCanvas = new Canvas(backCanvasEl);
     this.canvasBounds = canvasElement.getBoundingClientRect();
   }
