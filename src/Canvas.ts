@@ -53,6 +53,15 @@ class Canvas {
       this.ctx.putImageData(this.lastImageData, 0, 0);
     }
   }
+
+  public preventMobileScrolling(): void {
+    const preventDefault = (event: Event) => event.preventDefault();
+
+    this.canvasElement.addEventListener('touchstart', preventDefault);
+    this.canvasElement.addEventListener('touchmove', preventDefault);
+    this.canvasElement.addEventListener('touchend', preventDefault);
+    this.canvasElement.addEventListener('touchcancel', preventDefault);
+  }
 }
 
 export default Canvas;
