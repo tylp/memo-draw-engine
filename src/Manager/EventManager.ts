@@ -120,10 +120,11 @@ class EventManager {
     this.windowEventHandlers.forEach((handler) => handler.scroll());
   }
 
+  // Return a point relative to canvas dimensions
   private getNewPoint(event: XYEvent): Point {
     return new Point(
-      event.clientX - this.canvasManager.canvasBounds.left,
-      event.clientY - this.canvasManager.canvasBounds.top,
+      (event.clientX - this.canvasManager.canvasBounds.left) / this.canvasManager.canvasBounds.width,
+      (event.clientY - this.canvasManager.canvasBounds.top) / this.canvasManager.canvasBounds.height,
     );
   }
 }

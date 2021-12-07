@@ -1,3 +1,4 @@
+import Point from './Point';
 import AlphaColor from './Color/AlphaColor';
 
 class Canvas {
@@ -52,6 +53,18 @@ class Canvas {
     if (this.lastImageData !== null) {
       this.ctx.putImageData(this.lastImageData, 0, 0);
     }
+  }
+
+  public getAbsolutePoint(point: Point): Point {
+    return new Point(point.x * this.canvasElement.width, point.y * this.canvasElement.height);
+  }
+
+  public getAbsoluteWidth(width: number): number {
+    return width * this.canvasElement.width;
+  }
+
+  public getAbsoluteHeight(height: number): number {
+    return height * this.canvasElement.height;
   }
 
   public preventMobileScrolling(): void {

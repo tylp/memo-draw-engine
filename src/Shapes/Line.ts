@@ -7,9 +7,13 @@ class Line extends DraggableShape {
   protected shapeType: ShapeType = ShapeType.Line;
 
   protected drawShape(originPoint: Point, width: number, height: number, canvas: Canvas): void {
+    const realOriginPoint = canvas.getAbsolutePoint(originPoint);
+    const realHeigt = canvas.getAbsoluteHeight(height);
+    const realWidth = canvas.getAbsoluteWidth(width);
+
     canvas.ctx.beginPath();
-    canvas.ctx.moveTo(originPoint.x, originPoint.y);
-    canvas.ctx.lineTo(originPoint.x + width, originPoint.y + height);
+    canvas.ctx.moveTo(realOriginPoint.x, realOriginPoint.y);
+    canvas.ctx.lineTo(realOriginPoint.x + realWidth, realOriginPoint.y + realHeigt);
     canvas.ctx.stroke();
     canvas.ctx.closePath();
   }

@@ -7,7 +7,11 @@ class RectangleFull extends DraggableShape {
   protected shapeType: ShapeType = ShapeType.RectangleFull;
 
   protected drawShape(originPoint: Point, width: number, height: number, canvas: Canvas): void {
-    canvas.ctx.fillRect(originPoint.x, originPoint.y, width, height);
+    const realOriginPoint = canvas.getAbsolutePoint(originPoint);
+    const realHeigt = canvas.getAbsoluteHeight(height);
+    const realWidth = canvas.getAbsoluteWidth(width);
+
+    canvas.ctx.fillRect(realOriginPoint.x, realOriginPoint.y, realWidth, realHeigt);
   }
 }
 
