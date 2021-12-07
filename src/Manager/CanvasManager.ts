@@ -15,10 +15,20 @@ class CanvasManager implements IWindowEventHandler {
     this.canvasBounds = canvasElement.getBoundingClientRect();
   }
 
-  updateBounds(): void {
+  public recalculateDimensions(): void {
+    this.updateBounds();
+    this.updateDimensions();
+  }
+
+  public updateBounds(): void {
     this.canvasBounds = this.userCanvas.canvasElement.getBoundingClientRect();
+  }
+
+  public updateDimensions(): void {
     this.backgroundCanvas.updateDimension(this.canvasBounds);
     this.userCanvas.updateDimension(this.canvasBounds);
+    // TODO redraw all the shapes with new dimensions
+    this.backgroundCanvas.restoreLast();
   }
 
   public reset(): void {
@@ -34,7 +44,7 @@ class CanvasManager implements IWindowEventHandler {
   }
 
   resize(): void {
-    this.updateBounds();
+    this.recalculateDimensions();
   }
 
   scroll(): void {
