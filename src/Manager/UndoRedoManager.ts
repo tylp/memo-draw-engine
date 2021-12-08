@@ -3,6 +3,7 @@ import ActionType from '../Action/ActionType';
 import IAction from '../Action/IAction';
 import Shape from '../Shapes/Shape';
 import type ShapeManager from './ShapeManager';
+import Fill from '../Shapes/Fill';
 
 type UndoOrRedo = ActionType.Undo | ActionType.Redo;
 
@@ -79,6 +80,17 @@ class UndoRedoManager implements IObserver<IAction> {
     });
   }
 
+  public clearCacheFromFillShape(): void {
+    const fills = this.shapes.filter((shape) => shape instanceof Fill) as Fill[];
+    fills.forEach((fill) => fill.reset());
+  }
+
+  public redrawShapes(): void {
+    this.shapes.forEach(
+      (shp) => shp.draw(this.shapeManager.canvasManager.backgroundCanvas),
+    );
+  }
+
   // /!\ Mutating function
   private static popLastCreated(shapes: Array<Shape>): Shape | undefined {
     for (let i = shapes.length - 1; i >= 0; i -= 1) {
@@ -110,12 +122,6 @@ class UndoRedoManager implements IObserver<IAction> {
     shape.draw(this.shapeManager.canvasManager.backgroundCanvas);
     this.shapes.push(shape);
     this.shapeManager.canvasManager.backgroundCanvas.storeLast();
-  }
-
-  private redrawShapes(): void {
-    this.shapes.forEach(
-      (shp) => shp.draw(this.shapeManager.canvasManager.backgroundCanvas),
-    );
   }
 
   private emit(type: UndoOrRedo, shape: Shape) {

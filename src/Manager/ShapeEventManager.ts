@@ -2,9 +2,11 @@ import type ShapeManager from './ShapeManager';
 import ICanvasEventHandlder from './ICanvasEventHandlder';
 import IDocumentEventHandler from './IDocumentEventHandler';
 import Point from '../Point';
+import IWindowEventHandler from './IWindowEventHandler';
 
-class ShapeEventManager implements ICanvasEventHandlder, IDocumentEventHandler {
+class ShapeEventManager implements ICanvasEventHandlder, IDocumentEventHandler, IWindowEventHandler {
   shapeManager: ShapeManager;
+  resizeTimeout!: NodeJS.Timeout;
   isDrawing = false;
 
   constructor(shapeManager: ShapeManager) {
@@ -44,6 +46,23 @@ class ShapeEventManager implements ICanvasEventHandlder, IDocumentEventHandler {
   public reset(): void {
     this.isDrawing = false;
   }
+
+  resize(): void {
+    clearTimeout(this.resizeTimeout);
+    this.resizeTimeout = setTimeout(() => this.applyResize(), 300);
+  }
+
+  applyResize(): void {
+    this.shapeManager.canvasManager.recalculateDimensions();
+    this.shapeManager.animationManager.stop();
+    this.shapeManager.canvasManager.reset();
+    this.shapeManager.undoRedoManager.clearCacheFromFillShape();
+    this.shapeManager.undoRedoManager.redrawShapes();
+    this.shapeManager.canvasManager.backgroundCanvas.storeLast();
+  }
+
+  // Do nothing
+  scroll(): void { }
 }
 
 export default ShapeEventManager;
