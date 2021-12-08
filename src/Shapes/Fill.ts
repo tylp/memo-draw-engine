@@ -14,7 +14,7 @@ class Fill extends Shape {
   baseColor!: AlphaColor;
   imageData!: ImageData;
   originData!: Uint8ClampedArray;
-  filledPixels!: Array<number>;
+  filledPixels: Array<number> = [];
   canvasWidth!: number;
   canvasHeight!: number;
   originPoint: Point | null = null;
@@ -30,10 +30,15 @@ class Fill extends Shape {
     this.clearData();
   }
 
+  // Used to remove filledPixels in case of resize
+  public reset(): void {
+    this.filledPixels = [];
+  }
+
   // Algorithm from http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
   private fill(canvas: Canvas): void {
     // Redraw fill if it was already calculated
-    if (this.filledPixels !== undefined) {
+    if (this.filledPixels.length !== 0) {
       this.redraw(canvas);
       return;
     }

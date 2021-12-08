@@ -50,6 +50,7 @@ class ShapeEventManager implements ICanvasEventHandlder, IDocumentEventHandler, 
     this.shapeManager.canvasManager.recalculateDimensions();
     this.shapeManager.animationManager.stop();
     this.shapeManager.canvasManager.reset();
+    this.shapeManager.undoRedoManager.clearCacheFromFillShape();
     this.shapeManager.undoRedoManager.redrawShapes();
     this.shapeManager.canvasManager.backgroundCanvas.storeLast();
   }
