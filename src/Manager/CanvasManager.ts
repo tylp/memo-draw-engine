@@ -44,7 +44,7 @@ class CanvasManager implements IWindowEventHandler {
     return tempCanvasElement;
   }
 
-  // Handle by the shape manager
+  // Handled by the shape manager, left intentionally empty
   resize(): void { }
 
   scroll(): void {
