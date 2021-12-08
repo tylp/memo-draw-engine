@@ -11,18 +11,11 @@ class Canvas {
     const newCtx = this.canvasElement.getContext('2d');
     Canvas.validateContext(newCtx);
     this.ctx = newCtx;
-    this.ctx.lineJoin = 'round';
-    this.ctx.lineCap = 'round';
+    this.setContextAttributes();
     this.storeLast();
   }
 
-  private static validateContext(ctx: CanvasRenderingContext2D | null): asserts ctx is CanvasRenderingContext2D {
-    if (ctx === null) {
-      throw new Error('2d context of canvas is null, canvas may be not supported on your browser');
-    }
-  }
-
-  setStyle(color: AlphaColor, thickness: number): void {
+  public setStyle(color: AlphaColor, thickness: number): void {
     const rgba = color.toRgba();
     this.ctx.fillStyle = rgba;
     this.ctx.strokeStyle = rgba;
@@ -34,22 +27,24 @@ class Canvas {
     this.storeLast();
   }
 
-  updateDimension(bounds: DOMRect): void {
+  public updateDimension(bounds: DOMRect): void {
     this.canvasElement.width = bounds.width;
     this.canvasElement.height = bounds.height;
+    // Mandatory to reset canvas attributes
+    this.setContextAttributes();
   }
 
-  clearCanvas(): void {
+  public clearCanvas(): void {
     this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
   }
 
-  storeLast(): void {
+  public storeLast(): void {
     this.lastImageData = this.ctx.getImageData(
       0, 0, this.canvasElement.width, this.canvasElement.height,
     );
   }
 
-  restoreLast(): void {
+  public restoreLast(): void {
     if (this.lastImageData !== null) {
       this.ctx.putImageData(this.lastImageData, 0, 0);
     }
@@ -74,6 +69,19 @@ class Canvas {
     this.canvasElement.addEventListener('touchmove', preventDefault);
     this.canvasElement.addEventListener('touchend', preventDefault);
     this.canvasElement.addEventListener('touchcancel', preventDefault);
+  }
+
+  private static validateContext(ctx: CanvasRenderingContext2D | null): asserts ctx is CanvasRenderingContext2D {
+    if (ctx === null) {
+      throw new Error('2d context of canvas is null, canvas may be not supported on your browser');
+    }
+  }
+
+  private setContextAttributes(): void {
+    this.ctx.lineJoin = 'round';
+    this.ctx.lineCap = 'round';
+    this.ctx.imageSmoothingEnabled = true;
+    this.ctx.imageSmoothingQuality = 'high';
   }
 }
 
