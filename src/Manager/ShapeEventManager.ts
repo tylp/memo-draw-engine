@@ -6,6 +6,7 @@ import IWindowEventHandler from './IWindowEventHandler';
 
 class ShapeEventManager implements ICanvasEventHandlder, IDocumentEventHandler, IWindowEventHandler {
   shapeManager: ShapeManager;
+  resizeTimeout!: NodeJS.Timeout;
   isDrawing = false;
 
   constructor(shapeManager: ShapeManager) {
@@ -47,6 +48,11 @@ class ShapeEventManager implements ICanvasEventHandlder, IDocumentEventHandler, 
   }
 
   resize(): void {
+    clearTimeout(this.resizeTimeout);
+    this.resizeTimeout = setTimeout(() => this.applyResize(), 300);
+  }
+
+  applyResize(): void {
     this.shapeManager.canvasManager.recalculateDimensions();
     this.shapeManager.animationManager.stop();
     this.shapeManager.canvasManager.reset();
