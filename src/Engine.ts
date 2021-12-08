@@ -26,6 +26,7 @@ class Engine {
 
     this.eventManager.subscribeCanvasEventHandler(this.shapeManager.internalEventManager);
     this.eventManager.subscribeDocumentEventHandler(this.shapeManager.internalEventManager);
+    this.eventManager.subscribeWindowEventHandler(this.shapeManager.internalEventManager);
     this.eventManager.subscribeWindowEventHandler(this.canvasManager);
   }
 

@@ -112,7 +112,7 @@ class UndoRedoManager implements IObserver<IAction> {
     this.shapeManager.canvasManager.backgroundCanvas.storeLast();
   }
 
-  private redrawShapes(): void {
+  redrawShapes(): void {
     this.shapes.forEach(
       (shp) => shp.draw(this.shapeManager.canvasManager.backgroundCanvas),
     );

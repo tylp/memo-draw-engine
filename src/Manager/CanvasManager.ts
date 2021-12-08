@@ -44,9 +44,8 @@ class CanvasManager implements IWindowEventHandler {
     return tempCanvasElement;
   }
 
-  resize(): void {
-    this.recalculateDimensions();
-  }
+  // Handle by the shape manager
+  resize(): void { }
 
   scroll(): void {
     this.updateBounds();
