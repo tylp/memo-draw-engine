@@ -90,8 +90,8 @@ class Pencil extends UpdatableShape {
   // From https://github.com/embiem/react-canvas-draw (MIT)
   private drawPoints(points: Array<Point>, canvas: Canvas) {
     if (points.length <= 1) return;
-    let p1 = points[0];
-    let p2 = points[1];
+    let p1 = canvas.getAbsolutePoint(points[0]);
+    let p2 = canvas.getAbsolutePoint(points[1]);
 
     canvas.ctx.moveTo(p2.x, p2.y);
     canvas.ctx.beginPath();
@@ -99,8 +99,10 @@ class Pencil extends UpdatableShape {
     for (let i = 1; i < points.length; i += 1) {
       const midPoint = this.midPointBtw(p1, p2);
       canvas.ctx.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
-      p1 = points[i];
-      p2 = points[i + 1];
+      p1 = canvas.getAbsolutePoint(points[i]);
+      if (i < points.length - 1) {
+        p2 = canvas.getAbsolutePoint(points[i + 1]);
+      }
     }
 
     // Finish last point with straight line

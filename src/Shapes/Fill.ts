@@ -40,15 +40,17 @@ class Fill extends Shape {
 
     if (this.originPoint == null) return;
 
+    let originPoint = canvas.getAbsolutePoint(this.originPoint);
+
     // Ovewrite originPoint with round numbers
-    this.originPoint = {
-      x: Math.round(this.originPoint.x),
-      y: Math.round(this.originPoint.y),
+    originPoint = {
+      x: Math.round(originPoint.x),
+      y: Math.round(originPoint.y),
     };
 
     this.initialize(canvas);
 
-    const basePixelPos = this.getPixelPos(this.originPoint.x, this.originPoint.y);
+    const basePixelPos = this.getPixelPos(originPoint.x, originPoint.y);
     this.baseColor = this.getPixelColor(basePixelPos);
 
     // Replace color by addition of base + new to allow opacity addition
@@ -63,7 +65,7 @@ class Fill extends Shape {
       return;
     }
 
-    const pixelStack: Array<Array<number>> = [[this.originPoint.x, this.originPoint.y]];
+    const pixelStack: Array<Array<number>> = [[originPoint.x, originPoint.y]];
 
     while (pixelStack.length) {
       let reachLeft: boolean;

@@ -4,10 +4,14 @@ import DraggableShape from './DraggableShape';
 
 abstract class Ellipse extends DraggableShape {
   protected drawShape(originPoint: Point, width: number, height: number, canvas: Canvas): void {
-    const x = originPoint.x + (width / 2);
-    const y = originPoint.y + (height / 2);
+    const realOriginPoint = canvas.getAbsolutePoint(originPoint);
+    const realHeigt = canvas.getAbsoluteHeight(height);
+    const realWidth = canvas.getAbsoluteWidth(width);
+
+    const x = realOriginPoint.x + (realWidth / 2);
+    const y = realOriginPoint.y + (realHeigt / 2);
     canvas.ctx.beginPath();
-    canvas.ctx.ellipse(x, y, Math.abs(width / 2), Math.abs(height / 2), 0, 0, 2 * Math.PI);
+    canvas.ctx.ellipse(x, y, Math.abs(realWidth / 2), Math.abs(realHeigt / 2), 0, 0, 2 * Math.PI);
     this.endPath(canvas);
   }
 
