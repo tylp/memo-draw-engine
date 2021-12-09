@@ -1,6 +1,6 @@
 {
   "name": "memo-draw-engine",
-  "version": "0.2.4",
+  "version": "0.2.6",
   "description": "Drawing engine for [MemoDraw](https://github.com/tylp/memo-draw)",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
