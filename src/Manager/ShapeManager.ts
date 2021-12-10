@@ -5,7 +5,6 @@ import Point from '../Point';
 import DraggableShape from '../Shapes/DraggableShape';
 import UpdatableShape from '../Shapes/UpdatableShape';
 import IObserver from '../Observer/IObserver';
-import drawState from '../DrawState';
 import Pencil from '../Shapes/Pencil';
 import AbstractObservable from '../Observer/AbstractObservable';
 import IAction from '../Action/IAction';
@@ -16,19 +15,23 @@ import ShapeEventManager from './ShapeEventManager';
 import AnimationManager from './AnimationManager';
 import UndoRedoManager from './UndoRedoManager';
 import CanvasManager from './CanvasManager';
+import DrawState from '../DrawState';
 
 class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAction> {
   animationManager: AnimationManager = new AnimationManager();
   internalEventManager: ShapeEventManager = new ShapeEventManager(this);
   undoRedoManager: UndoRedoManager = new UndoRedoManager(this);
-  factory: ShapeFactory = new ShapeFactory();
-  currentShape: Shape | null = null;
   basePoint: Point | null = null;
   canvasManager: CanvasManager;
+  private currentShape: Shape | null = null;
+  private drawState: DrawState;
+  private factory: ShapeFactory;
 
-  constructor(canvasManager: CanvasManager) {
+  constructor(canvasManager: CanvasManager, drawState: DrawState) {
     super();
     this.canvasManager = canvasManager;
+    this.drawState = drawState;
+    this.factory = new ShapeFactory(drawState);
   }
 
   update(action: IAction): void {
@@ -120,7 +123,7 @@ class ShapeManager extends AbstractObservable<IAction> implements IObserver<IAct
 
   private createShape() {
     this.currentShape = this.factory.build({
-      type: drawState.shapeType,
+      type: this.drawState.shapeType,
       parameters: this.basePoint,
     });
   }

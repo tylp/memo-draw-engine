@@ -14,20 +14,26 @@ import Line from './Line';
 import Fill from './Fill';
 import DraggableShape from './DraggableShape';
 import UpdatableShape from './UpdatableShape';
-import drawState from '../DrawState';
 import AlphaColor from '../Color/AlphaColor';
+import DrawState from '../DrawState';
 
 type StyleInfo = { color: AlphaColor, thickness: number };
 
 class ShapeFactory {
+  drawState: DrawState;
+
+  constructor(drawState: DrawState) {
+    this.drawState = drawState;
+  }
+
   build(info: IShapeInfo): Shape {
     const { id, color, thickness } = info.parameters;
 
     const styleInfo = {
       color: color
         ? new AlphaColor(color.red, color.green, color.blue, color.alpha)
-        : drawState.getAlphaColor(),
-      thickness: thickness || drawState.thickness,
+        : this.drawState.getAlphaColor(),
+      thickness: thickness || this.drawState.thickness,
     };
 
     const shape = this.create(info.type, id, styleInfo);

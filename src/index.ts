@@ -5,7 +5,7 @@ import Color from './Color/Color';
 import AbstractNetworkManager from './Manager/AbstractNetworkManager';
 import IShapeInfo from './Shapes/IShapeInfo';
 import ShapeType from './Shapes/ShapeType';
-import drawState from './DrawState';
+import DrawState from './DrawState';
 import Engine from './Engine';
 import { DrawPermission, PermissionParameter } from './Permission';
 
@@ -18,7 +18,7 @@ export {
   IShapeInfo,
   ShapeType,
   Engine,
-  drawState,
+  DrawState,
   DrawPermission,
   PermissionParameter,
 };

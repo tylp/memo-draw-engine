@@ -1,15 +1,17 @@
-import drawState from '../DrawState';
 import { PermissionParameter, DrawPermission } from '../Permission';
 import ActionType from '../Action/ActionType';
 import IAction from '../Action/IAction';
 import IObserver from '../Observer/IObserver';
 import ShapeManager from './ShapeManager';
+import DrawState from '../DrawState';
 
 class PermissionManager implements IObserver<IAction> {
   shapeManager: ShapeManager;
+  drawState: DrawState;
 
-  constructor(shapeManager: ShapeManager) {
+  constructor(shapeManager: ShapeManager, drawState: DrawState) {
     this.shapeManager = shapeManager;
+    this.drawState = drawState;
   }
 
   update(elem: IAction): void {
@@ -19,7 +21,7 @@ class PermissionManager implements IObserver<IAction> {
     if (permissionParameter.type === DrawPermission.Slave) {
       this.shapeManager.internalEventManager.drawFinish();
     }
-    drawState.drawPermission = permissionParameter.type;
+    this.drawState.drawPermission = permissionParameter.type;
   }
 }
 
