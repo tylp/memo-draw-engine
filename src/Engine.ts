@@ -4,21 +4,24 @@ import ShapeManager from './Manager/ShapeManager';
 import CanvasManager from './Manager/CanvasManager';
 import PermissionManager from './Manager/PermissionManager';
 import ImageManager from './Manager/ImageManager';
+import DrawState from './DrawState';
 
 class Engine {
-  permissionManager: PermissionManager;
-  eventManager: EventManager;
-  networkManager: AbstractNetworkManager | null;
-  shapeManager: ShapeManager;
   canvasManager: CanvasManager;
+  drawState: DrawState;
+  shapeManager: ShapeManager;
+  eventManager: EventManager;
   imageManager: ImageManager;
+  permissionManager: PermissionManager;
+  networkManager: AbstractNetworkManager | null;
 
   constructor(canvasElement: HTMLCanvasElement, networkManager: AbstractNetworkManager | null = null) {
     this.canvasManager = new CanvasManager(canvasElement);
-    this.shapeManager = new ShapeManager(this.canvasManager);
-    this.eventManager = new EventManager(this.canvasManager);
+    this.drawState = new DrawState();
+    this.shapeManager = new ShapeManager(this.canvasManager, this.drawState);
+    this.eventManager = new EventManager(this.canvasManager, this.drawState);
     this.imageManager = new ImageManager(this.canvasManager);
-    this.permissionManager = new PermissionManager(this.shapeManager);
+    this.permissionManager = new PermissionManager(this.shapeManager, this.drawState);
     this.networkManager = networkManager;
 
     if (networkManager !== null) this.registerNetworkManager(networkManager);

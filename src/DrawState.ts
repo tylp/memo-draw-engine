@@ -3,7 +3,6 @@ import Color from './Color/Color';
 import AlphaColor from './Color/AlphaColor';
 import { DrawPermission } from './Permission';
 
-// State class use as a singleton to share drawing state
 class DrawState {
   color: Color;
   opacity: number;
@@ -24,5 +23,4 @@ class DrawState {
   }
 }
 
-const drawState = new DrawState();
-export default drawState;
+export default DrawState;

@@ -1,10 +1,10 @@
 import { DrawPermission } from '../Permission';
-import drawState from '../DrawState';
 import Point from '../Point';
 import ICanvasEventHandlder from './ICanvasEventHandlder';
 import IDocumentEventHandler from './IDocumentEventHandler';
 import CanvasManager from './CanvasManager';
 import IWindowEventHandler from './IWindowEventHandler';
+import DrawState from '../DrawState';
 
 const MOUSE_EVENT_LEFT = 0;
 
@@ -14,13 +14,15 @@ interface XYEvent {
 }
 
 class EventManager {
+  private drawState: DrawState;
   private canvasEventHandlers: Array<ICanvasEventHandlder> = [];
   private documentEventHandlers: Array<IDocumentEventHandler> = [];
   private windowEventHandlers: Array<IWindowEventHandler> = [];
   private canvasManager: CanvasManager;
 
-  constructor(canvasManager: CanvasManager) {
+  constructor(canvasManager: CanvasManager, drawState: DrawState) {
     this.canvasManager = canvasManager;
+    this.drawState = drawState;
   }
 
   subscribeCanvasEventHandler(handler: ICanvasEventHandlder): void {
@@ -56,7 +58,7 @@ class EventManager {
   }
 
   private onDown(event: XYEvent): void {
-    if (drawState.drawPermission === DrawPermission.Slave) return;
+    if (this.drawState.drawPermission === DrawPermission.Slave) return;
     const point = this.getNewPoint(event);
     this.canvasEventHandlers.forEach((handler) => handler.canvasDown(point));
   }
@@ -72,7 +74,7 @@ class EventManager {
 
   private registerUndoEvent(): void {
     document.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (drawState.drawPermission === DrawPermission.Slave) return;
+      if (this.drawState.drawPermission === DrawPermission.Slave) return;
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
         this.documentEventHandlers.forEach((handler) => handler.undo());
       }
@@ -81,7 +83,7 @@ class EventManager {
 
   private registerRedoEvent(): void {
     document.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (drawState.drawPermission === DrawPermission.Slave) return;
+      if (this.drawState.drawPermission === DrawPermission.Slave) return;
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'y') {
         this.documentEventHandlers.forEach((handler) => handler.redo());
       }
@@ -89,7 +91,7 @@ class EventManager {
   }
 
   private onDocumentUp(): void {
-    if (drawState.drawPermission === DrawPermission.Slave) return;
+    if (this.drawState.drawPermission === DrawPermission.Slave) return;
     this.documentEventHandlers.forEach((handler) => handler.documentUp());
   }
 
@@ -102,7 +104,7 @@ class EventManager {
   }
 
   private onDocumentMove(event: XYEvent): void {
-    if (drawState.drawPermission === DrawPermission.Slave) return;
+    if (this.drawState.drawPermission === DrawPermission.Slave) return;
     const point = this.getNewPoint(event);
     this.documentEventHandlers.forEach((handler) => handler.documentMove(point));
   }
